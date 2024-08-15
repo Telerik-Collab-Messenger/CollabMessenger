@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Header from './components/header/Header';
 import Home from './pages/home/Home'
 import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
