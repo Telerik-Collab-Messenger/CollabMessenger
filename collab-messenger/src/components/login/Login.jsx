@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { loginUser } from '../services/authenticate-services';
+import { loginUser } from '../services/authenticate-service';
 
 const Login = () => {
   const [email, setEmail] = useState('');
