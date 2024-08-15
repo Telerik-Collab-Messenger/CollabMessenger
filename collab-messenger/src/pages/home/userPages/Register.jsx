@@ -1,7 +1,7 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
 import RegisterModal from '../../../components/modals/RegisterModal';
-import { AppContext } from './../../../state/app.context';
+// import { AppContext } from './../../../state/app.context';
 
 const Register = () => {
   const [user, setUser] = useState({
@@ -42,7 +42,7 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <>
       <button onClick={() => setModalVisible(true)}>Register</button>
       <RegisterModal isVisible={isModalVisible} onClose={() => setModalVisible(false)}>
         <form onSubmit={register}>
@@ -54,7 +54,7 @@ const Register = () => {
           <button type="submit">Register</button>
         </form>
       </RegisterModal>
-    </div>
+    </>
   );
 };
 

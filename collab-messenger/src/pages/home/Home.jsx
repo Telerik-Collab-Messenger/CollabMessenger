@@ -1,12 +1,13 @@
-import './Home.css'
+import './Home.css';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AppContext } from '../../state/app.context';
+import Register from '../../pages/home/userPages/Register';
 
 export default function Home() {
     const { user } = useContext(AppContext);
-
     const navigate = useNavigate();
+    const [isRegisterModalVisible, setRegisterModalVisible] = useState(false);
 
     return (
         <>
@@ -24,12 +25,13 @@ export default function Home() {
                         </>
                     ) : (
                         <>
-                        <button className="button" onClick={() => navigate('/login')}>Login</button>
-                        <button className="button" onClick={() => navigate('/register')}>Register</button>
+                            <button className="button" onClick={() => navigate('/login')}>Login</button>
+                            <Register isVisible={isRegisterModalVisible} onClose={() => setRegisterModalVisible(false)} />
                         </>   
-                )}
+                    )}
                 </div>
             </div>
+            
         </>
-    )
+    );
 }
