@@ -1,7 +1,8 @@
 import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../../services/authenticate-service';
 import RegisterModal from '../modals/RegisterModal';
-// import { AppContext } from './../../../state/app.context';
+import { createUserHandle } from '../../services/user.services';
+
 
 const Register = () => {
   const [user, setUser] = useState({
@@ -21,9 +22,7 @@ const Register = () => {
     });
   };
 
-  // const { setAppState } = useContext(AppContext);
-  // const navigate = useNavigate();
-
+ 
   const register = async (e) => {
     e.preventDefault();
     if (!user.email || !user.password) {
@@ -39,6 +38,19 @@ const Register = () => {
     // if (!user.phoneNumber ) {
     //     return alert('!');
     // }
+
+    try {
+
+      const userCredential = await registerUser(user.email, user.password);
+      const uid = userCredential.user.uid;
+
+      await createUserHandle(user.handle, uid, user.email, user.phoneNumber);
+      
+      alert('User registered successfully!');
+    } catch (error) {
+      console.error('Error registering user:', error);
+      alert(error.message);
+    }
   };
 
   return (
