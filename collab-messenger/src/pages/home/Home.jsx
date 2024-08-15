@@ -2,7 +2,7 @@ import './Home.css';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { AppContext } from '../../state/app.context';
-import Register from '../../pages/home/userPages/Register';
+import Register from '../../components/register/Register';
 
 export default function Home() {
     const { user } = useContext(AppContext);

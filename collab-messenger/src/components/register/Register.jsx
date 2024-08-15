@@ -1,6 +1,6 @@
 import { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
-import RegisterModal from '../../../components/modals/RegisterModal';
+import RegisterModal from '../modals/RegisterModal';
 // import { AppContext } from './../../../state/app.context';
 
 const Register = () => {
