@@ -4,13 +4,13 @@ import { useContext } from 'react';
 import { AppContext } from '../../state/app.context';
 
 export default function Header() {
-    const { user, userData, setAppState } = useContext(AppContext);
+    const { user, setAppState } = useContext(AppContext);
 
     const logout = async () => {
         setAppState({ user: null, userData: null });
         navigate('/login');
       };
-      
+
     const navigate = useNavigate();
         
         return (
