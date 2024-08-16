@@ -24,6 +24,22 @@ const Register = () => {
         });
     };
 
+    const validatePhoneNumber = (phoneNumber) => {
+      if (typeof phoneNumber !== 'string') {
+        alert("Phone number must be a string");
+        return false;
+      }
+      if (phoneNumber.length === 13 && phoneNumber[0] !== '+') {
+        alert("Invalid phone number: 13-digit numbers must start with '+'");
+        return false;
+      }
+      if (phoneNumber.length === 10 && phoneNumber[0] !== '0') {
+        alert("Invalid phone number: 10-digit numbers must start with '0'");
+        return false;
+      }
+      return true;
+    };
+
     const register = async (e) => {
         e.preventDefault();
         if (!user.email || !user.password) {
@@ -34,6 +50,12 @@ const Register = () => {
         }
         if (!user.handle || user.handle.length < 5 || user.handle.length > 35){
             return alert("Invalid handle (between 5 and 35 symbols)");
+        }
+        // if(!user.phoneNumber || typeof user.phoneNumber !== 'string'){ 
+        //       return alert("Invalid phone number");
+        // }
+        if (!validatePhoneNumber(user.phoneNumber)) {
+          return; 
         }
      
         try {
