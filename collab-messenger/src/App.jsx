@@ -3,6 +3,7 @@ import { AppContext } from './state/app.context';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Header from './components/header/Header';
 import Home from './pages/home/Home'
+import  Logged from './pages/logged/Logged'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -22,6 +23,7 @@ function App() {
           <Header />
             <Routes>
             <Route path='/' element={<Home />} />
+            <Route path='/logged' element={<Logged />} />
           </Routes>
         </div>
         </AppContext.Provider>

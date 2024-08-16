@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { registerUser } from '../../services/authenticate-service';
 import RegisterModal from '../modals/RegisterModal';
 import { createUserHandle } from '../../services/user.services';
+import { useNavigate } from 'react-router-dom';
 
 
 const Register = () => {
@@ -14,6 +15,7 @@ const Register = () => {
   });
 
   const [isModalVisible, setModalVisible] = useState(false);
+  const navigate = useNavigate();
 
   const updateUser = prop => e => {
     setUser({
@@ -47,6 +49,7 @@ const Register = () => {
       
       alert('User registered successfully!');
       setModalVisible(false);
+      navigate('/logged');
     } catch (error) {
       console.error('Error registering user:', error);
       alert(error.message);
