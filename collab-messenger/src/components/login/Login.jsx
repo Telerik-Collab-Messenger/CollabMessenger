@@ -2,11 +2,13 @@
 import { useState } from 'react';
 import { loginUser } from '../../services/authenticate-service';
 import RegisterModal from '../modals/RegisterModal';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isModelVisible, setModelVisible] = useState(false);
+  const navigate = useNavigate();
 
   const login = async (e) => {
     e.preventDefault();
@@ -14,6 +16,8 @@ const Login = () => {
     try {
       await loginUser(email, password);
       alert('User logged in successfully!');
+      setModelVisible(false);
+      navigate('/logged');
     } catch (error) {
       console.error('Error logging in:', error);
       alert(error.message);
