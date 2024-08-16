@@ -46,7 +46,7 @@ const Register = () => {
       await createUserHandle(user.handle, uid, user.email, user.phoneNumber);
       
       alert('User registered successfully!');
-      setModalVisible(false); // Set modal visibility to false after successful registration
+      setModalVisible(false);
     } catch (error) {
       console.error('Error registering user:', error);
       alert(error.message);
