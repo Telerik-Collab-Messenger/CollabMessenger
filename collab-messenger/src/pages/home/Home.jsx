@@ -1,8 +1,8 @@
 import './Home.css';
 import { useContext, useState } from 'react';
 import { AppContext } from '../../state/app.context';
-import Register from '../../components/register/Register';
 import Login from '../../components/login/Login';
+import Register from '../../components/register/Register';
 
 export default function Home() {
     const { user } = useContext(AppContext);
@@ -25,8 +25,10 @@ export default function Home() {
                         </>
                     ) : (
                         <>
-                            <Login isVisible={isLoginModelVisible} onClose={() => setLoginModelVisible(false)} />
-                            <Register isVisible={isRegisterModalVisible} onClose={() => setRegisterModalVisible(false)} />
+                        <div id='home-buttons'>
+                            <Login id="login" isVisible={isLoginModelVisible} onClose={() => setLoginModelVisible(false)} />
+                            <Register id="register" isVisible={isRegisterModalVisible} onClose={() => setRegisterModalVisible(false)} />
+                        </div>
                         </>   
                     )}
                 </div>
