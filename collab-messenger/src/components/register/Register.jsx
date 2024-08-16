@@ -22,7 +22,6 @@ const Register = () => {
     });
   };
 
- 
   const register = async (e) => {
     e.preventDefault();
     if (!user.email || !user.password) {
@@ -47,6 +46,7 @@ const Register = () => {
       await createUserHandle(user.handle, uid, user.email, user.phoneNumber);
       
       alert('User registered successfully!');
+      setModalVisible(false); // Set modal visibility to false after successful registration
     } catch (error) {
       console.error('Error registering user:', error);
       alert(error.message);
