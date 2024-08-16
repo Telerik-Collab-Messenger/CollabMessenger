@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { registerUser } from '../../services/authenticate-service';
+import { uploadPhoto } from '../../services/user.services';
 import { createUserHandle } from '../../services/user.services';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
+
 
 const Register = () => {
     const [user, setUser] = useState({
@@ -11,18 +13,26 @@ const Register = () => {
         email: '',
         phoneNumber: '',
         password: '',
-        passwordCheck: ''
+        passwordCheck: '',
+        photo: null
     });
 
     const [isModalVisible, setModalVisible] = useState(false);
     const navigate = useNavigate();
 
     const updateUser = prop => e => {
+      if (prop === 'photo') {
+        setUser({
+            ...user,
+            [prop]: e.target.files[0],
+        });
+    } else {
         setUser({
             ...user,
             [prop]: e.target.value,
         });
-    };
+    }
+};
 
     const validatePhoneNumber = (phoneNumber) => {
       if (typeof phoneNumber !== 'string') {
@@ -51,6 +61,9 @@ const Register = () => {
         if (!user.handle || user.handle.length < 5 || user.handle.length > 35){
             return alert("Invalid handle (between 5 and 35 symbols)");
         }
+        if (!user.photo) {
+          return alert("Please upload a photo"); // Check if a photo is provided
+        }
         // if(!user.phoneNumber || typeof user.phoneNumber !== 'string'){ 
         //       return alert("Invalid phone number");
         // }
@@ -59,11 +72,11 @@ const Register = () => {
         }
      
         try {
-
             const userCredential = await registerUser(user.email, user.password);
             const uid = userCredential.user.uid;
+            const photoURL = await uploadPhoto(uid, user.photo);
 
-            await createUserHandle(user.handle, uid, user.email, user.phoneNumber);
+            await createUserHandle(user.handle, uid, user.email, user.phoneNumber, photoURL);
             
             alert('User registered successfully!');
             setModalVisible(false);
@@ -109,6 +122,11 @@ const Register = () => {
                         <Form.Group controlId="passwordCheck">
                             <Form.Label>Confirm Password</Form.Label>
                             <Form.Control type="password" placeholder="Confirm password" value={user.passwordCheck} onChange={updateUser('passwordCheck')} />
+                        </Form.Group>
+
+                        <Form.Group controlId="photo">
+                            <Form.Label>Upload Photo</Form.Label>
+                            <Form.Control type="file" onChange={updateUser('photo')} accept="image/*" />
                         </Form.Group>
 
                         <Button variant="primary" type="submit">
