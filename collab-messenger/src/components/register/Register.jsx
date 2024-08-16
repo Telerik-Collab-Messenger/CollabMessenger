@@ -3,6 +3,7 @@ import { registerUser } from '../../services/authenticate-service';
 import RegisterModal from '../modals/RegisterModal';
 import { createUserHandle } from '../../services/user.services';
 import { useNavigate } from 'react-router-dom';
+import './Register.css';
 
 
 const Register = () => {
