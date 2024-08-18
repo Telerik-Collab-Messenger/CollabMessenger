@@ -1,0 +1,22 @@
+#navbar-container {
+    position:absolute;
+    top: 71px;
+    left: -10px;
+    width: 120px;
+    height: 881px;
+}
+
+.button {
+    width: 83px;
+    height: 43px;
+    margin-bottom: 10px;
+    position: relative;
+    display: block;
+    text-align: center;
+    font-size: 1px;
+}
+
+#navbar {
+    height: 100%;
+    border-right: 1px solid lightgray;
+}
