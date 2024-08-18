@@ -22,7 +22,7 @@ export default function Header() {
           <Navbar fixed="top" expand="lg" variant="dark" bg="dark">
             <Container>
               <Navbar.Brand id="brand-name">Better Teams</Navbar.Brand>
-              {/* {user && ( */}
+              {user && (
               <DropdownButton
                     id="dropdown-btn"
                     variant="success"
@@ -34,8 +34,8 @@ export default function Header() {
                     }
                 >
                 <Dropdown.Item variant="success" onClick={logout}>Logout</Dropdown.Item>
-              </DropdownButton>{" "}
-              {/*  )} */}
+              </DropdownButton>
+            )} 
             </Container>
           </Navbar>
         );
