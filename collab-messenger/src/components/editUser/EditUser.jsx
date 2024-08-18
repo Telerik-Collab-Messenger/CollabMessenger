@@ -2,6 +2,8 @@ import { useContext, useState, useEffect } from "react";
 import { AppContext } from "../../state/app.context";
 import { useNavigate } from "react-router-dom";
 import { getUserData, updateUserData, uploadPhoto } from "../../services/user.services";
+import { Form, Button, Image } from "react-bootstrap";
+import "./EditUser.css";
 
 
 export default function EditUser() {
@@ -71,30 +73,57 @@ export default function EditUser() {
     };
 
     return (
-        <form className="edit-user-form">
-            <h2>Edit User Details</h2>
-            <p id="msg">Username cannot be changed</p>
-            <label htmlFor="firstName" className="firstName-label">First Name:
-                <input type="text" name="firstName" id="firstName"
-                    placeholder="Enter first name here..."
-                    value={userDetails.firstName} onChange={updateUser('firstName')} />
-            </label><br />
-            <br />
-            <label htmlFor="lastName" className="lastName-label">Last Name:
-                <input type="text" name="lastName" id="lastName"
-                    placeholder="Enter last name here..."
-                    value={userDetails.lastName} onChange={updateUser('lastName')} />
-            </label><br />
-            <label htmlFor="photoURL" className="photoURL-label">Profile Picture:
-                <input type="file" name="photoURL" id="photoURL" onChange={handleFileChange} />
-            </label><br /><br />
-            {userDetails.photoURL && (
-                <div>
-                    <img src={userDetails.photoURL} alt="Profile" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
-                </div>
-            )}
-            <button onClick={handleSave}>Save</button>
-            <button onClick={handleCancel}>Cancel</button>
-        </form>
+      <div className="edit-user-form-container">
+        <h2>Edit User Details</h2>
+
+        <Form onSubmit={handleSave}>
+          <p id="msg">Username cannot be changed</p>
+
+          <Form.Group controlId="firstName">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter first name here..."
+              value={userDetails.firstName}
+              onChange={updateUser("firstName")}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="lastName" className="mt-3">
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter last name here..."
+              value={userDetails.lastName}
+              onChange={updateUser("lastName")}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="photoURL" className="mt-3">
+            <Form.Label>Profile Picture</Form.Label>
+            <Form.Control type="file" onChange={handleFileChange} />
+          </Form.Group>
+
+          {userDetails.photoURL && (
+            <div className="mt-3">
+              <Image
+                src={userDetails.photoURL}
+                roundedCircle
+                style={{ width: "100px", height: "100px" }}
+                alt="Profile"
+              />
+            </div>
+          )}
+          <div className="mt-4">
+            <Button className="btn-edit" variant="success" type="submit">
+              Save
+            </Button>
+            <Button className="btn-edit2" variant="secondary" onClick={handleCancel}>
+              Cancel
+            </Button>
+          </div>
+        </Form>
+      </div>
     );
+    
 }

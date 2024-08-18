@@ -3,7 +3,6 @@
     height: 150px;
   }
   
-  /* Placeholder styling for when no image is provided */
   .placeholder-image {
     width: 150px;
     height: 150px;
@@ -18,8 +17,8 @@
     align-items: center;
   }
   
-  /* General container padding */
   .details-container {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
   }
+  
