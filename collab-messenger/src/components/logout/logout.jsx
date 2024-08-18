@@ -1,17 +1,23 @@
-import { logoutUser } from "../../services/authenticate-service";
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../state/auth.context';
 
 const Logout = () => {
-  const logout = async () => {
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
     try {
-      await logoutUser();
+      await logout();
       alert('User logged out successfully!');
+      navigate('/login');
     } catch (error) {
       console.error('Error logging out:', error);
       alert(error.message);
     }
   };
 
-  return <button onClick={logout}>Logout</button>;
+  return <button onClick={handleLogout}>Logout</button>;
 };
 
 export default Logout;

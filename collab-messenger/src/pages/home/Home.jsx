@@ -8,7 +8,7 @@ export default function Home() {
     const { user } = useContext(AppContext);
     const [isRegisterModalVisible, setRegisterModalVisible] = useState(false);
     const [isLoginModelVisible, setLoginModelVisible] = useState(false);
-
+    console.log(user)
     return (
         <>
             <div id='home'>
@@ -20,7 +20,7 @@ export default function Home() {
                     <p>Get started by creating an account or logging in.</p>
                     {user ? (
                         <>  
-                            <span>Welcome, {user}</span>
+                            <span>Welcome, {user.handle}</span>
                             {/* do stuff */}
                         </>
                     ) : (
