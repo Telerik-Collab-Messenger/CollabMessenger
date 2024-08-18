@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import UserDetails from './components/userDetails/userDetails';
 import Authenticated from './hoc/Authenticated';
 import EditUser from './components/editUser/EditUser';
+import SideNav from './components/leftNavBar/SideNav';
 
 
 
@@ -43,6 +44,7 @@ function App() {
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <div id='main'>
           <Header />
+          {user && <SideNav />}
             <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/logged' element={<Logged />} />

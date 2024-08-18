@@ -1,0 +1,25 @@
+.profile-image {
+    width: 150px;
+    height: 150px;
+  }
+  
+  /* Placeholder styling for when no image is provided */
+  .placeholder-image {
+    width: 150px;
+    height: 150px;
+    background-color: #ddd;
+    border-radius: 50%;
+    line-height: 150px;
+    font-size: 24px;
+    color: #aaa;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* General container padding */
+  .details-container {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }

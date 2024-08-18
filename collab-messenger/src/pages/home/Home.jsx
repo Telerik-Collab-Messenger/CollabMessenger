@@ -17,19 +17,12 @@ export default function Home() {
                 <div id='home-content'>
                     <p>Collab Messenger is a simple messaging app that allows you to chat with your friends and family.</p>
                     <p>Get started by creating an account or logging in.</p>
-                    {user ? (
-                        <>  
-                            <span>Welcome,</span>
-                            {/* do stuff */}
-                        </>
-                    ) : (
                         <>
                         <div id='home-buttons'>
                             <Login id="login" isVisible={isLoginModelVisible} onClose={() => setLoginModelVisible(false)} />
                             <Register id="register" isVisible={isRegisterModalVisible} onClose={() => setRegisterModalVisible(false)} />
                         </div>
                         </>   
-                    )}
                 </div>
             </div>
             
