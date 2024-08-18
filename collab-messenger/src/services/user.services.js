@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
 import { db } from '../config/firebase-config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../config/firebase-config';
@@ -25,6 +25,24 @@ export const uploadPhoto = async (uid, file) => {
     return photoURL;
 };
 
+export const updateUserData = async (uid, updatedData) => {
+    try {
+      const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
+      const snapshot = await get(userRef);
+  
+      if (snapshot.exists()) {
+        const userKey = Object.keys(snapshot.val())[0];
+  
+        await update(ref(db, `users/${userKey}`), updatedData);
+  
+        console.log(`User ${userKey} data updated successfully.`);
+      } else {
+        console.error('User does not exist');
+      }
+    } catch (error) {
+      console.error(`Failed to update user data: ${error}`);
+    }
+  };
 
 //old users without photos
 // export const createUserHandle = async (handle, uid, email, phoneNumber = '') => {

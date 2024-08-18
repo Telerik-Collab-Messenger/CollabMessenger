@@ -9,6 +9,10 @@ import Home from './pages/home/Home'
 import  Logged from './pages/logged/Logged'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import UserDetails from './components/userDetails/userDetails';
+import Authenticated from './hoc/Authenticated';
+import EditUser from './components/editUser/EditUser';
+
 
 
 function App() {
@@ -42,6 +46,8 @@ function App() {
             <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/logged' element={<Logged />} />
+            <Route path='/userdetails/edituser' element={<EditUser />} />
+            <Route path='/userdetails' element={<Authenticated><UserDetails /></Authenticated>} />
           </Routes>
         </div>
         </AppContext.Provider>

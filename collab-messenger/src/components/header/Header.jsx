@@ -9,6 +9,7 @@ import { logoutUser } from '../../services/authenticate-service';
 import { AppContext } from '../../state/app.context';
 
 
+
 export default function Header() {
     const { user, userData, setAppState } = useContext(AppContext);
     const navigate = useNavigate();
@@ -17,6 +18,9 @@ export default function Header() {
         setAppState({ user: null, userData: null });
         navigate('/');
     };
+    const detailUser = () => {
+        navigate('userdetails');
+      }
 
     return (
         <Navbar fixed="top" expand="lg" variant="dark" bg="dark">
@@ -34,6 +38,7 @@ export default function Header() {
                             </>
                         }
                     >
+                        <Dropdown.Item variant="success" onClick={detailUser}>Details</Dropdown.Item>
                         <Dropdown.Item variant="success" onClick={logout}>Logout</Dropdown.Item>
                     </DropdownButton>
                 )}
