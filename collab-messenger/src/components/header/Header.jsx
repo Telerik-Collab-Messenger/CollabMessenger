@@ -26,15 +26,18 @@ export default function Header() {
         <Navbar fixed="top" expand="lg" variant="dark" bg="dark">
             <Container>
                 <Navbar.Brand id="brand-name">Better Teams</Navbar.Brand>
-                {user && (
+                {user && userData && (
                     <DropdownButton
                         id="dropdown-btn"
                         variant="success"
                         title={
                             <>
-                                {/* <img id="pfp" src="../../../img/defaultUser.jpg"/> */}
-                                {<img id="pfp" src="../../../img/defaultUser.jpg" />}
-                                {userData && <span>Welcome, {userData.handle}</span>}
+                                {userData.photoURL ? (
+                                    <img src={userData.photoURL} alt="Profile" id="pfp" />
+                                ) : (
+                                    <img src="../../../img/defaultUser.jpg" alt="Default Profile" id="pfp" />
+                                )}
+                                <span>Welcome, {userData.handle}</span>
                             </>
                         }
                     >
