@@ -18,17 +18,18 @@ function App() {
   });
   const [user] = useAuthState(auth);
 
-if (appState.user !== user) {
-  setAppState({...appState, user})
-}
+  if (appState.user !== user) {
+    setAppState({...appState, user });
+  }
 
   useEffect(() => {
-    if (user) {
-      getUserData(user.uid).then(data => {
-        const userData = data ? data[Object.keys(data)[0]] : null;
-        setAppState(prevState => ({ ...prevState, userData }));
+    if (!user) return;
+
+    getUserData(appState.user.uid)
+      .then(data => {
+        const userData = data[Object.keys(data)[0]];
+        setAppState({...appState, userData});
       });
-    }
   }, [user]);
 
 
