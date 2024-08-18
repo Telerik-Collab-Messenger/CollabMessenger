@@ -8,8 +8,8 @@ export const getUserByHandle = async (handle) => {
     return snapshot.val();
 };
 
-export const createUserHandle = async (handle, uid, email, phoneNumber = '', photoURL = '') => {
-    const user = { handle, uid, email, phoneNumber, photoURL, createdOn: new Date().toString() };
+export const createUserHandle = async (handle, uid, email, phoneNumber = '', photoURL = '', firstName = '', lastName = '') => {
+    const user = { handle, uid, firstName, lastName, email, phoneNumber, photoURL, createdOn: new Date().toString() };
     await set(ref(db, `users/${handle}`), user);
 };
 
@@ -44,8 +44,3 @@ export const updateUserData = async (uid, updatedData) => {
     }
   };
 
-//old users without photos
-// export const createUserHandle = async (handle, uid, email, phoneNumber = '') => {
-//     const user = { handle, uid, email, phoneNumber, createdOn: new Date().toString() };
-//     await set(ref(db, `users/${handle}`), user);
-// };

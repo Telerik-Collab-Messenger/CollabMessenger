@@ -14,40 +14,42 @@ const Register = () => {
         phoneNumber: '',
         password: '',
         passwordCheck: '',
-        photo: null
+        photo: null,
+        firstName: '',
+        lastName: ''
     });
 
     const [isModalVisible, setModalVisible] = useState(false);
     const navigate = useNavigate();
 
     const updateUser = prop => e => {
-      if (prop === 'photo') {
-        setUser({
-            ...user,
-            [prop]: e.target.files[0],
-        });
-    } else {
-        setUser({
-            ...user,
-            [prop]: e.target.value,
-        });
-    }
-};
+        if (prop === 'photo') {
+            setUser({
+                ...user,
+                [prop]: e.target.files[0],
+            });
+        } else {
+            setUser({
+                ...user,
+                [prop]: e.target.value,
+            });
+        }
+    };
 
     const validatePhoneNumber = (phoneNumber) => {
-      if (typeof phoneNumber !== 'string') {
-        alert("Phone number must be a string");
-        return false;
-      }
-      if (phoneNumber.length === 13 && phoneNumber[0] !== '+') {
-        alert("Invalid phone number: 13-digit numbers must start with '+'");
-        return false;
-      }
-      if (phoneNumber.length === 10 && phoneNumber[0] !== '0') {
-        alert("Invalid phone number: 10-digit numbers must start with '0'");
-        return false;
-      }
-      return true;
+        if (typeof phoneNumber !== 'string') {
+            alert("Phone number must be a string");
+            return false;
+        }
+        if (phoneNumber.length === 13 && phoneNumber[0] !== '+') {
+            alert("Invalid phone number: 13-digit numbers must start with '+'");
+            return false;
+        }
+        if (phoneNumber.length === 10 && phoneNumber[0] !== '0') {
+            alert("Invalid phone number: 10-digit numbers must start with '0'");
+            return false;
+        }
+        return true;
     };
 
     const register = async (e) => {
@@ -58,26 +60,28 @@ const Register = () => {
         if (user.password !== user.passwordCheck) {
             return alert("Password doesn't match");
         }
-        if (!user.handle || user.handle.length < 5 || user.handle.length > 35){
+        if (!user.handle || user.handle.length < 5 || user.handle.length > 35) {
             return alert("Invalid handle (between 5 and 35 symbols)");
         }
-        if (!user.photo) {
-          return alert("Please upload a photo"); // Check if a photo is provided
-        }
-        // if(!user.phoneNumber || typeof user.phoneNumber !== 'string'){ 
-        //       return alert("Invalid phone number");
-        // }
         if (!validatePhoneNumber(user.phoneNumber)) {
-          return; 
+            return;
         }
-     
+        if (typeof user.firstName !== 'string') {
+            alert("Invalid First Name");
+            return false;
+        }
+        if (typeof user.lastName !== 'string') {
+            alert("Invalid Last Name");
+            return false;
+        }
+
         try {
             const userCredential = await registerUser(user.email, user.password);
             const uid = userCredential.user.uid;
             const photoURL = await uploadPhoto(uid, user.photo);
 
-            await createUserHandle(user.handle, uid, user.email, user.phoneNumber, photoURL);
-            
+            await createUserHandle(user.handle, uid, user.email, user.phoneNumber, photoURL, user.firstName, user.lastName);
+
             alert('User registered successfully!');
             setModalVisible(false);
             navigate('/logged');
@@ -102,6 +106,16 @@ const Register = () => {
                         <Form.Group controlId="handle">
                             <Form.Label>Handle</Form.Label>
                             <Form.Control type="text" placeholder="Enter handle" value={user.handle} onChange={updateUser('handle')} />
+                        </Form.Group>
+
+                        <Form.Group controlId="firstName">
+                            <Form.Label>First Name</Form.Label>
+                            <Form.Control type="text" placeholder="Enter First Name" value={user.firstName} onChange={updateUser('firstName')} />
+                        </Form.Group>
+
+                        <Form.Group controlId="lastName">
+                            <Form.Label>Last Name</Form.Label>
+                            <Form.Control type="text" placeholder="Enter Last Name" value={user.lastName} onChange={updateUser('lastName')} />
                         </Form.Group>
 
                         <Form.Group controlId="email">

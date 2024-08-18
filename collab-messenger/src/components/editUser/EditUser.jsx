@@ -19,7 +19,6 @@ export default function EditUser() {
       setUserDetails({
         firstName: userData.firstName,
         lastName: userData.lastName,
-        email: userData.email,
       });
     }
   }, [user, userData]);
@@ -39,29 +38,25 @@ export default function EditUser() {
     if (!userDetails.lastName || userDetails.lastName.length < 4 || userDetails.lastName.length > 32) {
       return alert("Invalid last name");
     }
-    if (!userDetails.email || !/\S+@\S+\.\S+/.test(userDetails.email)) {
-      return alert("Invalid email");
-    }
 
     try {
       await updateUserData(user.uid, {
         firstName: userDetails.firstName,
         lastName: userDetails.lastName,
-        email: userDetails.email,
       });
 
       const updatedUserData = await getUserData(user.uid);
       setAppState({ user, userData: updatedUserData });
 
       alert("User details updated successfully!");
-      navigate('/');
+      navigate('/userdetails');
     } catch (error) {
       alert(`Failed to update user: ${error.message}`);
     }
   };
 
   const handleCancel = () => {
-    navigate('/');
+    navigate('/userdetails');
   };
 
   return (
@@ -80,11 +75,6 @@ export default function EditUser() {
           value={userDetails.lastName} onChange={updateUser('lastName')} />
       </label><br />
       <br />
-      <label htmlFor="email" className="email-label">Email:
-        <input type="text" name="email" id="email"
-          placeholder="Enter email here..."
-          value={userDetails.email} onChange={updateUser('email')} />
-      </label><br />
       <br />
       <button onClick={handleSave}>Save</button>
       <button onClick={handleCancel}>Cancel</button>
