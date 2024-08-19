@@ -2,14 +2,14 @@ import React, { useEffect, useState, useContext } from 'react';
 import { getAllChats, createChat } from '../../services/chat.services.js';
 import { Link, useNavigate } from 'react-router-dom';
 import { ListGroup, Container, Spinner, Alert, Button } from 'react-bootstrap';
-import { AppContext } from '../../state/app.context'; // Assuming you have a user context
+import { AppContext } from '../../state/app.context'; 
 
 export default function AllChats() {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useContext(AppContext); // Access the user from context
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -33,9 +33,8 @@ export default function AllChats() {
     }
 
     try {
-      // Create a new chat with the current user's info
+      // Create a new chat with the current user's info This needs work. Should implement the user handle!!
       const newChatId = await createChat(user.handle || user.email || user.displayName || 'Anonymous');
-      // Navigate to the new chat page
       navigate(`/chat/${newChatId}`);
     } catch (error) {
       console.error('Failed to create a new chat:', error);

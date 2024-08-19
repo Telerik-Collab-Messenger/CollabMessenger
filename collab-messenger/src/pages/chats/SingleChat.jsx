@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Form, Button, Container, ListGroup } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-//import { AppContext } from '../state/app.context';
 import { createChatMessage, getChatByID } from '../../services/chat.services';
 import { AppContext } from '../../state/app.context';
 
 const SingleChat = () => {
-  const { id } = useParams(); // Get chat ID from URL
+  const { id } = useParams(); 
   const { userData } = useContext(AppContext);
   const [chat, setChat] = useState(null);
   const [messageContent, setMessageContent] = useState('');
@@ -21,11 +20,11 @@ const SingleChat = () => {
   }, [id]);
 
   const handleSendMessage = async () => {
-    if (!messageContent.trim()) return; // Prevent sending empty messages
+    if (!messageContent.trim()) return; 
     try {
       await createChatMessage(id, userData.handle, messageContent);
-      setMessageContent(''); // Clear input field after sending
-      getChatByID(id).then(setChat); // Refresh chat data
+      setMessageContent(''); 
+      getChatByID(id).then(setChat); 
     } catch (error) {
       console.error("Failed to send message:", error);
     }

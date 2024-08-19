@@ -52,10 +52,8 @@ function App() {
             <Route path='/logged' element={<Logged />} />
             <Route path='/userdetails/edituser' element={<EditUser />} />
             <Route path='/userdetails' element={<Authenticated><UserDetails /></Authenticated>} />
-
             <Route path="/allchats" element={<AllChats />} />
             <Route path="/chat/:id" element={<SingleChat />} />
-            <Route path="/chat/new" element={<SingleChat />} />
           </Routes>
         </div>
         </AppContext.Provider>
