@@ -1,5 +1,6 @@
 import { Button, Container, Navbar } from 'react-bootstrap';
 import './SideNav.css';
+import { Link } from 'react-router-dom';
 
 export default function SideNav() {
     return (
@@ -9,7 +10,7 @@ export default function SideNav() {
                     <Button className='button d-flex justify-content-center align-items-center' variant='success' style={{ borderBottom: '1px solid gray', marginTop: 20 }}>
                         Channels
                     </Button>
-                    <Button className='button d-flex justify-content-center align-items-center' variant='success' style={{ borderBottom: '1px solid gray', marginTop: 20 }}>
+                    <Button as={Link} to="/allchats" className='button d-flex justify-content-center align-items-center' variant='success' style={{ borderBottom: '1px solid gray', marginTop: 20 }}>
                         Chats
                     </Button>
                     <Button className='button d-flex justify-content-center align-items-center' variant='success' style={{ borderBottom: '1px solid gray', marginTop: 20 }}>
