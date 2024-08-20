@@ -1,9 +1,6 @@
 #navbar-container {
-    position:absolute;
-    top: 71px;
-    left: -10px;
-    width: 120px;
-    height: 881px;
+    width: 200px;
+    margin-left: -10px;
 }
 
 .button {

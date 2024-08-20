@@ -46,6 +46,7 @@ function App() {
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <div id='main'>
           <Header />
+          <div id='inner-container'>
           {user && <SideNav />}
             <Routes>
             <Route path='/' element={<Home />} />
@@ -55,6 +56,7 @@ function App() {
             <Route path="/allchats" element={<AllChats />} />
             <Route path="/chat/:id" element={<SingleChat />} />
           </Routes>
+          </div>
         </div>
         </AppContext.Provider>
     </BrowserRouter>
