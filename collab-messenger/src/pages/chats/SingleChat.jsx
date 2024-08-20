@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { createChatMessage, getChatByID } from '../../services/chat.services';
 import { AppContext } from '../../state/app.context';
 
-const SingleChat = () => {
+export default function SingleChat () {
   const { id } = useParams(); 
   const { userData } = useContext(AppContext);
   const [chat, setChat] = useState(null);
@@ -64,4 +64,4 @@ const SingleChat = () => {
   );
 };
 
-export default SingleChat;
+
