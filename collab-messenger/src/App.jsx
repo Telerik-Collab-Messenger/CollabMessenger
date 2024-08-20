@@ -8,7 +8,7 @@ import Header from './components/header/Header';
 import Home from './pages/home/Home'
 import  Logged from './pages/logged/Logged'
 import './App.css'
-//import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import UserDetails from './components/userDetails/userDetails';
 import Authenticated from './hoc/Authenticated';
 import EditUser from './components/editUser/EditUser';
