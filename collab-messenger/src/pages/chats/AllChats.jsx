@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { getAllChats, createChat } from '../../services/chat.services.js';
 import { Link, useNavigate } from 'react-router-dom';
 import { ListGroup, Container, Spinner, Alert, Button } from 'react-bootstrap';
@@ -17,7 +17,7 @@ export default function AllChats() {
         const allChats = await getAllChats();
         setChats(allChats);
       } catch (err) {
-        setError('Failed to load chats.');
+        setError('Failed to load chats.', err);
       } finally {
         setLoading(false);
       }

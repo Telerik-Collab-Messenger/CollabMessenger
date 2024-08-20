@@ -8,6 +8,19 @@ export const getUserByHandle = async (handle) => {
     return snapshot.val();
 };
 
+export const getAllUsers = async (search = '') => {
+  const snapshot = await get(ref(db, 'users'));
+  if (!snapshot.exists()) return [];
+
+  const users = Object.values(snapshot.val());
+
+  if (search) {
+    return users.filter(u => u.handle.toLowerCase().includes(search.toLowerCase()));
+  }
+
+  return users;
+};
+
 export const createUserHandle = async (handle, uid, email, phoneNumber = '', photoURL = '', firstName = '', lastName = '') => {
     const user = { handle, uid, firstName, lastName, email, phoneNumber, photoURL, createdOn: new Date().toString() };
     await set(ref(db, `users/${handle}`), user);

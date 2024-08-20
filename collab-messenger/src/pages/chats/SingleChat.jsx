@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Form, Button, Container, ListGroup } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { createChatMessage, getChatByID } from '../../services/chat.services';
+import { addChatParticipant, createChatMessage, getChatByID } from '../../services/chat.services';
 import { AppContext } from '../../state/app.context';
+import UserSearch from '../../components/userSearch/UserSearch';
 
 export default function SingleChat () {
   const { id } = useParams(); 
@@ -30,10 +31,23 @@ export default function SingleChat () {
     }
   };
 
+  const handleAddParticipant = async (user) => {
+    try {
+      const updatedParticipants = await addChatParticipant(id, user.handle);
+      setChat((prevChat) => ({
+        ...prevChat,
+        participants: updatedParticipants,
+      }));
+    } catch (error) {
+      console.error("Failed to add participant:", error);
+    }
+  };
+
   return (
     <Container>
       {chat ? (
         <>
+        <UserSearch onAddParticipant={handleAddParticipant} />
           <h2>Chat with {chat.author}</h2>
           <ListGroup>
             {chat.messages.map((msg) => (

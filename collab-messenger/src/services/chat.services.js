@@ -12,7 +12,7 @@ export const getAllChats = async () => {
     }));
   };
 export const createChat = async (author) => {
-    const chat = {author, createdOn: new Date().toString()};
+    const chat = {author, participants:[author], createdOn: new Date().toString()};
     const result = await push(ref(db, 'Chats'), chat);
     const id = result.key;
     await update(ref(db), {
@@ -43,6 +43,30 @@ export const getChatByID = async (id) => {
     messages: [...messagesArray], //not sure if it is passed correctly [...messagesArray] ?
   };
 }
+
+export const addChatParticipant = async (chatId, userHandle) => {
+  try {
+    const currentChat = await getChatByID(chatId);
+
+    // Check if the user is already a participant
+    if (!currentChat.participants.includes(userHandle)) {
+      currentChat.participants.push(userHandle);
+
+      // Update the participants array in the database
+      await update(ref(db, `Chats/${chatId}`), {
+        participants: currentChat.participants,
+      });
+
+      return currentChat.participants;
+    } else {
+      console.log('User is already a participant.');
+      return currentChat.participants;
+    }
+  } catch (error) {
+    console.error("Failed to add participant:", error);
+    throw error;
+  }
+};
 
 export const createChatMessage = async (chatId, author, content, date = new Date().toString()) => {
     //author, content, date = new Date().toString()
