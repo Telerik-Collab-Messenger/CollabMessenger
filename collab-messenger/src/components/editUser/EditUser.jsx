@@ -59,7 +59,8 @@ export default function EditUser() {
             });
 
             const updatedUserData = await getUserData(user.uid);
-            setAppState({ user, userData: updatedUserData });
+            console.log(updatedUserData)
+            setAppState({ user, userData: Object.values(updatedUserData)[0] });
 
             alert("User details updated successfully!");
             navigate('/userdetails');

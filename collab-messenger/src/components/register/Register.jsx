@@ -104,8 +104,8 @@ const Register = () => {
                 <Modal.Body>
                     <Form onSubmit={register}>
                         <Form.Group controlId="handle">
-                            <Form.Label>Handle</Form.Label>
-                            <Form.Control type="text" placeholder="Enter handle" value={user.handle} onChange={updateUser('handle')} />
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control type="text" placeholder="Enter username" value={user.handle} onChange={updateUser('handle')} />
                         </Form.Group>
 
                         <Form.Group controlId="firstName">
