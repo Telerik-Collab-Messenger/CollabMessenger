@@ -8,7 +8,6 @@ import Header from './components/header/Header';
 import Home from './pages/home/Home'
 import  Logged from './pages/logged/Logged'
 import './App.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
 import UserDetails from './components/userDetails/userDetails';
 import Authenticated from './hoc/Authenticated';
 import EditUser from './components/editUser/EditUser';
@@ -46,7 +45,7 @@ function App() {
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <div id='main'>
           <Header />
-          <div id='inner-container'>
+          <div className='flex flex-row w-full h-screen'>
           {user && <SideNav />}
             <Routes>
             <Route path='/' element={<Home />} />

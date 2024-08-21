@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { loginUser } from '../../services/authenticate-service';
 import { useNavigate } from 'react-router-dom';
-import { Modal, Button, Form } from 'react-bootstrap';
 import './Login.css';
 import { AppContext } from '../../state/app.context';
 import { useContext } from 'react';
@@ -43,44 +42,71 @@ const Login = () => {
     };
 
     return (
+      <>
+      <button
+        id="login"
+        className="bg-green-500 text-white px-4 py-2 rounded"
+        onClick={() => setModalVisible(true)}
+      >
+        Login
+      </button>
+
+      {isModalVisible && (
         <>
-            <Button id="login" variant="success" onClick={() => setModalVisible(true)}>
-                Login
-            </Button>
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setModalVisible(false)}
+          />
+          <div
+            className="fixed inset-0 flex items-center justify-center z-50"
+          >
+            <div className="bg-white p-5 shadow-lg rounded-lg w-80">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Login</h2>
+                <button
+                  className="text-2xl bg-transparent border-none"
+                  onClick={() => setModalVisible(false)}
+                >
+                  &times;
+                </button>
+              </div>
+              <form onSubmit={handleLogin}>
+                <div className="form-group mb-4">
+                  <label htmlFor="formEmail" className="block mb-2">Email address</label>
+                  <input
+                    type="email"
+                    id="formEmail"
+                    placeholder="Enter email"
+                    value={user.email}
+                    onChange={updateUser('email')}
+                    className="w-full p-2 mb-2 border border-gray-300 rounded"
+                  />
+                </div>
 
-            <Modal show={isModalVisible} onHide={() => setModalVisible(false)} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Login</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleLogin}>
-                        <Form.Group controlId="formEmail">
-                            <Form.Label>Email address</Form.Label>
-                            <Form.Control
-                                type="email"
-                                placeholder="Enter email"
-                                value={user.email}
-                                onChange={updateUser('email')}
-                            />
-                        </Form.Group>
+                <div className="form-group mb-4">
+                  <label htmlFor="formPassword" className="block mb-2">Password</label>
+                  <input
+                    type="password"
+                    id="formPassword"
+                    placeholder="Password"
+                    value={user.password}
+                    onChange={updateUser('password')}
+                    className="w-full p-2 mb-2 border border-gray-300 rounded"
+                  />
+                </div>
 
-                        <Form.Group controlId="formPassword">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control
-                                type="password"
-                                placeholder="Password"
-                                value={user.password}
-                                onChange={updateUser('password')}
-                            />
-                        </Form.Group>
-
-                        <Button variant="primary" type="submit">
-                            Login
-                        </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Login
+                </button>
+              </form>
+            </div>
+          </div>
         </>
+      )}
+    </>
     );
 };
 
@@ -90,72 +116,41 @@ export default Login;
 
 
 
-// import { useState } from 'react';
-// import { loginUser } from '../../services/authenticate-service';
-// import { useNavigate } from 'react-router-dom';
-// import { Modal, Button, Form } from 'react-bootstrap';
-// import './Login.css';
+{/* <>
+<Button id="login" variant="success" onClick={() => setModalVisible(true)}>
+    Login
+</Button>
 
-// const Login = () => {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [isModalVisible, setModalVisible] = useState(false);
-//   const navigate = useNavigate();
+<Modal show={isModalVisible} onHide={() => setModalVisible(false)} centered>
+    <Modal.Header closeButton>
+        <Modal.Title>Login</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+        <Form onSubmit={handleLogin}>
+            <Form.Group controlId="formEmail">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                    type="email"
+                    placeholder="Enter email"
+                    value={user.email}
+                    onChange={updateUser('email')}
+                />
+            </Form.Group>
 
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
+            <Form.Group controlId="formPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                    type="password"
+                    placeholder="Password"
+                    value={user.password}
+                    onChange={updateUser('password')}
+                />
+            </Form.Group>
 
-//     try {
-//       await loginUser(email, password);
-//       alert('User logged in successfully!');
-//       setModalVisible(false);
-//       navigate('/logged');
-//     } catch (error) {
-//       console.error('Error logging in:', error);
-//       alert(error.message);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <Button id="login" variant="success" onClick={() => setModalVisible(true)}>
-//         Login
-//       </Button>
-
-//       <Modal show={isModalVisible} onHide={() => setModalVisible(false)} centered>
-//         <Modal.Header closeButton>
-//           <Modal.Title>Login</Modal.Title>
-//         </Modal.Header>
-//         <Modal.Body>
-//           <Form onSubmit={handleLogin}>
-//             <Form.Group controlId="formEmail">
-//               <Form.Label>Email address</Form.Label>
-//               <Form.Control
-//                 type="email"
-//                 placeholder="Enter email"
-//                 value={email}
-//                 onChange={(e) => setEmail(e.target.value)}
-//               />
-//             </Form.Group>
-
-//             <Form.Group controlId="formPassword">
-//               <Form.Label>Password</Form.Label>
-//               <Form.Control
-//                 type="password"
-//                 placeholder="Password"
-//                 value={password}
-//                 onChange={(e) => setPassword(e.target.value)}
-//               />
-//             </Form.Group>
-
-//             <Button variant="primary" type="submit">
-//               Login
-//             </Button>
-//           </Form>
-//         </Modal.Body>
-//       </Modal>
-//     </>
-//   );
-// };
-
-// export default Login;
+            <Button variant="primary" type="submit">
+                Login
+            </Button>
+        </Form>
+    </Modal.Body>
+</Modal>
+</> */}

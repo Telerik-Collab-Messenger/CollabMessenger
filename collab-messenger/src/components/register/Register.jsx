@@ -92,65 +92,203 @@ const Register = () => {
     };
 
     return (
+      <>
+      <button
+        id="register"
+        className="bg-green-500 text-white px-4 py-2 rounded"
+        onClick={() => setModalVisible(true)}
+      >
+        Register
+      </button>
+
+      {isModalVisible && (
         <>
-            <Button id="register" variant="success" onClick={() => setModalVisible(true)}>
-                Register
-            </Button>
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setModalVisible(false)}
+          />
+          <div
+            className="fixed inset-0 flex items-center justify-center z-50"
+          >
+            <div className="bg-white p-5 shadow-lg rounded-lg w-80">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Register</h2>
+                <button
+                  className="text-2xl bg-transparent border-none"
+                  onClick={() => setModalVisible(false)}
+                >
+                  &times;
+                </button>
+              </div>
+              <form onSubmit={register}>
+                <div className="form-group mb-4">
+                  <label htmlFor="handle" className="block mb-2">Username</label>
+                  <input
+                    type="text"
+                    id="handle"
+                    placeholder="Enter username"
+                    value={user.handle}
+                    onChange={updateUser('handle')}
+                    className="w-full p-2 mb-2 border border-gray-300 rounded"
+                  />
+                </div>
 
-            <Modal show={isModalVisible} onHide={() => setModalVisible(false)} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Register</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={register}>
-                        <Form.Group controlId="handle">
-                            <Form.Label>Username</Form.Label>
-                            <Form.Control type="text" placeholder="Enter username" value={user.handle} onChange={updateUser('handle')} />
-                        </Form.Group>
+                <div className="form-group mb-4">
+                  <label htmlFor="firstName" className="block mb-2">First Name</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    placeholder="Enter First Name"
+                    value={user.firstName}
+                    onChange={updateUser('firstName')}
+                    className="w-full p-2 mb-2 border border-gray-300 rounded"
+                  />
+                </div>
 
-                        <Form.Group controlId="firstName">
-                            <Form.Label>First Name</Form.Label>
-                            <Form.Control type="text" placeholder="Enter First Name" value={user.firstName} onChange={updateUser('firstName')} />
-                        </Form.Group>
+                <div className="form-group mb-4">
+                  <label htmlFor="lastName" className="block mb-2">Last Name</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    placeholder="Enter Last Name"
+                    value={user.lastName}
+                    onChange={updateUser('lastName')}
+                    className="w-full p-2 mb-2 border border-gray-300 rounded"
+                  />
+                </div>
 
-                        <Form.Group controlId="lastName">
-                            <Form.Label>Last Name</Form.Label>
-                            <Form.Control type="text" placeholder="Enter Last Name" value={user.lastName} onChange={updateUser('lastName')} />
-                        </Form.Group>
+                <div className="form-group mb-4">
+                  <label htmlFor="email" className="block mb-2">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter email"
+                    value={user.email}
+                    onChange={updateUser('email')}
+                    className="w-full p-2 mb-2 border border-gray-300 rounded"
+                  />
+                </div>
 
-                        <Form.Group controlId="email">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" placeholder="Enter email" value={user.email} onChange={updateUser('email')} />
-                        </Form.Group>
+                <div className="form-group mb-4">
+                  <label htmlFor="phoneNumber" className="block mb-2">Phone Number</label>
+                  <input
+                    type="text"
+                    id="phoneNumber"
+                    placeholder="Enter phone number"
+                    value={user.phoneNumber}
+                    onChange={updateUser('phoneNumber')}
+                    className="w-full p-2 mb-2 border border-gray-300 rounded"
+                  />
+                </div>
 
-                        <Form.Group controlId="phoneNumber">
-                            <Form.Label>Phone Number</Form.Label>
-                            <Form.Control type="text" placeholder="Enter phone number" value={user.phoneNumber} onChange={updateUser('phoneNumber')} />
-                        </Form.Group>
+                <div className="form-group mb-4">
+                  <label htmlFor="password" className="block mb-2">Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter password"
+                    value={user.password}
+                    onChange={updateUser('password')}
+                    className="w-full p-2 mb-2 border border-gray-300 rounded"
+                  />
+                </div>
 
-                        <Form.Group controlId="password">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Enter password" value={user.password} onChange={updateUser('password')} />
-                        </Form.Group>
+                <div className="form-group mb-4">
+                  <label htmlFor="passwordCheck" className="block mb-2">Confirm Password</label>
+                  <input
+                    type="password"
+                    id="passwordCheck"
+                    placeholder="Confirm password"
+                    value={user.passwordCheck}
+                    onChange={updateUser('passwordCheck')}
+                    className="w-full p-2 mb-2 border border-gray-300 rounded"
+                  />
+                </div>
 
-                        <Form.Group controlId="passwordCheck">
-                            <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control type="password" placeholder="Confirm password" value={user.passwordCheck} onChange={updateUser('passwordCheck')} />
-                        </Form.Group>
+                <div className="form-group mb-4">
+                  <label htmlFor="photo" className="block mb-2">Upload Photo</label>
+                  <input
+                    type="file"
+                    id="photo"
+                    onChange={updateUser('photo')}
+                    accept="image/*"
+                    className="w-full p-2 mb-2 border border-gray-300 rounded"
+                  />
+                </div>
 
-                        <Form.Group controlId="photo">
-                            <Form.Label>Upload Photo</Form.Label>
-                            <Form.Control type="file" onChange={updateUser('photo')} accept="image/*" />
-                        </Form.Group>
-
-                        <Button variant="primary" type="submit">
-                            Register
-                        </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Register
+                </button>
+              </form>
+            </div>
+          </div>
         </>
+      )}
+    </>
     );
 };
 
 export default Register;
+
+
+{/* <>
+<Button id="register" variant="success" onClick={() => setModalVisible(true)}>
+    Register
+</Button>
+
+<Modal show={isModalVisible} onHide={() => setModalVisible(false)} centered>
+    <Modal.Header closeButton>
+        <Modal.Title>Register</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+        <Form onSubmit={register}>
+            <Form.Group controlId="handle">
+                <Form.Label>Username</Form.Label>
+                <Form.Control type="text" placeholder="Enter username" value={user.handle} onChange={updateUser('handle')} />
+            </Form.Group>
+
+            <Form.Group controlId="firstName">
+                <Form.Label>First Name</Form.Label>
+                <Form.Control type="text" placeholder="Enter First Name" value={user.firstName} onChange={updateUser('firstName')} />
+            </Form.Group>
+
+            <Form.Group controlId="lastName">
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control type="text" placeholder="Enter Last Name" value={user.lastName} onChange={updateUser('lastName')} />
+            </Form.Group>
+
+            <Form.Group controlId="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control type="email" placeholder="Enter email" value={user.email} onChange={updateUser('email')} />
+            </Form.Group>
+
+            <Form.Group controlId="phoneNumber">
+                <Form.Label>Phone Number</Form.Label>
+                <Form.Control type="text" placeholder="Enter phone number" value={user.phoneNumber} onChange={updateUser('phoneNumber')} />
+            </Form.Group>
+
+            <Form.Group controlId="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" placeholder="Enter password" value={user.password} onChange={updateUser('password')} />
+            </Form.Group>
+
+            <Form.Group controlId="passwordCheck">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control type="password" placeholder="Confirm password" value={user.passwordCheck} onChange={updateUser('passwordCheck')} />
+            </Form.Group>
+
+            <Form.Group controlId="photo">
+                <Form.Label>Upload Photo</Form.Label>
+                <Form.Control type="file" onChange={updateUser('photo')} accept="image/*" />
+            </Form.Group>
+
+            <Button variant="primary" type="submit">
+                Register
+            </Button>
+        </Form>
+    </Modal.Body>
+</Modal>
+</> */}
