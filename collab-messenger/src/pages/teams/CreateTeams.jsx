@@ -28,7 +28,7 @@ const CreateTeam = () => {
         try {
             const teamId = await createTeam(teamName, user.uid);
             setLoading(false);
-            setSuccess(`Team created successfully with ID: ${teamId}`);
+            setSuccess('Team created successfully');
             setTeamName(''); 
         } catch {
             setLoading(false);
