@@ -12,7 +12,6 @@ export default function SingleChat () {
   const [messageContent, setMessageContent] = useState('');
 
   useEffect(() => {
-    // Fetch chat data by ID
     getChatByID(id).then((chatData) => {
       setChat(chatData);
     }).catch((error) => {
