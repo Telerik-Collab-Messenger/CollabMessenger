@@ -3,7 +3,7 @@ import { registerUser } from '../../services/authenticate-service';
 import { uploadPhoto } from '../../services/user.services';
 import { createUserHandle } from '../../services/user.services';
 import { useNavigate } from 'react-router-dom';
-import './Register.css';
+//import './Register.css';
 
 
 const Register = () => {

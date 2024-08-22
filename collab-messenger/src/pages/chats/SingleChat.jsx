@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
-import { Form, Button, Container, ListGroup } from 'react-bootstrap';
+import React, { useState, useEffect, useContext } from 'react';
+//import { Form, Button, Container, ListGroup } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { addChatParticipant, createChatMessage, getChatByID } from '../../services/chat.services';
 import { AppContext } from '../../state/app.context';
@@ -43,38 +43,37 @@ export default function SingleChat () {
   };
 
   return (
-    <Container>
+    <div className="container mx-auto p-4">
       {chat ? (
         <>
-        <UserSearch onAddParticipant={handleAddParticipant} />
-          <h2>Chat with {chat.author}</h2>
-          <ListGroup>
+          <UserSearch onAddParticipant={handleAddParticipant} />
+          <h2 className="text-2xl font-bold mb-4">Chat with {chat.author}</h2>
+          <ul className="list-none p-0">
             {chat.messages.map((msg) => (
-              <ListGroup.Item key={msg.id}>
+              <li key={msg.id} className="mb-2 p-4 bg-white rounded-lg shadow-md">
                 <strong>{msg.author}:</strong> {msg.content} <br />
-                <small>{msg.createdOn}</small>
-              </ListGroup.Item>
+                <small className="text-gray-500">{msg.createdOn}</small>
+              </li>
             ))}
-          </ListGroup>
-          <Form className="mt-3" onSubmit={(e) => e.preventDefault()}>
-            <Form.Group controlId="messageInput">
-              <Form.Control
+          </ul>
+          <form className="mt-4" onSubmit={(e) => e.preventDefault()}>
+            <div className="form-control">
+              <input
                 type="text"
                 placeholder="Type a message..."
                 value={messageContent}
                 onChange={(e) => setMessageContent(e.target.value)}
+                className="input input-bordered w-full"
               />
-            </Form.Group>
-            <Button variant="primary" className="mt-2" onClick={handleSendMessage}>
+            </div>
+            <button className="btn btn-primary mt-2" onClick={handleSendMessage}>
               Send
-            </Button>
-          </Form>
+            </button>
+          </form>
         </>
       ) : (
         <p>Loading chat...</p>
       )}
-    </Container>
+    </div>
   );
-};
-
-
+}
