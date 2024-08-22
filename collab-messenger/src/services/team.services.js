@@ -36,3 +36,28 @@ export const getTeamByID = async (id) => {
 }
 
 
+export const addTeamMember = async (teamId, userHandle) => {
+  try {
+    const currentTeam = await getTeamByID(teamId);
+
+    if (!currentTeam.members.some(member => member.handle === userHandle)) {
+      const newMember = {
+        handle: userHandle,
+        joinedOn: new Date().toString(),
+      };
+      currentTeam.members.push(newMember);
+      await update(ref(db, `Teams/${teamId}`), {
+        members: currentTeam.members,
+      });
+
+      return currentTeam.members;
+    } else {
+      console.log('User is already a member.');
+      return currentTeam.members;
+    }
+  } catch (error) {
+    console.error("Failed to add member:", error);
+    throw error;
+  }
+};
+
