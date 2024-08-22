@@ -8,7 +8,7 @@ export default function AllChats() {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useContext(AppContext); // Access the user from context
+  const { user } = useContext(AppContext);
   const navigate = useNavigate(); 
 
   useEffect(() => {
@@ -33,7 +33,6 @@ export default function AllChats() {
     }
 
     try {
-      // Create a new chat with the current user's info This needs work. Should implement the user handle!!
       const newChatId = await createChat(user.handle || user.email || user.displayName || 'Anonymous');
       navigate(`/chat/${newChatId}`);
     } catch (error) {

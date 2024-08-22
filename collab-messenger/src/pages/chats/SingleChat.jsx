@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Form, Button, Container, ListGroup } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { addChatParticipant, createChatMessage, getChatByID } from '../../services/chat.services';
@@ -12,7 +12,6 @@ export default function SingleChat () {
   const [messageContent, setMessageContent] = useState('');
 
   useEffect(() => {
-    // Fetch chat data by ID
     getChatByID(id).then((chatData) => {
       setChat(chatData);
     }).catch((error) => {
