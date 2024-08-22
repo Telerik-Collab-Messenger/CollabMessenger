@@ -1,4 +1,4 @@
-import { ref, push, get, update, remove, onValue } from 'firebase/database';
+import { ref, push, get, update } from 'firebase/database';
 import { db } from '../config/firebase-config'
 
 
@@ -61,3 +61,24 @@ export const addTeamMember = async (teamId, userHandle) => {
   }
 };
 
+export const removeTeamMember = async (teamId, userHandle) => {
+  try {
+    const currentTeam = await getTeamByID(teamId);
+    const memberIndex = currentTeam.members.findIndex(member => member.handle === userHandle);
+
+    if (memberIndex !== -1) {
+      currentTeam.members.splice(memberIndex, 1);
+      await update(ref(db, `Teams/${teamId}`), {
+        members: currentTeam.members,
+      });
+
+      return currentTeam.members;
+    } else {
+      console.log('User is not a member of the team.');
+      return currentTeam.members;
+    }
+  } catch (error) {
+    console.error("Failed to remove member:", error);
+    throw error;
+  }
+};
