@@ -3,7 +3,7 @@ import { db } from '../config/firebase-config'
 
 
 
-export const createTeam = async (author) => {
+export const createTeam = async (teamName, author) => {
     const team = {teamName, author, members:[author], createdOn: new Date().toString()};
     const result = await push(ref(db, 'team'), team);
     const id = result.key;
