@@ -34,7 +34,15 @@ UserSearch.propTypes = {
     <div>
     <h1>Search for user to chat:</h1>
     <label htmlFor="search"></label>
-    <input value={search} onChange={e => setSearch(e.target.value)} type="text" name="search" id="search" style={{ marginBottom: '20px' }} /><br/><br/>
+    <input 
+    value={search} 
+    onChange={e => setSearch(e.target.value)} 
+    type="text" 
+    name="search" 
+    id="search" 
+    placeholder="Search..." 
+    className="input input-bordered w-64 max-w-full mb-4 px-4 py-2"
+    />
     {users.length > 0 ? (
         users.map(u => (
             <div key={u.handle} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>

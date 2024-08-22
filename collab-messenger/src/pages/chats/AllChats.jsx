@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { getAllChats, createChat } from '../../services/chat.services.js';
 import { Link, useNavigate } from 'react-router-dom';
-import { ListGroup, Container, Spinner, Alert, Button } from 'react-bootstrap';
+//import { ListGroup, Container, Spinner, Alert, Button } from 'react-bootstrap';
 import { AppContext } from '../../state/app.context'; 
 
 export default function AllChats() {
@@ -44,40 +44,52 @@ export default function AllChats() {
 
   if (loading) {
     return (
-      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-        <Spinner animation="border" />
-      </Container>
+      <div className="flex justify-center items-center h-screen">
+        <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Container>
-        <Alert variant="danger">{error}</Alert>
-      </Container>
+      <div className="p-4">
+        <div className="alert alert-error shadow-lg">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636l-12.728 12.728M5.636 5.636l12.728 12.728" /></svg>
+            <span>{error}</span>
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Container>
-      <h2>All Chats</h2>
-      <Button onClick={handleNewChatClick} variant="primary" className="mb-3">
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">All Chats</h2>
+      <button onClick={handleNewChatClick} className="btn btn-primary mb-4">
         Start New Chat
-      </Button>
+      </button>
       {chats.length === 0 ? (
-        <Alert variant="info">No chats available.</Alert>
+        <div className="alert alert-info shadow-lg">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h1m0 4h-1m0-4h.01M12 6h.01" /></svg>
+            <span>No chats available.</span>
+          </div>
+        </div>
       ) : (
-        <ListGroup>
+        <ul className="list-group space-y-2">
           {chats.map((chat) => (
-            <ListGroup.Item key={chat.id}>
-              <Link to={`/chat/${chat.id}`}>
-                {chat.author} - {new Date(chat.createdOn).toLocaleString()}
-                <span style={{ float: 'right' }}>Likes: {chat.likeCount}</span>
+            <li key={chat.id} className="list-group-item border rounded-lg shadow hover:bg-gray-100">
+              <Link to={`/chat/${chat.id}`} className="flex justify-between items-center">
+                <span>{chat.author} - {new Date(chat.createdOn).toLocaleString()}</span>
+                <span className="badge badge-primary">Likes: {chat.likeCount}</span>
               </Link>
-            </ListGroup.Item>
+            </li>
           ))}
-        </ListGroup>
+        </ul>
       )}
-    </Container>
+    </div>
   );
 }
