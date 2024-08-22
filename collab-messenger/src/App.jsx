@@ -14,6 +14,7 @@ import EditUser from './components/editUser/EditUser';
 import SideNav from './components/leftNavBar/SideNav';
 import AllChats from './pages/chats/AllChats';
 import SingleChat from './pages/chats/SingleChat';
+import Teams from './pages/teams/CreateTeams';
 
 
 
@@ -53,6 +54,7 @@ function App() {
             <Route path='/userdetails/edituser' element={<EditUser />} />
             <Route path='/userdetails' element={<Authenticated><UserDetails /></Authenticated>} />
             <Route path="/allchats" element={<AllChats />} />
+            <Route path="/teams" element={<Teams />} />
             <Route path="/chat/:id" element={<SingleChat />} />
           </Routes>
           </div>
