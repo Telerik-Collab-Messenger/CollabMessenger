@@ -4,8 +4,19 @@ import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage
 import { storage } from '../config/firebase-config';
 
 export const getUserByHandle = async (handle) => {
-  const snapshot = await get(ref(db, `users/${handle}`));
-  return snapshot.val();
+  const usersRef = ref(db, 'users');
+  const snapshot = await get(usersRef);
+  const users = snapshot.val();
+
+  if (!users) return null;
+
+  for (const userId in users) {
+    if (users[userId].handle === handle) {
+      return { ...users[userId], uid: userId };
+    }
+  }
+
+  return null;
 };
 
 export const getAllUsers = async (search = '') => {
