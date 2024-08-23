@@ -44,11 +44,7 @@ export const getTeamByID = async (id) => {
 export const addTeamMember = async (teamId, userIdentifier) => {
   try {
     const currentTeam = await getTeamByID(teamId);
-
-    // Ensure members array is initialized
     currentTeam.members = currentTeam.members || [];
-
-    // Determine if userIdentifier is an email or handle
     let user;
     if (userIdentifier.includes('@')) {
       user = await getUserByEmail(userIdentifier);
@@ -59,16 +55,14 @@ export const addTeamMember = async (teamId, userIdentifier) => {
     if (!user || !user.uid || !user.handle) {
       throw new Error('User data is incomplete or not found.');
     }
-
-    // Check if the user is already a member
     if (!currentTeam.members.some(member => member.id === user.uid)) {
       const newMember = {
-        id: user.uid, // Use the unique UID instead of handle
+        id: user.uid,
         handle: user.handle,
         joinedOn: new Date().toString(),
       };
 
-      console.log('New member to be added:', newMember); // Debugging
+      console.log('New member to be added:', newMember); 
 
       currentTeam.members.push(newMember);
       await update(ref(db, `teams/${teamId}`), {
