@@ -7,9 +7,12 @@ import { getUserByHandle, getUserByEmail } from './user.services';
 export const createTeam = async (teamName, author) => {
   const team = { 
     teamName, 
-    author, 
-    members: [{ id: author, handle: author }],
-    createdOn: new Date().toString() 
+    author: author.uid,
+    members: [{
+      id: author.uid,        
+      email: author.email
+    }],
+    createdOn: new Date().toString()
   };
   const result = await push(ref(db, 'teams'), team);
   const id = result.key;

@@ -34,16 +34,19 @@ const CreateTeam = () => {
         e.preventDefault();
         setError(null);
         setSuccess(null);
-
+    
         if (!teamName.trim()) {
             setError('Team name is required');
             return;
         }
-
+    
         setLoading(true);
-
+    
         try {
-            await createTeam(teamName, user.uid);
+            await createTeam(teamName, {
+                uid: user.uid,          
+                email: user.email,       
+            });
             const teams = await fetchTeamsOwnedByUser(user.uid);
             setOwnedTeams(teams);
             setLoading(false);
@@ -99,12 +102,11 @@ const CreateTeam = () => {
                     {loading ? 'Creating...' : 'Create Team'}
                 </button>
             </form>
-
-            <h2>Your Teams</h2>
             <ul>
                 {ownedTeams.map(team => {
                     return (
                         <li key={team.id}>
+                            <h2>Your Teams</h2>
                             <h3>{team.teamName}</h3>
                             <p>Members:</p>
                             <ul>
@@ -113,7 +115,7 @@ const CreateTeam = () => {
                                         <li key={member.id}>
                                             {member.id === team.author ? (
                                                 <>
-                                                    {member.handle} <span>(Owner)</span>
+                                                    {member.email} <span>(Owner)</span>
                                                 </>
                                             ) : (
                                                 <>
@@ -129,7 +131,7 @@ const CreateTeam = () => {
                                 type="text"
                                 value={newMember}
                                 onChange={(e) => setNewMember(e.target.value)}
-                                placeholder="Add member handle"
+                                placeholder="Add member (email)"
                             />
                             <button onClick={() => handleAddMember(team.id)}>Add Member</button>
                         </li>
