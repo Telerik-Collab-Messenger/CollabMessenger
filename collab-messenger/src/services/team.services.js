@@ -29,25 +29,24 @@ export const getTeamByID = async (id) => {
     throw new Error('Team not found!');
   }
   const teamData = snapshot.val();
-
-  const membersArray = teamData.members
-    ? Object.entries(teamData.members).map(([firebaseKey, member]) => ({
-      id: firebaseKey,
-      handle: member.handle,
-      joinedOn: member.joinedOn,
-    }))
-    : [];
+  const membersArray = Array.isArray(teamData.members)
+    ? teamData.members
+    : Object.entries(teamData.members || {}).map(([key, member]) => ({
+        id: member.id || key,
+        ...member
+      }));
 
   return {
     ...teamData,
-    members: [...membersArray],
+    members: membersArray,
   };
-}
+};
 
 export const addTeamMember = async (teamId, userIdentifier) => {
   try {
     const currentTeam = await getTeamByID(teamId);
-    currentTeam.members = currentTeam.members || [];
+    currentTeam.members = currentTeam.members || {};
+    
     let user;
     if (userIdentifier.includes('@')) {
       user = await getUserByEmail(userIdentifier);
@@ -58,19 +57,15 @@ export const addTeamMember = async (teamId, userIdentifier) => {
     if (!user || !user.uid || !user.handle) {
       throw new Error('User data is incomplete or not found.');
     }
-    if (!currentTeam.members.some(member => member.id === user.uid)) {
+
+    if (!Object.values(currentTeam.members).some(member => member.id === user.uid)) {
+      const newMemberKey = push(ref(db, `teams/${teamId}/members`)).key;
       const newMember = {
         id: user.uid,
-        handle: user.handle,
+        email: user.email,
         joinedOn: new Date().toString(),
       };
-
-      console.log('New member to be added:', newMember); 
-
-      currentTeam.members.push(newMember);
-      await update(ref(db, `teams/${teamId}`), {
-        members: currentTeam.members,
-      });
+      await update(ref(db, `teams/${teamId}/members/${newMemberKey}`), newMember);
 
       return currentTeam.members;
     } else {

@@ -26,10 +26,6 @@ const CreateTeam = () => {
         fetchTeams();
     }, [user]);
 
-    const handleInputChange = (e) => {
-        setTeamName(e.target.value);
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -94,7 +90,7 @@ const CreateTeam = () => {
                         id="teamName"
                         name="teamName"
                         value={teamName}
-                        onChange={handleInputChange}
+                        onChange={(e) => setTeamName(e.target.value)}
                         required
                     />
                 </div>
@@ -103,40 +99,40 @@ const CreateTeam = () => {
                 </button>
             </form>
             <ul>
-                {ownedTeams.map(team => {
-                    return (
-                        <li key={team.id}>
-                            <h2>Your Teams</h2>
-                            <h3>{team.teamName}</h3>
-                            <p>Members:</p>
-                            <ul>
-                                {team.members.map(member => {
-                                    return (
-                                        <li key={member.id}>
-                                            {member.id === team.author ? (
-                                                <>
-                                                    {member.email} <span>(Owner)</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    {member.handle}
-                                                    <button onClick={() => handleRemoveMember(team.id, member.handle)}>Remove</button>
-                                                </>
-                                            )}
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                            <input
-                                type="text"
-                                value={newMember}
-                                onChange={(e) => setNewMember(e.target.value)}
-                                placeholder="Add member (email)"
-                            />
-                            <button onClick={() => handleAddMember(team.id)}>Add Member</button>
-                        </li>
-                    );
-                })}
+                {ownedTeams.map(team => (
+                    <li key={team.id}>
+                        <h2>Your Teams</h2>
+                        <h3>{team.teamName}</h3>
+                        <p>Members:</p>
+                        <ul>
+                            {Array.isArray(team.members) && team.members.length > 0 ? (
+                                team.members.map(member => (
+                                    <li key={member.id}>
+                                        {member.id === team.author ? (
+                                            <>
+                                                {member.email} <span>(Owner)</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {member.handle}
+                                                <button onClick={() => handleRemoveMember(team.id, member.handle)}>Remove</button>
+                                            </>
+                                        )}
+                                    </li>
+                                ))
+                            ) : (
+                                <li>No members found.</li>
+                            )}
+                        </ul>
+                        <input
+                            type="text"
+                            value={newMember}
+                            onChange={(e) => setNewMember(e.target.value)}
+                            placeholder="Add member (email or handle)"
+                        />
+                        <button onClick={() => handleAddMember(team.id)}>Add Member</button>
+                    </li>
+                ))}
             </ul>
         </div>
     );
