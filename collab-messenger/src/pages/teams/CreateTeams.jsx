@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react';
-import { createTeam } from '../../services/team.services';
+import { useState, useEffect, useContext } from 'react';
+import { fetchTeamsOwnedByUser, createTeam, removeTeamMember, addTeamMember } from '../../services/team.services';
 import { AppContext } from '../../state/app.context';
 
 const CreateTeam = () => {
@@ -8,6 +8,23 @@ const CreateTeam = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    const [ownedTeams, setOwnedTeams] = useState([]);
+    const [newMember, setNewMember] = useState('');
+
+    useEffect(() => {
+        const fetchTeams = async () => {
+            if (user) {
+                try {
+                    const teams = await fetchTeamsOwnedByUser(user.uid);
+                    setOwnedTeams(teams);
+                } catch (error) {
+                    console.error("Failed to fetch teams:", error);
+                }
+            }
+        };
+
+        fetchTeams();
+    }, [user]);
 
     const handleInputChange = (e) => {
         setTeamName(e.target.value);
@@ -27,13 +44,38 @@ const CreateTeam = () => {
 
         try {
             const teamId = await createTeam(teamName, user.uid);
+            const teams = await fetchTeamsOwnedByUser(user.uid);
+            setOwnedTeams(teams);
             setLoading(false);
             setSuccess('Team created successfully');
-            setTeamName(''); 
-        } catch {
+            setTeamName('');
+        } catch (error) {
             setLoading(false);
-            setError('Failed to create team. Please try again.');
-          }
+            setError('Failed to create team. Please try again.', error);
+        }
+    };
+
+    const handleAddMember = async (teamId) => {
+        try {
+            await addTeamMember(teamId, newMember);
+            const teams = await fetchTeamsOwnedByUser(user.uid);
+            setOwnedTeams(teams);
+            setNewMember('');
+        } catch (error) {
+            console.error('Failed to add member:', error);
+            setError('Failed to add member. Please try again.');
+        }
+    };
+
+    const handleRemoveMember = async (teamId, memberHandle) => {
+        try {
+            await removeTeamMember(teamId, memberHandle);
+            const teams = await fetchTeamsOwnedByUser(user.uid);
+            setOwnedTeams(teams);
+        } catch (error) {
+            console.error('Failed to remove member:', error);
+            setError('Failed to remove member. Please try again.');
+        }
     };
 
     return (
@@ -57,6 +99,36 @@ const CreateTeam = () => {
                     {loading ? 'Creating...' : 'Create Team'}
                 </button>
             </form>
+
+            <h2>Your Teams</h2>
+            <ul>
+                {ownedTeams.map(team => {
+                    return (
+                        <li key={team.id}>
+                            <h3>{team.teamName}</h3>
+                            <p>Members:</p>
+                            <ul>
+                                {team.members.map(member => {
+                                    console.log('Rendering member with id:', member.id);
+                                    return (
+                                        <li key={member.id}>
+                                            {member.handle}
+                                            <button onClick={() => handleRemoveMember(team.id, member.handle)}>Remove</button>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                            <input
+                                type="text"
+                                value={newMember}
+                                onChange={(e) => setNewMember(e.target.value)}
+                                placeholder="Add member handle"
+                            />
+                            <button onClick={() => handleAddMember(team.id)}>Add Member</button>
+                        </li>
+                    );
+                })}
+            </ul>
         </div>
     );
 };

@@ -4,18 +4,23 @@ import { db } from '../config/firebase-config'
 
 
 export const createTeam = async (teamName, author) => {
-  const team = { teamName, author, members: [author], createdOn: new Date().toString() };
+  const team = { 
+    teamName, 
+    author, 
+    members: [{ id: author, handle: author }],
+    createdOn: new Date().toString() 
+  };
   const result = await push(ref(db, 'teams'), team);
   const id = result.key;
   await update(ref(db), {
     [`teams/${id}/id`]: id,
   });
   return id;
-}
+};
 
 
 export const getTeamByID = async (id) => {
-  const snapshot = await get(ref(db, `Teams/${id}`));
+  const snapshot = await get(ref(db, `teams/${id}`));
   if (!snapshot.exists()) {
     throw new Error('Team not found!');
   }
