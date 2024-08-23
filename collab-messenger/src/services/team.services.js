@@ -1,4 +1,4 @@
-import { ref, push, get, update } from 'firebase/database';
+import { ref, push, get, update, query, orderByChild, equalTo} from 'firebase/database';
 import { db } from '../config/firebase-config'
 
 
@@ -81,4 +81,19 @@ export const removeTeamMember = async (teamId, userHandle) => {
     console.error("Failed to remove member:", error);
     throw error;
   }
+};
+
+export const fetchTeamsOwnedByUser = async (userId) => {
+  const teamsRef = ref(db, 'teams');
+  const userTeamsQuery = query(teamsRef, orderByChild('author'), equalTo(userId));
+  const snapshot = await get(userTeamsQuery);
+
+  if (!snapshot.exists()) {
+      return [];
+  }
+
+  return Object.entries(snapshot.val()).map(([key, value]) => ({
+      id: key,
+      ...value,
+  }));
 };
