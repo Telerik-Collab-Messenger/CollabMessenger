@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 //import { Form, Button, Container, ListGroup } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { addChatParticipant, createChatMessage, getChatByID } from '../../services/chat.services';

@@ -43,7 +43,7 @@ const CreateTeam = () => {
         setLoading(true);
 
         try {
-            const teamId = await createTeam(teamName, user.uid);
+            await createTeam(teamName, user.uid);
             const teams = await fetchTeamsOwnedByUser(user.uid);
             setOwnedTeams(teams);
             setLoading(false);
@@ -109,11 +109,18 @@ const CreateTeam = () => {
                             <p>Members:</p>
                             <ul>
                                 {team.members.map(member => {
-                                    console.log('Rendering member with id:', member.id);
                                     return (
                                         <li key={member.id}>
-                                            {member.handle}
-                                            <button onClick={() => handleRemoveMember(team.id, member.handle)}>Remove</button>
+                                            {member.id === team.author ? (
+                                                <>
+                                                    {member.handle} <span>(Owner)</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {member.handle}
+                                                    <button onClick={() => handleRemoveMember(team.id, member.handle)}>Remove</button>
+                                                </>
+                                            )}
                                         </li>
                                     );
                                 })}
