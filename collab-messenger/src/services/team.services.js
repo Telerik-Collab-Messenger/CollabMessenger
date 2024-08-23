@@ -51,7 +51,7 @@ export const addTeamMember = async (teamId, userHandle) => {
         joinedOn: new Date().toString(),
       };
       currentTeam.members.push(newMember);
-      await update(ref(db, `Teams/${teamId}`), {
+      await update(ref(db, `teams/${teamId}`), {
         members: currentTeam.members,
       });
 
@@ -73,7 +73,7 @@ export const removeTeamMember = async (teamId, userHandle) => {
 
     if (memberIndex !== -1) {
       currentTeam.members.splice(memberIndex, 1);
-      await update(ref(db, `Teams/${teamId}`), {
+      await update(ref(db, `teams/${teamId}`), {
         members: currentTeam.members,
       });
 
