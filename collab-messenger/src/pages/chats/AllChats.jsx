@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { getAllChats, createChat } from '../../services/chat.services.js';
 import { Link, useNavigate } from 'react-router-dom';
-//import { ListGroup, Container, Spinner, Alert, Button } from 'react-bootstrap';
 import { AppContext } from '../../state/app.context'; 
 
 export default function AllChats() {
