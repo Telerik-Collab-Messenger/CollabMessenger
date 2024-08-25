@@ -4,8 +4,19 @@ import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage
 import { storage } from '../config/firebase-config';
 
 export const getUserByHandle = async (handle) => {
-    const snapshot = await get(ref(db, `users/${handle}`));
-    return snapshot.val();
+  const usersRef = ref(db, 'users');
+  const snapshot = await get(usersRef);
+  const users = snapshot.val();
+
+  if (!users) return null;
+
+  for (const userId in users) {
+    if (users[userId].handle === handle) {
+      return { ...users[userId], uid: userId };
+    }
+  }
+
+  return null;
 };
 
 export const getAllUsers = async (search = '') => {
@@ -22,21 +33,20 @@ export const getAllUsers = async (search = '') => {
 };
 
 export const createUserHandle = async (handle, uid, email, phoneNumber = '', photoURL = '', firstName = '', lastName = '') => {
-    const user = { handle, uid, firstName, lastName, email, phoneNumber, photoURL, createdOn: new Date().toString() };
-    console.log("Creating user with data:", user);
-    await set(ref(db, `users/${handle}`), user);
+  const user = { handle, uid, firstName, lastName, email, phoneNumber, photoURL, createdOn: new Date().toString() };
+  await set(ref(db, `users/${handle}`), user);
 };
 
 export const getUserData = async (uid) => {
-    const snapshot = await get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
-    return snapshot.val();
+  const snapshot = await get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
+  return snapshot.val();
 };
 
 export const uploadPhoto = async (uid, file) => {
-    const photoStorageRef = storageRef(storage, `users/${uid}/profile.jpg`);
-    await uploadBytes(photoStorageRef, file);
-    const photoURL = await getDownloadURL(photoStorageRef);
-    return photoURL;
+  const photoStorageRef = storageRef(storage, `users/${uid}/profile.jpg`);
+  await uploadBytes(photoStorageRef, file);
+  const photoURL = await getDownloadURL(photoStorageRef);
+  return photoURL;
 };
 
 export const updateUserData = async (uid, updatedData) => {
@@ -60,9 +70,6 @@ export const updateUserData = async (uid, updatedData) => {
 
   export const addChatToUser = async (userHandle, chatId) => {
     try {
-        // Create the chat entry you want to push (this could just be the chat ID or a more detailed object)
-        //const chatToPush = { id: chatId };
-
         // Push the chat to the user's chats list
         await push(ref(db, `users/${userHandle}/chats`), chatId);
 
@@ -73,4 +80,19 @@ export const updateUserData = async (uid, updatedData) => {
     }
 };
 
-  
+export const getUserByEmail = async (email) => {
+  const usersRef = ref(db, 'users');
+  const snapshot = await get(usersRef);
+  const users = snapshot.val();
+
+  if (!users) return null;
+
+  for (const userId in users) {
+    if (users[userId].email === email) {
+      return { ...users[userId], uid: userId };
+    }
+  }
+
+  return null;
+};
+

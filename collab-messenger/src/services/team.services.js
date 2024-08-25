@@ -1,14 +1,18 @@
 import { ref, push, get, update, query, orderByChild, equalTo} from 'firebase/database';
 import { db } from '../config/firebase-config'
+import { getUserByHandle, getUserByEmail } from './user.services';
 
 
 
 export const createTeam = async (teamName, author) => {
   const team = { 
     teamName, 
-    author, 
-    members: [{ id: author, handle: author }],
-    createdOn: new Date().toString() 
+    author: author.uid,
+    members: [{
+      id: author.uid,        
+      email: author.email
+    }],
+    createdOn: new Date().toString()
   };
   const result = await push(ref(db, 'teams'), team);
   const id = result.key;
@@ -25,35 +29,43 @@ export const getTeamByID = async (id) => {
     throw new Error('Team not found!');
   }
   const teamData = snapshot.val();
-
-  const membersArray = teamData.members
-    ? Object.entries(teamData.members).map(([firebaseKey, member]) => ({
-      id: firebaseKey,
-      handle: member.handle,
-      joinedOn: member.joinedOn,
-    }))
-    : [];
+  const membersArray = Array.isArray(teamData.members)
+    ? teamData.members
+    : Object.entries(teamData.members || {}).map(([key, member]) => ({
+        id: member.id || key,
+        ...member
+      }));
 
   return {
     ...teamData,
-    members: [...membersArray],
+    members: membersArray,
   };
-}
+};
 
-
-export const addTeamMember = async (teamId, userHandle) => {
+export const addTeamMember = async (teamId, userIdentifier) => {
   try {
     const currentTeam = await getTeamByID(teamId);
+    currentTeam.members = currentTeam.members || {};
+    
+    let user;
+    if (userIdentifier.includes('@')) {
+      user = await getUserByEmail(userIdentifier);
+    } else {
+      user = await getUserByHandle(userIdentifier);
+    }
 
-    if (!currentTeam.members.some(member => member.handle === userHandle)) {
+    if (!user || !user.uid || !user.handle) {
+      throw new Error('User data is incomplete or not found.');
+    }
+
+    if (!Object.values(currentTeam.members).some(member => member.id === user.uid)) {
+      const newMemberKey = push(ref(db, `teams/${teamId}/members`)).key;
       const newMember = {
-        handle: userHandle,
+        id: user.uid,
+        email: user.email,
         joinedOn: new Date().toString(),
       };
-      currentTeam.members.push(newMember);
-      await update(ref(db, `Teams/${teamId}`), {
-        members: currentTeam.members,
-      });
+      await update(ref(db, `teams/${teamId}/members/${newMemberKey}`), newMember);
 
       return currentTeam.members;
     } else {
@@ -73,7 +85,7 @@ export const removeTeamMember = async (teamId, userHandle) => {
 
     if (memberIndex !== -1) {
       currentTeam.members.splice(memberIndex, 1);
-      await update(ref(db, `Teams/${teamId}`), {
+      await update(ref(db, `teams/${teamId}`), {
         members: currentTeam.members,
       });
 
