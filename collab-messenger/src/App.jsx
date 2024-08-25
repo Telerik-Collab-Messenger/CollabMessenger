@@ -23,15 +23,19 @@ function App() {
     user: null,
     userData: null,
   });
-  const [user] = useAuthState(auth);
+  //const [user] = useAuthState(auth);
 
-  useEffect(() => {
-    if (appState.user !== user) {
-      setAppState({...appState, user });
-    }
-  }, [appState.user, user])
+  // useEffect(() => {
+  //   if (appState.user !== user) {
+  //     setAppState({...appState, user });
+  //   }
+  // }, [appState.user, user])
 
+  const [user, loading, error] = useAuthState(auth);
 
+  if (appState.user !== user) {
+    setAppState({...appState, user });
+  }
   useEffect(() => {
     if (!appState.user) return;
 
@@ -41,6 +45,8 @@ function App() {
         setAppState({...appState, userData});
       });
   }, [user]);
+
+  //the useEffect below is just for reference
   // useEffect(() => {
   //   if (user) {
   //     getUserData(user.uid).then(data => {
