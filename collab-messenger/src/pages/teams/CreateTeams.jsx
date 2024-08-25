@@ -1,6 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { fetchTeamsOwnedByUser, createTeam, removeTeamMember, addTeamMember } from '../../services/team.services';
 import { AppContext } from '../../state/app.context';
+import { Team } from './Team';
 
 const CreateTeam = () => {
     const { user } = useContext(AppContext);
@@ -54,6 +55,18 @@ const CreateTeam = () => {
         }
     };
 
+    // const handleAddMemberr = useCallback(async (teamId) => {
+    //     try {
+    //         await addTeamMember(teamId, newMember);
+    //         const teams = await fetchTeamsOwnedByUser(user.uid);
+    //         setOwnedTeams(teams);
+    //         setNewMember('');
+    //     } catch (error) {
+    //         console.error('Failed to add member:', error);
+    //         setError('Failed to add member. Please try again.');
+    //     }
+    // }, [user, newMember])
+
     const handleAddMember = async (teamId) => {
         try {
             await addTeamMember(teamId, newMember);
@@ -77,6 +90,10 @@ const CreateTeam = () => {
         }
     };
 
+    const handleSetTeamName = useCallback((event) => {
+        setTeamName(event.target.value)
+    }, [setTeamName])
+
     return (
         <div className="create-team-container">
             <h2>Create New Team</h2>
@@ -90,7 +107,7 @@ const CreateTeam = () => {
                         id="teamName"
                         name="teamName"
                         value={teamName}
-                        onChange={(e) => setTeamName(e.target.value)}
+                        onChange={handleSetTeamName}
                         required
                     />
                 </div>
@@ -100,38 +117,14 @@ const CreateTeam = () => {
             </form>
             <ul>
                 {ownedTeams.map(team => (
-                    <li key={team.id}>
-                        <h2>Your Teams</h2>
-                        <h3>{team.teamName}</h3>
-                        <p>Members:</p>
-                        <ul>
-                            {Array.isArray(team.members) && team.members.length > 0 ? (
-                                team.members.map(member => (
-                                    <li key={member.id}>
-                                        {member.id === team.author ? (
-                                            <>
-                                                {member.email} <span>(Owner)</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                {member.handle}
-                                                <button onClick={() => handleRemoveMember(team.id, member.handle)}>Remove</button>
-                                            </>
-                                        )}
-                                    </li>
-                                ))
-                            ) : (
-                                <li>No members found.</li>
-                            )}
-                        </ul>
-                        <input
-                            type="text"
-                            value={newMember}
-                            onChange={(e) => setNewMember(e.target.value)}
-                            placeholder="Add member (email or handle)"
-                        />
-                        <button onClick={() => handleAddMember(team.id)}>Add Member</button>
-                    </li>
+                    <Team 
+                        key={team.id}
+                        team={team}
+                        newMember={newMember}
+                        setNewMember={setNewMember}
+                        handleAddMember={handleAddMember}
+                        handleRemoveMember={handleRemoveMember}
+                    />
                 ))}
             </ul>
         </div>
@@ -139,3 +132,5 @@ const CreateTeam = () => {
 };
 
 export default CreateTeam;
+
+

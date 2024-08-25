@@ -6,7 +6,7 @@ import { getUserData } from './services/user.services';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Header from './components/header/Header';
 import Home from './pages/home/Home'
-import  Logged from './pages/logged/Logged'
+import Logged from './pages/logged/Logged'
 import './App.css'
 import UserDetails from './components/userDetails/userDetails';
 import Authenticated from './hoc/Authenticated';
@@ -25,19 +25,22 @@ function App() {
   });
   const [user] = useAuthState(auth);
 
-  if (appState.user !== user) {
-    setAppState({...appState, user });
-  }
+  useEffect(() => {
+    if (appState.user !== user) {
+      setAppState({...appState, user });
+    }
+  }, [appState.user, user])
+
 
   useEffect(() => {
-    if (!user) return;
+    if (!appState.user) return;
 
     getUserData(appState.user.uid)
       .then(data => {
         const userData = data[Object.keys(data)[0]];
         setAppState({...appState, userData});
       });
-  }, [user]);
+  }, [appState.user]);
 
 
   return (

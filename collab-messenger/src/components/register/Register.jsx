@@ -83,7 +83,7 @@ const Register = () => {
 
             alert('User registered successfully!');
             setModalVisible(false);
-            navigate('/logged');
+            navigate('/teams');
         } catch (error) {
             console.error('Error registering user:', error);
             alert(error.message);

@@ -28,13 +28,14 @@ const Login = () => {
         }
         try {
             const credentials = await loginUser(user.email, user.password);
+            console.log("@@@@ credentials", credentials)
             setAppState({
                 user: credentials.user,
                 userData: null,
             });
             alert('User logged in successfully!');
             setModalVisible(false);
-            navigate('/logged');
+            navigate('/teams');
         } catch (error) {
             console.error('Error logging in:', error);
             alert(error.message);
