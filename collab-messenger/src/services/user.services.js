@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update, push } from 'firebase/database';
 import { db } from '../config/firebase-config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../config/firebase-config';
@@ -23,6 +23,7 @@ export const getAllUsers = async (search = '') => {
 
 export const createUserHandle = async (handle, uid, email, phoneNumber = '', photoURL = '', firstName = '', lastName = '') => {
     const user = { handle, uid, firstName, lastName, email, phoneNumber, photoURL, createdOn: new Date().toString() };
+    console.log("Creating user with data:", user);
     await set(ref(db, `users/${handle}`), user);
 };
 
@@ -56,5 +57,20 @@ export const updateUserData = async (uid, updatedData) => {
       console.error(`Failed to update user data: ${error}`);
     }
   };
+
+  export const addChatToUser = async (userHandle, chatId) => {
+    try {
+        // Create the chat entry you want to push (this could just be the chat ID or a more detailed object)
+        //const chatToPush = { id: chatId };
+
+        // Push the chat to the user's chats list
+        await push(ref(db, `users/${userHandle}/chats`), chatId);
+
+        console.log("Chat added successfully to user's chat list.");
+    } catch (error) {
+        console.error("Failed to add chat to user's chats:", error);
+        throw error;
+    }
+};
 
   

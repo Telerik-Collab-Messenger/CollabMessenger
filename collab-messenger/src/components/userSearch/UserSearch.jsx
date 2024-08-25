@@ -42,7 +42,7 @@ UserSearch.propTypes = {
     id="search" 
     placeholder="Search..." 
     className="input input-bordered w-64 max-w-full mb-4 px-4 py-2"
-    />
+    /> <br/> <br/>
     {users.length > 0 ? (
         users.map(u => (
             <div key={u.handle} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>

@@ -38,7 +38,14 @@ function App() {
         setAppState({...appState, userData});
       });
   }, [user]);
-
+  // useEffect(() => {
+  //   if (user) {
+  //     getUserData(user.uid).then(data => {
+  //       const userData = data ? data[Object.keys(data)[0]] : null;
+  //       setAppState(prevState => ({ ...prevState, userData }));
+  //     });
+  //   }
+  // }, [user]);
 
   return (
     <>
