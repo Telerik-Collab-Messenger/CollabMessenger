@@ -4,10 +4,10 @@ import './Logged.css'
 export default function Logged() {
     
     return (
-        <Container id='main-logged-container'>
-            <Container id='inner-container'>
+        <div id='main-logged-container'>
+            <div id='inner-container'>
 <p>aaaaaaaaaaaaaaaaaaaaaaaaa</p>
-            </Container>
-        </Container>
+            </div>
+        </div>
     )
 }
