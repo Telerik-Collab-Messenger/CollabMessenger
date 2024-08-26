@@ -15,7 +15,7 @@ export default function AllChats() {
     const fetchUserChats = async () => { 
       if (!userData || !userData.chats) {
         setLoading(false);
-        //alert('No available chats'); this breaks the code for some reason
+        //alert('No available chats'); //this breaks the code for some reason
         return;
       }
       try {
@@ -52,7 +52,7 @@ export default function AllChats() {
       await addChatToUser(userData.handle, newChatId);
 
       // Update the app state to include the new chat
-      const updatedChats = { ...userData.chats };
+      const updatedChats = { ...userData.chats }; // TODO: to check!! the new chat is not added
       setAppState(prev => ({
         ...prev,
         userData: { ...prev.userData, chats: updatedChats }

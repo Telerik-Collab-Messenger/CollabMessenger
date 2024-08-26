@@ -4,11 +4,13 @@ import { useParams } from 'react-router-dom';
 import { addChatParticipant, createChatMessage, getChatByID } from '../../services/chat.services';
 import { AppContext } from '../../state/app.context';
 import UserSearch from '../../components/userSearch/UserSearch';
+import Participant from '../../components/chat/Participant';
 
 export default function SingleChat () {
   const { id } = useParams(); 
   const { userData } = useContext(AppContext);
   const [chat, setChat] = useState(null);
+  const [chatParticipants, setChatParticipants] = useState ({}); //should check the participant state
   const [messageContent, setMessageContent] = useState('');
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export default function SingleChat () {
         <>
           <UserSearch onAddParticipant={handleAddParticipant} />
           <h2 className="text-2xl font-bold mb-4">Chat with {chat.author}</h2>
+          <Participant/>
           <ul className="list-none p-0">
             {chat.messages.map((msg) => (
               <li key={msg.id} className="mb-2 p-4 bg-white rounded-lg shadow-md">

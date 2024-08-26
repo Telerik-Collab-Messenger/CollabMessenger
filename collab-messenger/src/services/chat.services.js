@@ -1,5 +1,6 @@
 import { ref, push, get, update } from 'firebase/database';
 import { db } from '../config/firebase-config'
+import { addChatToUser } from './user.services';
 
 
 export const getAllChats = async () => {
@@ -50,13 +51,16 @@ export const addChatParticipant = async (chatId, userHandle) => {
     const currentChat = await getChatByID(chatId);
 
     // Check if the user is already a participant
-    if (!currentChat.participants.includes(userHandle)) {
-      currentChat.participants.push(userHandle);
+    if (!Object.values(currentChat.participants).includes(userHandle)) {
+      //currentChat.participants.push(userHandle);
 
-      // Update the participants array in the database
-      await update(ref(db, `chats/${chatId}`), {
-        participants: currentChat.participants,
-      });
+      // Update the participants array in the database NOT REALLY 
+      // await update(ref(db, `chats/${chatId}`), {
+      //   participants: currentChat.participants,
+      // });
+      await push(ref(db, `chats/${chatId}/participants`), userHandle);
+
+      await addChatToUser(userHandle, chatId);
 
       return currentChat.participants;
     } else {
