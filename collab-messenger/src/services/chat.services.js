@@ -3,7 +3,7 @@ import { db } from '../config/firebase-config'
 
 
 export const getAllChats = async () => {
-    const snapshot = await get(ref(db, 'Chats'));
+    const snapshot = await get(ref(db, 'chats'));
     if (!snapshot.exists()) return [];
   
     return Object.values(snapshot.val()).map(chat => ({
@@ -12,17 +12,18 @@ export const getAllChats = async () => {
     }));
   };
 export const createChat = async (author) => {
-    const chat = {author, participants:[author], createdOn: new Date().toString()};
-    const result = await push(ref(db, 'Chats'), chat);
+    const chat = {author, participants:{}, createdOn: new Date().toString()};
+    const result = await push(ref(db, 'chats'), chat);
     const id = result.key;
+    await push(ref(db, `chats/${id}/participants`), author);
     await update(ref(db), {
-      [`Chats/${id}/id`]: id,
+      [`chats/${id}/id`]: id,
     });
     return id; 
 }
 
 export const getChatByID = async (id) => {
-    const snapshot = await get(ref(db, `Chats/${id}`));
+    const snapshot = await get(ref(db, `chats/${id}`));
     if (!snapshot.exists()) {
       throw new Error('Chat not found!');
     }
@@ -53,7 +54,7 @@ export const addChatParticipant = async (chatId, userHandle) => {
       currentChat.participants.push(userHandle);
 
       // Update the participants array in the database
-      await update(ref(db, `Chats/${chatId}`), {
+      await update(ref(db, `chats/${chatId}`), {
         participants: currentChat.participants,
       });
 
@@ -69,22 +70,13 @@ export const addChatParticipant = async (chatId, userHandle) => {
 };
 
 export const createChatMessage = async (chatId, author, content, date = new Date().toString()) => {
-    //author, content, date = new Date().toString()
     const message = {author: author, content: content, createdOn: date};
-        const result = await push(ref(db, `Chats/${chatId}/messages`), message);
+        const result = await push(ref(db, `chats/${chatId}/messages`), message);
         const id = result.key;
-        //const messageRef = ref(db, `Chats/${chatId}/messages`);
-        //await push(messageRef, message);
         await update(ref(db), {
-            [`Chats/${chatId}/messages/${id}/id`]: id,
+            [`chats/${chatId}/messages/${id}/id`]: id,
           });
     return id; 
 };
 
 
-//message should be an object {author:'', content:'', createdOn:''}
-// export const createChatMessage = async (chatId, message) => {
-//     //author, content, date = new Date().toString()
-//         const messageRef = ref(db, `Posts/${chatId}/messages`);
-//         await push(messageRef, message);
-// };

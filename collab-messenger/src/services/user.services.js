@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update, push } from 'firebase/database';
 import { db } from '../config/firebase-config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../config/firebase-config';
@@ -50,22 +50,34 @@ export const uploadPhoto = async (uid, file) => {
 };
 
 export const updateUserData = async (uid, updatedData) => {
-  try {
-    const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
-    const snapshot = await get(userRef);
-
-    if (snapshot.exists()) {
-      const userKey = Object.keys(snapshot.val())[0];
-
-      await update(ref(db, `users/${userKey}`), updatedData);
-
-      console.log(`User ${userKey} data updated successfully.`);
-    } else {
-      console.error('User does not exist');
+    try {
+      const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
+      const snapshot = await get(userRef);
+  
+      if (snapshot.exists()) {
+        const userKey = Object.keys(snapshot.val())[0];
+  
+        await update(ref(db, `users/${userKey}`), updatedData);
+  
+        console.log(`User ${userKey} data updated successfully.`);
+      } else {
+        console.error('User does not exist');
+      }
+    } catch (error) {
+      console.error(`Failed to update user data: ${error}`);
     }
-  } catch (error) {
-    console.error(`Failed to update user data: ${error}`);
-  }
+  };
+
+  export const addChatToUser = async (userHandle, chatId) => {
+    try {
+        // Push the chat to the user's chats list
+        await push(ref(db, `users/${userHandle}/chats`), chatId);
+
+        console.log("Chat added successfully to user's chat list.");
+    } catch (error) {
+        console.error("Failed to add chat to user's chats:", error);
+        throw error;
+    }
 };
 
 export const getUserByEmail = async (email) => {
