@@ -1,16 +1,28 @@
 import { useMemo } from "react"
 import PropTypes from 'prop-types';
+import { createChatForTeam } from "../../services/chat.services";
 
 export const Team = ({ team, newMember, setNewMember, handleAddMember, handleRemoveMember }) => {
     const members = useMemo(() => {
         return Object.values(team?.members || {})
     }, [team?.members])
 
+    const handleCreateChat = async () => {
+        try {
+            const author = members.find(member => member.id === team.author);
+            const participants = members.filter(member => member.id !== team.author);
+            await createChatForTeam(author, participants);
+            alert('Group chat created successfully!');
+        } catch (error) {
+            console.error("Failed to create group chat:", error);
+            alert('Failed to create group chat. Please try again.');
+        }
+    };
 
     return <li key={team.id}>
         <h2>Your Teams</h2>
-        <h3>{team.teamName}</h3>
-        <p>Members:</p>
+        <h3>{team.teamName}</h3> 
+        <p>Members: <button onClick={handleCreateChat}>Create Group Chat</button></p>
         <ul>
             {members.length ? (
                 members.map(member => (
@@ -18,6 +30,7 @@ export const Team = ({ team, newMember, setNewMember, handleAddMember, handleRem
                         {member.id === team.author ? (
                             <>
                                 {member.email} <span>(Owner)</span>
+                                
                             </>
                         ) : (
                             <>
