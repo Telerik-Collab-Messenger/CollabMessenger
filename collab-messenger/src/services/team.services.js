@@ -78,10 +78,10 @@ export const addTeamMember = async (teamId, userIdentifier) => {
   }
 };
 
-export const removeTeamMember = async (teamId, userHandle) => {
+export const removeTeamMember = async (teamId, userEmail) => {
   try {
     const currentTeam = await getTeamByID(teamId);
-    const memberIndex = currentTeam.members.findIndex(member => member.handle === userHandle);
+    const memberIndex = currentTeam.members.findIndex(member => member.email === userEmail);
 
     if (memberIndex !== -1) {
       currentTeam.members.splice(memberIndex, 1);

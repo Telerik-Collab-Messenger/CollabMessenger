@@ -79,9 +79,9 @@ const CreateTeam = () => {
         }
     };
 
-    const handleRemoveMember = async (teamId, memberHandle) => {
+    const handleRemoveMember = async (teamId, memberEmail) => {
         try {
-            await removeTeamMember(teamId, memberHandle);
+            await removeTeamMember(teamId, memberEmail);
             const teams = await fetchTeamsOwnedByUser(user.uid);
             setOwnedTeams(teams);
         } catch (error) {

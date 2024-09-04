@@ -35,7 +35,7 @@ const Login = () => {
             });
             alert('User logged in successfully!');
             setModalVisible(false);
-            navigate('/teams');
+            navigate('/logged');
         } catch (error) {
             console.error('Error logging in:', error);
             alert(error.message);
