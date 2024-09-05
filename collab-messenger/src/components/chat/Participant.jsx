@@ -1,10 +1,12 @@
-export default function Participant( {participantHandle}) {
+export default function Participant({ participantHandle }) {
+  const drawerId = `drawer-${participantHandle}`;
+
   return (
     <div className="relative bg-base-300 rounded-lg p-6 max-w-md h-[340px] overflow-hidden">
       {/* Container to hold the drawer */}
       <div className="drawer h-full">
         {/* Drawer Toggle */}
-        <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+        <input id={drawerId} type="checkbox" className="drawer-toggle" />
 
         {/* Content of the container */}
         <div className="flex flex-col h-full justify-between drawer-content">
@@ -27,13 +29,13 @@ export default function Participant( {participantHandle}) {
           {/* Buttons Section at the Bottom Right */}
           <div className="flex flex-col items-end space-y-2 mb-2">
             <label
-              htmlFor="my-drawer"
+              htmlFor={drawerId}
               className="btn btn-primary drawer-button w-24 h-8 text-sm"
             >
               Open Drawer
             </label>
             <label
-              htmlFor="my-drawer"
+              htmlFor={drawerId}
               className="btn btn-secondary drawer-button w-24 h-8 text-sm"
             >
               Leave Chat
@@ -44,7 +46,7 @@ export default function Participant( {participantHandle}) {
         {/* Drawer Side */}
         <div className="drawer-side absolute inset-0 overflow-hidden">
           <label
-            htmlFor="my-drawer"
+            htmlFor={drawerId}
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
@@ -58,7 +60,7 @@ export default function Participant( {participantHandle}) {
             </li>
             <li>
               <label
-                htmlFor="my-drawer"
+                htmlFor={drawerId}
                 className="btn btn-primary drawer-button w-full mt-4"
               >
                 Close Drawer

@@ -77,7 +77,7 @@ export default function SingleChat() {
         <>
           <UserSearch onAddParticipant={handleAddParticipant} />
           <h2 className="text-2xl font-bold mb-4">Chat with {chat.author}</h2>
-          <div>
+          <div className="flex flex-wrap gap-4 justify-start">
             {Object.values(chat.participants).map((participantHandle) => <Participant key={participantHandle} participantHandle={participantHandle} />)}
           </div>
           
