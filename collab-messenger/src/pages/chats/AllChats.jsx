@@ -19,7 +19,9 @@ export default function AllChats() {
         return;
       }
       try {
-        const chatIds = Object.values(userData.chats);
+        //const chatIds = Object.values(userData.chats);
+        const chatIds = Object.keys(userData.chats); 
+
         if (chatIds.length === 0) {
           setLoading(false); 
           return;
@@ -27,7 +29,7 @@ export default function AllChats() {
 
         const chatPromises = chatIds.map(chatId => getChatByID(chatId));
         const userChats = await Promise.all(chatPromises);
-        console.log (`user chats ${userChats}`)
+        //console.log (`user chats ${userChats}`)
         setChats(userChats);
       } catch (error) {
         setError(`Failed to load chats. ${error}`);
@@ -51,12 +53,24 @@ export default function AllChats() {
       // Add the new chat ID to the user's chat list in Firebase
       await addChatToUser(userData.handle, newChatId);
 
+        // Fetch the new chat data (you may have a service for this or use getChatByID)
+      const newChat = await getChatByID(newChatId);
+
+       // Update the local 'chats' state with the newly created chat
+      setChats((prevChats) => [...prevChats, newChat]);
+
       // Update the app state to include the new chat
-      const updatedChats = { ...userData.chats }; // TODO: to check!! the new chat is not added
+      //const updatedChats = { ...userData.chats, newChatId }; // TODO: to check!! the new chat is not added
+      //const updatedChats = userData.chats ? { ...userData.chats, [newChatId]: newChatId } : { [newChatId]: newChatId };
+      const updatedChats = userData.chats 
+        ? { ...userData.chats, [newChatId]: true }  // Update with chatId: true
+        : { [newChatId]: true };  // Initialize with new chat
+
       setAppState(prev => ({
         ...prev,
         userData: { ...prev.userData, chats: updatedChats }
       }));
+
       console.log (`updated chats of userData; All user chats IDs: ${Object.values (userData.chats)}`);
       
       // Navigate to the new chat
