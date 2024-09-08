@@ -29,11 +29,17 @@ export default function Header() {
           <div className="flex items-stretch">
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn rounded-btn flex items-center">
-                {userData.photoURL ? (
-                  <img src={userData.photoURL} alt="Profile" id="pfp" className="w-8 h-8 rounded-full mr-2" />
-                ) : (
-                  <img src="/collab-messenger/public/img/newDefaultUserIMG.jpeg" alt="Default Profile" id="pfp" className="w-8 h-8 rounded-full mr-2" />
-                )}
+                {/* Debugging: Log userData.photoURL */}
+                {console.log('Full userData:', userData)}
+                {/* Checking if photoURL is valid, otherwise show default image */}
+                <img
+                  src={userData.photoURL && userData.photoURL.includes('http')
+                    ? userData.photoURL
+                    : "/img/newDefaultUserIMG.jpeg"}
+                  alt="Profile"
+                  id="pfp"
+                  className="w-8 h-8 rounded-full mr-2"
+                />
                 <span>Welcome, {userData.handle}</span>
               </div>
               <ul

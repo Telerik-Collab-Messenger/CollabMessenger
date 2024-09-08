@@ -3,7 +3,7 @@ import { registerUser } from '../../services/authenticate-service';
 import { uploadPhoto } from '../../services/user.services';
 import { createUserHandle } from '../../services/user.services';
 import { useNavigate } from 'react-router-dom';
-//import './Register.css';
+
 
 
 const Register = () => {
@@ -73,11 +73,15 @@ const Register = () => {
             alert("Invalid Last Name");
             return false;
         }
+        
 
         try {
             const userCredential = await registerUser(user.email, user.password);
             const uid = userCredential.user.uid;
-            const photoURL = await uploadPhoto(uid, user.photo);
+            let photoURL = '';
+            if (user.photo) {
+                photoURL = await uploadPhoto(uid, user.photo);
+            }
 
             await createUserHandle(user.handle, uid, user.email, user.phoneNumber, photoURL, user.firstName, user.lastName);
 
@@ -231,63 +235,3 @@ const Register = () => {
 };
 
 export default Register;
-
-
-{/* <>
-<Button id="register" variant="success" onClick={() => setModalVisible(true)}>
-    Register
-</Button>
-
-<Modal show={isModalVisible} onHide={() => setModalVisible(false)} centered>
-    <Modal.Header closeButton>
-        <Modal.Title>Register</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-        <Form onSubmit={register}>
-            <Form.Group controlId="handle">
-                <Form.Label>Username</Form.Label>
-                <Form.Control type="text" placeholder="Enter username" value={user.handle} onChange={updateUser('handle')} />
-            </Form.Group>
-
-            <Form.Group controlId="firstName">
-                <Form.Label>First Name</Form.Label>
-                <Form.Control type="text" placeholder="Enter First Name" value={user.firstName} onChange={updateUser('firstName')} />
-            </Form.Group>
-
-            <Form.Group controlId="lastName">
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control type="text" placeholder="Enter Last Name" value={user.lastName} onChange={updateUser('lastName')} />
-            </Form.Group>
-
-            <Form.Group controlId="email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" placeholder="Enter email" value={user.email} onChange={updateUser('email')} />
-            </Form.Group>
-
-            <Form.Group controlId="phoneNumber">
-                <Form.Label>Phone Number</Form.Label>
-                <Form.Control type="text" placeholder="Enter phone number" value={user.phoneNumber} onChange={updateUser('phoneNumber')} />
-            </Form.Group>
-
-            <Form.Group controlId="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Enter password" value={user.password} onChange={updateUser('password')} />
-            </Form.Group>
-
-            <Form.Group controlId="passwordCheck">
-                <Form.Label>Confirm Password</Form.Label>
-                <Form.Control type="password" placeholder="Confirm password" value={user.passwordCheck} onChange={updateUser('passwordCheck')} />
-            </Form.Group>
-
-            <Form.Group controlId="photo">
-                <Form.Label>Upload Photo</Form.Label>
-                <Form.Control type="file" onChange={updateUser('photo')} accept="image/*" />
-            </Form.Group>
-
-            <Button variant="primary" type="submit">
-                Register
-            </Button>
-        </Form>
-    </Modal.Body>
-</Modal>
-</> */}
