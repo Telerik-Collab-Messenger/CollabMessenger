@@ -113,7 +113,7 @@ export default function AllChats() {
             <li key={chat.id} className="list-group-item border rounded-lg shadow hover:bg-gray-100">
               <Link to={`/chat/${chat.id}`} className="flex justify-between items-center">
                 <span>{chat.author} - {new Date(chat.createdOn).toLocaleString()}</span>
-                <span className="badge badge-primary">Likes: {chat.likeCount}</span>
+                <span className="badge badge-primary"></span>
               </Link>
             </li>
           ))}
