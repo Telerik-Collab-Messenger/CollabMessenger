@@ -115,24 +115,40 @@ export default function AllChats({ onSelectChat }) {
       {chats.length === 0 ? (
         <div className="alert alert-info shadow-lg">
           <div>
-            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h1m0 4h-1m0-4h.01M12 6h.01" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="stroke-current flex-shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M13 16h-1v-4h1m0 4h-1m0-4h.01M12 6h.01"
+              />
             </svg>
             <span>No chats available.</span>
           </div>
         </div>
-      )  : (
+      ) : (
         <ul className="list-group space-y-2">
           {chats.map((chat) => (
-            <li key={chat.id} className="list-group-item border rounded-lg shadow hover:bg-gray-100" onClick={() => onSelectChat(chat.id)}>
-                <span>{chat.author} - {new Date(chat.createdOn).toLocaleString()}</span>
-                <span className="badge badge-primary"></span>
-              </Link>
-                <span className="badge badge-primary">Likes: {chat.likeCount}</span>
+            <li
+              key={chat.id}
+              className="list-group-item border rounded-lg shadow hover:bg-gray-100 cursor-pointer"
+              onClick={() => onSelectChat(chat.id)}
+            >
+              <div className="flex justify-between">
+                <span>
+                  {chat.author} - {new Date(chat.createdOn).toLocaleString()}
+                </span>
+                <span className="badge badge-primary">Active</span>
+              </div>
             </li>
           ))}
         </ul>
       )}
     </div>
-  );
+  ) 
 }
