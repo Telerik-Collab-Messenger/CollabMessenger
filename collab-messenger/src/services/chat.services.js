@@ -16,10 +16,9 @@ export const createChat = async (author) => {
     const chat = {author, participants:{}, createdOn: new Date().toString()};
     const result = await push(ref(db, 'chats'), chat);
     const id = result.key;
-    await push(ref(db, `chats/${id}/participants`), author);
-    await update(ref(db), {
-      [`chats/${id}/id`]: id,
-    });
+    //await push(ref(db, `chats/${id}/participants`), author);
+    await update(ref(db), {[`chats/${id}/participants`]: {[author]: true}});
+    await update(ref(db), {[`chats/${id}/id`]: id,});
     return id; 
 }
 
@@ -41,7 +40,7 @@ export const getChatByID = async (id) => {
 
   return {
     ...chatData,
-    likedBy: Object.keys(chatData.likedBy ?? {}),
+    //likedBy: Object.keys(chatData.likedBy ?? {}),
     messages: [...messagesArray], //not sure if it is passed correctly [...messagesArray] ?
   };
 }
@@ -58,7 +57,8 @@ export const addChatParticipant = async (chatId, userHandle) => {
       // await update(ref(db, `chats/${chatId}`), {
       //   participants: currentChat.participants,
       // });
-      await push(ref(db, `chats/${chatId}/participants`), userHandle);
+      //await push(ref(db, `chats/${chatId}/participants`), userHandle);
+      await update(ref(db, `chats/${chatId}/participants`),{ [userHandle]: true } );
 
       await addChatToUser(userHandle, chatId);
 
@@ -82,6 +82,10 @@ export const createChatMessage = async (chatId, author, content, date = new Date
           });
     return id; 
 };
+
+export const messsageLastSeen = async (messageId, participantHandle) => {
+  
+}
 
 export const createChatForTeam = async (author, participants) => {
   const chat = { 

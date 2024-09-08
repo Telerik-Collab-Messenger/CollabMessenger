@@ -15,6 +15,7 @@ import SideNav from './components/leftNavBar/SideNav';
 import AllChats from './pages/chats/AllChats';
 import SingleChat from './pages/chats/SingleChat';
 import Teams from './pages/teams/CreateTeams';
+import ChatsMainView from './pages/chats/ChatsMainView';
 
 
 
@@ -46,16 +47,6 @@ function App() {
       });
   }, [user]);
 
-  //the useEffect below is just for reference
-  // useEffect(() => {
-  //   if (user) {
-  //     getUserData(user.uid).then(data => {
-  //       const userData = data ? data[Object.keys(data)[0]] : null;
-  //       setAppState(prevState => ({ ...prevState, userData }));
-  //     });
-  //   }
-  // }, [user]);
-
   return (
     <>
     <BrowserRouter>
@@ -70,6 +61,7 @@ function App() {
             <Route path='/userdetails/edituser' element={<EditUser />} />
             <Route path='/userdetails' element={<Authenticated><UserDetails /></Authenticated>} />
             <Route path="/allchats" element={<AllChats />} />
+            <Route path="/chatsmainview" element={<ChatsMainView />} />
             <Route path="/teams" element={<Teams />} />
             <Route path="/chat/:id" element={<SingleChat />} />
           </Routes>

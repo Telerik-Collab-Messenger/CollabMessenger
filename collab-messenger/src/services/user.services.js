@@ -70,7 +70,10 @@ export const updateUserData = async (uid, updatedData) => {
 
   export const addChatToUser = async (userHandle, chatId) => {
     try {
-        await push(ref(db, `users/${userHandle}/chats`), chatId);
+        // Push the chat to the user's chats list
+        //await push(ref(db, `users/${userHandle}/chats`), chatId);
+        await update(ref(db, `users/${userHandle}/chats`), { [chatId]: true });
+
         console.log("Chat added successfully to user's chat list.");
     } catch (error) {
         console.error("Failed to add chat to user's chats:", error);

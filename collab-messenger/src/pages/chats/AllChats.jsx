@@ -4,7 +4,7 @@ import { addChatToUser } from '../../services/user.services';  // Import the fun
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../state/app.context'; 
 
-export default function AllChats() {
+export default function AllChats({ onSelectChat }) {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,7 +19,9 @@ export default function AllChats() {
         return;
       }
       try {
-        const chatIds = Object.values(userData.chats);
+        //const chatIds = Object.values(userData.chats);
+        const chatIds = Object.keys(userData.chats); 
+
         if (chatIds.length === 0) {
           setLoading(false); 
           return;
@@ -27,7 +29,7 @@ export default function AllChats() {
 
         const chatPromises = chatIds.map(chatId => getChatByID(chatId));
         const userChats = await Promise.all(chatPromises);
-        console.log (`user chats ${userChats}`)
+        //console.log (`user chats ${userChats}`)
         setChats(userChats);
       } catch (error) {
         setError(`Failed to load chats. ${error}`);
@@ -51,16 +53,28 @@ export default function AllChats() {
       // Add the new chat ID to the user's chat list in Firebase
       await addChatToUser(userData.handle, newChatId);
 
+        // Fetch the new chat data 
+      const newChat = await getChatByID(newChatId);
+
+       // Update the local 'chats' state with the newly created chat
+      setChats((prevChats) => [...prevChats, newChat]);
+
       // Update the app state to include the new chat
-      const updatedChats = { ...userData.chats }; // TODO: to check!! the new chat is not added
+      //const updatedChats = { ...userData.chats, newChatId }; // TODO: to check!! the new chat is not added
+      //const updatedChats = userData.chats ? { ...userData.chats, [newChatId]: newChatId } : { [newChatId]: newChatId };
+      const updatedChats = userData.chats 
+        ? { ...userData.chats, [newChatId]: true }  // Update with chatId: true
+        : { [newChatId]: true };  // Initialize with new chat
+
       setAppState(prev => ({
         ...prev,
         userData: { ...prev.userData, chats: updatedChats }
       }));
+
       console.log (`updated chats of userData; All user chats IDs: ${Object.values (userData.chats)}`);
       
       // Navigate to the new chat
-      navigate(`/chat/${newChatId}`);
+      navigate(`/chat/${newChatId}`);//TODO to fix since this has different implementation
     } catch (error) {
       console.error('Failed to create a new chat:', error);
       setError('Failed to create a new chat.');
@@ -110,11 +124,11 @@ export default function AllChats() {
       )  : (
         <ul className="list-group space-y-2">
           {chats.map((chat) => (
-            <li key={chat.id} className="list-group-item border rounded-lg shadow hover:bg-gray-100">
-              <Link to={`/chat/${chat.id}`} className="flex justify-between items-center">
+            <li key={chat.id} className="list-group-item border rounded-lg shadow hover:bg-gray-100" onClick={() => onSelectChat(chat.id)}>
                 <span>{chat.author} - {new Date(chat.createdOn).toLocaleString()}</span>
                 <span className="badge badge-primary"></span>
               </Link>
+                <span className="badge badge-primary">Likes: {chat.likeCount}</span>
             </li>
           ))}
         </ul>

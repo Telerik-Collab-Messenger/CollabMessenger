@@ -1,31 +1,69 @@
+<<<<<<< HEAD
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { addChatParticipant, createChatMessage, getChatByID } from '../../services/chat.services';
 import { AppContext } from '../../state/app.context';
 import UserSearch from '../../components/userSearch/UserSearch';
 import Participant from '../../components/chat/Participant';
+=======
+import { useState, useEffect, useContext } from "react";
+//import { Form, Button, Container, ListGroup } from 'react-bootstrap';
+import { useParams } from "react-router-dom";
+import {
+  addChatParticipant,
+  createChatMessage,
+  getChatByID,
+} from "../../services/chat.services";
+import { AppContext } from "../../state/app.context";
+import UserSearch from "../../components/userSearch/UserSearch";
+import Participant from "../../components/chat/Participant";
+import { onValue, ref } from "firebase/database";
+import { db } from "../../config/firebase-config";
+>>>>>>> 31b89be0ee79a04f63b13ef1d3c182e3d82dde36
 
-export default function SingleChat () {
-  const { id } = useParams(); 
+export default function SingleChat( { chatId }) {
+  //const { id } = useParams();
   const { userData } = useContext(AppContext);
   const [chat, setChat] = useState(null);
-  const [chatParticipants, setChatParticipants] = useState ({}); //should check the participant state
-  const [messageContent, setMessageContent] = useState('');
+  const [chatParticipants, setChatParticipants] = useState(null); //should check the participant state
+  const [messageContent, setMessageContent] = useState("");
+
+  // useEffect(() => {
+  //   getChatByID(id)
+  //     .then((chatData) => {
+  //       setChat(chatData);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Failed to fetch chat:", error);
+  //     });
+  // }, [id]);
 
   useEffect(() => {
-    getChatByID(id).then((chatData) => {
-      setChat(chatData);
-    }).catch((error) => {
-      console.error("Failed to fetch chat:", error);
+    if (!chatId) return;
+
+    return onValue(ref(db, `chats/${chatId}`), (snapshot) => {
+      const updatedChat = snapshot.val();
+      console.log(updatedChat);
+      const messagesArray = updatedChat.messages
+        ? Object.entries(updatedChat.messages).map(([key, message]) => ({
+            id: key,
+            ...message,
+          }))
+        : [];
+      setChat({
+        ...updatedChat,
+        messages: messagesArray,
+      });
     });
-  }, [id]);
+  }, [chatId]);
 
   const handleSendMessage = async () => {
-    if (!messageContent.trim()) return; 
+    if (!messageContent.trim()) return;
     try {
-      await createChatMessage(id, userData.handle, messageContent);
-      setMessageContent(''); 
-      getChatByID(id).then(setChat); 
+      await createChatMessage(chatId, userData.handle, messageContent);
+      setMessageContent("");
+      const updatedChat = await getChatByID(chatId);
+      setChat(updatedChat);
     } catch (error) {
       console.error("Failed to send message:", error);
     }
@@ -33,11 +71,12 @@ export default function SingleChat () {
 
   const handleAddParticipant = async (user) => {
     try {
-      const updatedParticipants = await addChatParticipant(id, user.handle);
-      setChat((prevChat) => ({
-        ...prevChat,
-        participants: updatedParticipants,
-      }));
+      await addChatParticipant(chatId, user.handle);
+      //const updatedParticipants = await addChatParticipant(id, user.handle);
+      // setChat((prevChat) => ({
+      //   ...prevChat,
+      //   participants: updatedParticipants,
+      // }));
     } catch (error) {
       console.error("Failed to add participant:", error);
     }
@@ -49,10 +88,16 @@ export default function SingleChat () {
         <>
           <UserSearch onAddParticipant={handleAddParticipant} />
           <h2 className="text-2xl font-bold mb-4">Chat with {chat.author}</h2>
-          <Participant/>
+          <div className="flex flex-wrap gap-4 justify-start">
+            {Object.keys(chat.participants).map((participantHandle) => <Participant key={participantHandle} participantHandle={participantHandle} />)}
+          </div>
+          
           <ul className="list-none p-0">
             {chat.messages.map((msg) => (
-              <li key={msg.id} className="mb-2 p-4 bg-white rounded-lg shadow-md">
+              <li
+                key={msg.id}
+                className="mb-2 p-4 bg-white rounded-lg shadow-md"
+              >
                 <strong>{msg.author}:</strong> {msg.content} <br />
                 <small className="text-gray-500">{msg.createdOn}</small>
               </li>
@@ -68,7 +113,10 @@ export default function SingleChat () {
                 className="input input-bordered w-full"
               />
             </div>
-            <button className="btn btn-primary mt-2" onClick={handleSendMessage}>
+            <button
+              className="btn btn-primary mt-2"
+              onClick={handleSendMessage}
+            >
               Send
             </button>
           </form>
