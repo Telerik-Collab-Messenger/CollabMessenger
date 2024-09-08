@@ -13,12 +13,14 @@ export const getAllChats = async () => {
     }));
   };
 export const createChat = async (author) => {
-    const chat = {author, participants:{}, createdOn: new Date().toString()};
+    const chat = {author, participants: false, createdOn: new Date().toString(), lastSeen: {[author]: new Date().toString()}};
+    //participants above should be an object, declaring it as false to bypass the firebase (not {}) probably not the best idea
     const result = await push(ref(db, 'chats'), chat);
     const id = result.key;
     //await push(ref(db, `chats/${id}/participants`), author);
-    await update(ref(db), {[`chats/${id}/participants`]: {[author]: true}});
+    //await update(ref(db), {[`chats/${id}/participants`]: {[author]: true}});
     await update(ref(db), {[`chats/${id}/id`]: id,});
+    await addChatParticipant (id, author);
     return id; 
 }
 
@@ -58,7 +60,7 @@ export const addChatParticipant = async (chatId, userHandle) => {
       //   participants: currentChat.participants,
       // });
       //await push(ref(db, `chats/${chatId}/participants`), userHandle);
-      await update(ref(db, `chats/${chatId}/participants`),{ [userHandle]: true } );
+      await update(ref(db, `chats/${chatId}/participants`),{ [userHandle]: {'lastSeenMessageID': false, 'timeStamps': false} } );
 
       await addChatToUser(userHandle, chatId);
 
@@ -74,7 +76,7 @@ export const addChatParticipant = async (chatId, userHandle) => {
 };
 
 export const createChatMessage = async (chatId, author, content, date = new Date().toString()) => {
-    const message = {author: author, content: content, createdOn: date};
+    const message = {author: author, content: content, createdOn: date, seenBy: {[author]: true}};
         const result = await push(ref(db, `chats/${chatId}/messages`), message);
         const id = result.key;
         await update(ref(db), {

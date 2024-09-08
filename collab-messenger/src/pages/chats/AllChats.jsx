@@ -80,7 +80,7 @@ export default function AllChats({ onSelectChat }) {
       setError('Failed to create a new chat.');
     }
   };
-
+//TODO fixing new comment counter
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -126,7 +126,7 @@ export default function AllChats({ onSelectChat }) {
           {chats.map((chat) => (
             <li key={chat.id} className="list-group-item border rounded-lg shadow hover:bg-gray-100" onClick={() => onSelectChat(chat.id)}>
                 <span>{chat.author} - {new Date(chat.createdOn).toLocaleString()}</span>
-                <span className="badge badge-primary">Likes: {chat.likeCount}</span>
+                <span className="badge badge-primary">New messages: {chat.likeCount}</span> 
             </li>
           ))}
         </ul>
