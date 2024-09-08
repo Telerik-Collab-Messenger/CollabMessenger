@@ -35,7 +35,7 @@ const Login = () => {
             });
             alert('User logged in successfully!');
             setModalVisible(false);
-            navigate('/logged');
+            navigate('/chatsmainview');
         } catch (error) {
             console.error('Error logging in:', error);
             alert(error.message);
@@ -112,46 +112,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-
-
-
-{/* <>
-<Button id="login" variant="success" onClick={() => setModalVisible(true)}>
-    Login
-</Button>
-
-<Modal show={isModalVisible} onHide={() => setModalVisible(false)} centered>
-    <Modal.Header closeButton>
-        <Modal.Title>Login</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-        <Form onSubmit={handleLogin}>
-            <Form.Group controlId="formEmail">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control
-                    type="email"
-                    placeholder="Enter email"
-                    value={user.email}
-                    onChange={updateUser('email')}
-                />
-            </Form.Group>
-
-            <Form.Group controlId="formPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                    type="password"
-                    placeholder="Password"
-                    value={user.password}
-                    onChange={updateUser('password')}
-                />
-            </Form.Group>
-
-            <Button variant="primary" type="submit">
-                Login
-            </Button>
-        </Form>
-    </Modal.Body>
-</Modal>
-</> */}

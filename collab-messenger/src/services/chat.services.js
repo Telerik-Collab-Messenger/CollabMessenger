@@ -90,24 +90,30 @@ export const messsageLastSeen = async (messageId, participantHandle) => {
 }
 
 export const createChatForTeam = async (author, participants) => {
-  const chat = { 
-      author, 
-      participants: {}, 
-      createdOn: new Date().toString() 
+  const chat = {
+    author: author.id, 
+    participants: false, 
+    createdOn: new Date().toString(), 
+    lastSeen: { [author.id]: new Date().toString() }, 
   };
-  
+
   const result = await push(ref(db, 'chats'), chat);
-  const id = result.key;
-  await push(ref(db, `chats/${id}/participants`), author);
-  for (const participant of participants) {
-      await push(ref(db, `chats/${id}/participants`), participant);
-  }
-  
+  const chatId = result.key;
+
   await update(ref(db), {
-    [`chats/${id}/id`]: id,
+    [`chats/${chatId}/id`]: chatId,
+    [`chats/${chatId}/participants/${author.id}`]: true, 
+    [`chats/${chatId}/lastSeen/${author.id}`]: new Date().toString(),
   });
-  
-  return id; 
+
+  for (const participant of participants) {
+    await update(ref(db), {
+      [`chats/${chatId}/participants/${participant.id}`]: true, 
+      [`chats/${chatId}/lastSeen/${participant.id}`]: new Date().toString(), 
+    });
+  }
+
+  return chatId; 
 };
 
 

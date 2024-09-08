@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { createChat, getChatByID } from '../../services/chat.services';
 import { addChatToUser } from '../../services/user.services';  // Import the function
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../state/app.context'; 
 
 export default function AllChats({ onSelectChat }) {
