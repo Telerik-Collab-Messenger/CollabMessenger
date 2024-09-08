@@ -4,7 +4,7 @@ import { addChatToUser } from '../../services/user.services';  // Import the fun
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../state/app.context'; 
 
-export default function AllChats() {
+export default function AllChats({ onSelectChat }) {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -53,7 +53,7 @@ export default function AllChats() {
       // Add the new chat ID to the user's chat list in Firebase
       await addChatToUser(userData.handle, newChatId);
 
-        // Fetch the new chat data (you may have a service for this or use getChatByID)
+        // Fetch the new chat data 
       const newChat = await getChatByID(newChatId);
 
        // Update the local 'chats' state with the newly created chat
@@ -74,7 +74,7 @@ export default function AllChats() {
       console.log (`updated chats of userData; All user chats IDs: ${Object.values (userData.chats)}`);
       
       // Navigate to the new chat
-      navigate(`/chat/${newChatId}`);
+      navigate(`/chat/${newChatId}`);//TODO to fix since this has different implementation
     } catch (error) {
       console.error('Failed to create a new chat:', error);
       setError('Failed to create a new chat.');
@@ -124,11 +124,9 @@ export default function AllChats() {
       )  : (
         <ul className="list-group space-y-2">
           {chats.map((chat) => (
-            <li key={chat.id} className="list-group-item border rounded-lg shadow hover:bg-gray-100">
-              <Link to={`/chat/${chat.id}`} className="flex justify-between items-center">
+            <li key={chat.id} className="list-group-item border rounded-lg shadow hover:bg-gray-100" onClick={() => onSelectChat(chat.id)}>
                 <span>{chat.author} - {new Date(chat.createdOn).toLocaleString()}</span>
                 <span className="badge badge-primary">Likes: {chat.likeCount}</span>
-              </Link>
             </li>
           ))}
         </ul>

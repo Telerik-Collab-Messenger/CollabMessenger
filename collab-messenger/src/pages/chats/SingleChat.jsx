@@ -12,8 +12,8 @@ import Participant from "../../components/chat/Participant";
 import { onValue, ref } from "firebase/database";
 import { db } from "../../config/firebase-config";
 
-export default function SingleChat() {
-  const { id } = useParams();
+export default function SingleChat( { chatId }) {
+  //const { id } = useParams();
   const { userData } = useContext(AppContext);
   const [chat, setChat] = useState(null);
   const [chatParticipants, setChatParticipants] = useState(null); //should check the participant state
@@ -30,7 +30,9 @@ export default function SingleChat() {
   // }, [id]);
 
   useEffect(() => {
-    return onValue(ref(db, `chats/${id}`), (snapshot) => {
+    if (!chatId) return;
+
+    return onValue(ref(db, `chats/${chatId}`), (snapshot) => {
       const updatedChat = snapshot.val();
       console.log(updatedChat);
       const messagesArray = updatedChat.messages
@@ -44,14 +46,14 @@ export default function SingleChat() {
         messages: messagesArray,
       });
     });
-  }, [id]);
+  }, [chatId]);
 
   const handleSendMessage = async () => {
     if (!messageContent.trim()) return;
     try {
-      await createChatMessage(id, userData.handle, messageContent);
+      await createChatMessage(chatId, userData.handle, messageContent);
       setMessageContent("");
-      const updatedChat = await getChatByID(id);
+      const updatedChat = await getChatByID(chatId);
       setChat(updatedChat);
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -60,7 +62,7 @@ export default function SingleChat() {
 
   const handleAddParticipant = async (user) => {
     try {
-      await addChatParticipant(id, user.handle);
+      await addChatParticipant(chatId, user.handle);
       //const updatedParticipants = await addChatParticipant(id, user.handle);
       // setChat((prevChat) => ({
       //   ...prevChat,

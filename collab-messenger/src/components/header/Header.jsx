@@ -21,7 +21,7 @@ export default function Header() {
     return (
 <div className="navbar bg-emerald-500">
   <div className="flex-1 px-2 lg:flex-none">
-    <a className="text-2xl font-bold">Better Teams</a>
+    <a className="text-2xl font-bold">Communicator 3000</a>
   </div>
   <div className="flex flex-1 justify-end px-2">
   {user && userData && (

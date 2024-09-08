@@ -83,6 +83,10 @@ export const createChatMessage = async (chatId, author, content, date = new Date
     return id; 
 };
 
+export const messsageLastSeen = async (messageId, participantHandle) => {
+  
+}
+
 export const createChatForTeam = async (author, participants) => {
   const chat = { 
       author, 
