@@ -57,9 +57,11 @@ return (
                 className="rounded-full w-36 h-36 mx-auto"
               />
             ) : (
-              <div className="w-36 h-36 rounded-full bg-gray-300 flex items-center justify-center mx-auto">
-                No Image
-              </div>
+              <img
+                src="https://via.placeholder.com/150" // Default image URL
+                alt="Default Profile"
+                className="rounded-full w-36 h-36 mx-auto"
+              />
             )}
           </div>
           <div className="flex-2 pl-5">

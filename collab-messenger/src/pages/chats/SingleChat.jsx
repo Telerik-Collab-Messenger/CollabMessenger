@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-import { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
-import { addChatParticipant, createChatMessage, getChatByID } from '../../services/chat.services';
-import { AppContext } from '../../state/app.context';
-import UserSearch from '../../components/userSearch/UserSearch';
-import Participant from '../../components/chat/Participant';
-=======
 import { useState, useEffect, useContext } from "react";
 //import { Form, Button, Container, ListGroup } from 'react-bootstrap';
 import { useParams } from "react-router-dom";
@@ -19,7 +11,6 @@ import UserSearch from "../../components/userSearch/UserSearch";
 import Participant from "../../components/chat/Participant";
 import { onValue, ref } from "firebase/database";
 import { db } from "../../config/firebase-config";
->>>>>>> 31b89be0ee79a04f63b13ef1d3c182e3d82dde36
 
 export default function SingleChat( { chatId }) {
   //const { id } = useParams();
