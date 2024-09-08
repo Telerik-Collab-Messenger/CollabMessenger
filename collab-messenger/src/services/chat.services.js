@@ -98,11 +98,7 @@ export const createChatForTeam = async (author, participants) => {
   
   const result = await push(ref(db, 'chats'), chat);
   const id = result.key;
-  
-  // Add the author to participants
   await push(ref(db, `chats/${id}/participants`), author);
-  
-  // Add the rest of the team members to participants
   for (const participant of participants) {
       await push(ref(db, `chats/${id}/participants`), participant);
   }
