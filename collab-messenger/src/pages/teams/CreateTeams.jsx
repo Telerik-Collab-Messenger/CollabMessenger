@@ -83,13 +83,13 @@ const CreateTeam = () => {
     }, [setTeamName])
 
     return (
-        <div className="create-team-container">
-            <h2>Create New Team</h2>
-            {error && <div className="error-message">{error}</div>}
-            {success && <div className="success-message">{success}</div>}
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="teamName">Team Name:</label>
+        <div className="p-6 bg-white rounded-lg shadow-md">
+            <h2 className="text-2xl font-semibold mb-4">Create New Team</h2>
+            {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
+            {success && <div className="bg-green-100 text-green-700 p-2 rounded mb-4">{success}</div>}
+            <form onSubmit={handleSubmit} className="mb-6">
+                <div className="mb-4">
+                    <label htmlFor="teamName" className="block text-gray-700 text-sm font-medium mb-2">Team Name:</label>
                     <input
                         type="text"
                         id="teamName"
@@ -97,29 +97,39 @@ const CreateTeam = () => {
                         value={teamName}
                         onChange={handleSetTeamName}
                         required
+                        className="w-full p-2 border border-gray-300 rounded-lg"
                     />
                 </div>
-                <button type="submit" disabled={loading}>
+                <button 
+                    type="submit" 
+                    disabled={loading}
+                    className={`w-full py-2 px-4 text-white font-semibold rounded-lg ${loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
+                >
                     {loading ? 'Creating...' : 'Create Team'}
                 </button>
             </form>
             <ul>
-                {ownedTeams.map(team => (
-                    <Team 
-                        key={team.id}
-                        team={team}
-                        newMember={newMember}
-                        setNewMember={setNewMember}
-                        handleAddMember={handleAddMember}
-                        handleRemoveMember={handleRemoveMember}
-                    />
-                ))}
+                {ownedTeams.length > 0 ? (
+                    ownedTeams.map(team => (
+                        <Team 
+                            key={team.id}
+                            team={team}
+                            newMember={newMember}
+                            setNewMember={setNewMember}
+                            handleAddMember={handleAddMember}
+                            handleRemoveMember={handleRemoveMember}
+                        />
+                    ))
+                ) : (
+                    <li className="text-gray-500">No teams found.</li>
+                )}
             </ul>
         </div>
     );
 };
 
 export default CreateTeam;
+
 
 
   // const handleAddMemberr = useCallback(async (teamId) => {

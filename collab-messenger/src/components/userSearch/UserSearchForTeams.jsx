@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { getAllUsers } from "../../services/user.services";
 import { addTeamMember, removeTeamMember, getTeamByID } from "../../services/team.services";
 
-export default function UserSearchForTeams({ onAddParticipant, teamId }) {
+export default function UserSearchForTeams({ teamId }) {
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");  // Local state for search input
     const [teamMembers, setTeamMembers] = useState([]);
@@ -52,7 +52,6 @@ export default function UserSearchForTeams({ onAddParticipant, teamId }) {
     };
 
     UserSearchForTeams.propTypes = {
-        onAddParticipant: PropTypes.func.isRequired,
         teamId: PropTypes.string.isRequired, // Ensure teamId is passed as a prop
     };
 
