@@ -29,12 +29,12 @@ export const Team = ({ team, newMember, setNewMember, handleAddMember, handleRem
                     <li key={member.id}>
                         {member.id === team.author ? (
                             <>
-                                {member.email} <span>(Owner)</span>
+                               Owner ID: {member.id} email: {member.email} <span></span>
                                 
                             </>
                         ) : (
                             <>
-                                {member.email}
+                                Member ID: {member.id} email: {member.email}
                                 <button onClick={() => handleRemoveMember(team.id, member.email)}>Remove</button>
                             </>
                         )}
