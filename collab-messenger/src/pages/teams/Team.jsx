@@ -1,11 +1,11 @@
-import { useMemo } from "react"
+import { useMemo } from "react";
 import PropTypes from 'prop-types';
 import { createChatForTeam } from "../../services/chat.services";
 
 export const Team = ({ team, newMember, setNewMember, handleAddMember, handleRemoveMember }) => {
     const members = useMemo(() => {
-        return Object.values(team?.members || {})
-    }, [team?.members])
+        return Object.values(team?.members || {});
+    }, [team?.members]);
 
     const handleCreateChat = async () => {
         try {
@@ -19,40 +19,60 @@ export const Team = ({ team, newMember, setNewMember, handleAddMember, handleRem
         }
     };
 
-    return <li key={team.id}>
-        <h2>Your Teams</h2>
-        <h3>{team.teamName}</h3> 
-        <p>Members: <button onClick={handleCreateChat}>Create Group Chat</button></p>
-        <ul>
-            {members.length ? (
-                members.map(member => (
-                    <li key={member.id}>
-                        {member.id === team.author ? (
-                            <>
-                               Owner ID: {member.id} email: {member.email} <span></span>
-                                
-                            </>
-                        ) : (
-                            <>
-                                Member ID: {member.id} email: {member.email}
-                                <button onClick={() => handleRemoveMember(team.id, member.email)}>Remove</button>
-                            </>
-                        )}
-                    </li>
-                ))
-            ) : (
-                <li>No members found.</li>
-            )}
-        </ul>
-        <input
-            type="text"
-            value={newMember}
-            onChange={(e) => setNewMember(e.target.value)}
-            placeholder="Add member (email or handle)"
-        />
-        <button onClick={() => handleAddMember(team.id)}>Add Member</button>
-    </li>
-}
+    return (
+        <li key={team.id} className="p-4 mb-4 border border-gray-300 rounded-lg shadow-sm bg-white">
+            <h2 className="text-xl font-semibold mb-2">Team: {team.teamName}</h2>
+            <p className="text-gray-700 mb-4">
+                Members: 
+                <button 
+                    onClick={handleCreateChat} 
+                    className="ml-2 text-blue-500 hover:text-blue-600 underline"
+                >
+                    Create Group Chat
+                </button>
+            </p>
+            <ul className="mb-4">
+                {members.length ? (
+                    members.map(member => (
+                        <li key={member.id} className="flex items-center justify-between py-2 border-b border-gray-200">
+                            <span className="text-gray-700">
+                                {member.id === team.author 
+                                    ? `Owner ID: ${member.id} email: ${member.email}` 
+                                    : `Member ID: ${member.id} email: ${member.email}`
+                                }
+                            </span>
+                            {member.id !== team.author && (
+                                <button 
+                                    onClick={() => handleRemoveMember(team.id, member.email)} 
+                                    className="text-red-500 hover:text-red-600 underline"
+                                >
+                                    Remove
+                                </button>
+                            )}
+                        </li>
+                    ))
+                ) : (
+                    <li className="text-gray-500">No members found.</li>
+                )}
+            </ul>
+            <div className="flex items-center">
+                <input
+                    type="text"
+                    value={newMember}
+                    onChange={(e) => setNewMember(e.target.value)}
+                    placeholder="Add member (email or handle)"
+                    className="flex-grow p-2 border border-gray-300 rounded-lg mr-2"
+                />
+                <button 
+                    onClick={() => handleAddMember(team.id)}
+                    className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
+                >
+                    Add Member
+                </button>
+            </div>
+        </li>
+    );
+};
 
 Team.propTypes = {
     team: PropTypes.shape({
@@ -72,3 +92,4 @@ Team.propTypes = {
     handleAddMember: PropTypes.func.isRequired,
     handleRemoveMember: PropTypes.func.isRequired,
 };
+
