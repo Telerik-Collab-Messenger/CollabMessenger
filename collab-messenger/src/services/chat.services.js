@@ -92,30 +92,41 @@ export const createChatMessage = async (chatId, author, content, date = new Date
 };
 
 export const createChatForTeam = async (author, participants) => {
-  const chat = {
-    author: author.id, 
-    participants: false, 
-    createdOn: new Date().toString(), 
-    lastSeen: { [author.id]: new Date().toString() }, 
-  };
-
-  const result = await push(ref(db, 'chats'), chat);
-  const chatId = result.key;
-
-  await update(ref(db), {
-    [`chats/${chatId}/id`]: chatId,
-    [`chats/${chatId}/participants/${author.id}`]: true, 
-    [`chats/${chatId}/lastSeen/${author.id}`]: new Date().toString(),
-  });
-
+  const chatId = await createChat(author.id);
+  await addChatParticipant(chatId, author.id);
   for (const participant of participants) {
-    await update(ref(db), {
-      [`chats/${chatId}/participants/${participant.id}`]: true, 
-      [`chats/${chatId}/lastSeen/${participant.id}`]: new Date().toString(), 
-    });
+    if (participant.id !== author.id) {
+      await addChatParticipant(chatId, participant.id);
+    }
   }
-
   return chatId; 
 };
 
+
+// export const createChatForTeam = async (author, participants) => {
+//   const chat = {
+//     author: author.id, 
+//     participants: false, 
+//     createdOn: new Date().toString(), 
+//     lastSeen: { [author.id]: new Date().toString() }, 
+//   };
+
+//   const result = await push(ref(db, 'chats'), chat);
+//   const chatId = result.key;
+
+//   await update(ref(db), {
+//     [`chats/${chatId}/id`]: chatId,
+//     [`chats/${chatId}/participants/${author.id}`]: true, 
+//     [`chats/${chatId}/lastSeen/${author.id}`]: new Date().toString(),
+//   });
+
+//   for (const participant of participants) {
+//     await update(ref(db), {
+//       [`chats/${chatId}/participants/${participant.id}`]: true, 
+//       [`chats/${chatId}/lastSeen/${participant.id}`]: new Date().toString(), 
+//     });
+//   }
+
+//   return chatId; 
+// };
 

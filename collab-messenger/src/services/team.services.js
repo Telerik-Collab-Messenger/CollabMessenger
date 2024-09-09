@@ -3,25 +3,30 @@ import { db } from '../config/firebase-config'
 import { getUserByHandle, getUserByEmail } from './user.services';
 
 
-
 export const createTeam = async (teamName, author) => {
   const team = { 
     teamName, 
     author: author.uid,
-    members: [{
-      id: author.uid,        
-      email: author.email
-    }],
-    createdOn: new Date().toString()
+    createdOn: new Date().toString(),
+    members: {}  
   };
-  const result = await push(ref(db, 'teams'), team);
-  const id = result.key;
-  await update(ref(db), {
-    [`teams/${id}/id`]: id,
-  });
-  return id;
-};
 
+  const teamRef = await push(ref(db, 'teams'), team);  
+  const teamId = teamRef.key;
+  const ownerRef = push(ref(db, `teams/${teamId}/members`));  
+  const ownerMember = {
+    id: author.uid,        
+    email: author.email,
+    owner: true,
+  };
+
+  await update(ownerRef, ownerMember);
+  await update(ref(db), {
+    [`teams/${teamId}/id`]: teamId,
+  });
+
+  return teamId;
+};
 
 export const getTeamByID = async (id) => {
   const snapshot = await get(ref(db, `teams/${id}`));
@@ -29,12 +34,10 @@ export const getTeamByID = async (id) => {
     throw new Error('Team not found!');
   }
   const teamData = snapshot.val();
-  const membersArray = Array.isArray(teamData.members)
-    ? teamData.members
-    : Object.entries(teamData.members || {}).map(([key, member]) => ({
-        id: member.id || key,
-        ...member
-      }));
+  const membersArray = Object.entries(teamData.members || {}).map(([key, member]) => ({
+    id: member.id || key,
+    ...member,
+  }));
 
   return {
     ...teamData,
@@ -100,17 +103,54 @@ export const removeTeamMember = async (teamId, userEmail) => {
   }
 };
 
-export const fetchTeamsOwnedByUser = async (userId) => {
+export const fetchTeamsOwnedByUser = async (userHandle) => {
   const teamsRef = ref(db, 'teams');
-  const userTeamsQuery = query(teamsRef, orderByChild('author'), equalTo(userId));
+  const userTeamsQuery = query(teamsRef, orderByChild('author'), equalTo(userHandle));
   const snapshot = await get(userTeamsQuery);
 
   if (!snapshot.exists()) {
-      return [];
+    return [];
   }
 
   return Object.entries(snapshot.val()).map(([key, value]) => ({
-      id: key,
-      ...value,
+    id: key,
+    ...value,
   }));
 };
+
+// export const createTeam = async (teamName, author) => {
+//   const team = { 
+//     teamName, 
+//     author: author.uid,
+//     members: [{
+//       id: author.uid,        
+//       email: author.email
+//     }],
+//     createdOn: new Date().toString()
+//   };
+//   const result = await push(ref(db, 'teams'), team);
+//   const id = result.key;
+//   await update(ref(db), {
+//     [`teams/${id}/id`]: id,
+//   });
+//   return id;
+// };
+
+// export const getTeamByID = async (id) => {
+//   const snapshot = await get(ref(db, `teams/${id}`));
+//   if (!snapshot.exists()) {
+//     throw new Error('Team not found!');
+//   }
+//   const teamData = snapshot.val();
+//   const membersArray = Array.isArray(teamData.members)
+//     ? teamData.members
+//     : Object.entries(teamData.members || {}).map(([key, member]) => ({
+//         id: member.id || key,
+//         ...member
+//       }));
+
+//   return {
+//     ...teamData,
+//     members: membersArray,
+//   };
+// };

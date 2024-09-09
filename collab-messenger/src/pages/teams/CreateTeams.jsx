@@ -4,7 +4,7 @@ import { AppContext } from '../../state/app.context';
 import { Team } from './Team';
 
 const CreateTeam = () => {
-    const { user } = useContext(AppContext);
+    const { user, userData } = useContext(AppContext);
     const [teamName, setTeamName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -16,7 +16,7 @@ const CreateTeam = () => {
         const fetchTeams = async () => {
             if (user) {
                 try {
-                    const teams = await fetchTeamsOwnedByUser(user.uid);
+                    const teams = await fetchTeamsOwnedByUser(userData.handle);
                     setOwnedTeams(teams);
                 } catch (error) {
                     console.error("Failed to fetch teams:", error);
@@ -25,7 +25,7 @@ const CreateTeam = () => {
         };
 
         fetchTeams();
-    }, [user]);
+    }, [userData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,10 +41,10 @@ const CreateTeam = () => {
     
         try {
             await createTeam(teamName, {
-                uid: user.uid,          
+                uid: userData.handle,          
                 email: user.email,       
             });
-            const teams = await fetchTeamsOwnedByUser(user.uid);
+            const teams = await fetchTeamsOwnedByUser(userData.handle);
             setOwnedTeams(teams);
             setLoading(false);
             setSuccess('Team created successfully');
@@ -55,22 +55,10 @@ const CreateTeam = () => {
         }
     };
 
-    // const handleAddMemberr = useCallback(async (teamId) => {
-    //     try {
-    //         await addTeamMember(teamId, newMember);
-    //         const teams = await fetchTeamsOwnedByUser(user.uid);
-    //         setOwnedTeams(teams);
-    //         setNewMember('');
-    //     } catch (error) {
-    //         console.error('Failed to add member:', error);
-    //         setError('Failed to add member. Please try again.');
-    //     }
-    // }, [user, newMember])
-
     const handleAddMember = async (teamId) => {
         try {
             await addTeamMember(teamId, newMember);
-            const teams = await fetchTeamsOwnedByUser(user.uid);
+            const teams = await fetchTeamsOwnedByUser(userData.handle);
             setOwnedTeams(teams);
             setNewMember('');
         } catch (error) {
@@ -82,7 +70,7 @@ const CreateTeam = () => {
     const handleRemoveMember = async (teamId, memberEmail) => {
         try {
             await removeTeamMember(teamId, memberEmail);
-            const teams = await fetchTeamsOwnedByUser(user.uid);
+            const teams = await fetchTeamsOwnedByUser(userData.handle);
             setOwnedTeams(teams);
         } catch (error) {
             console.error('Failed to remove member:', error);
@@ -134,3 +122,14 @@ const CreateTeam = () => {
 export default CreateTeam;
 
 
+  // const handleAddMemberr = useCallback(async (teamId) => {
+    //     try {
+    //         await addTeamMember(teamId, newMember);
+    //         const teams = await fetchTeamsOwnedByUser(user.uid);
+    //         setOwnedTeams(teams);
+    //         setNewMember('');
+    //     } catch (error) {
+    //         console.error('Failed to add member:', error);
+    //         setError('Failed to add member. Please try again.');
+    //     }
+    // }, [user, newMember])

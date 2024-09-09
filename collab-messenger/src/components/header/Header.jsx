@@ -29,9 +29,6 @@ export default function Header() {
           <div className="flex items-stretch">
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn rounded-btn flex items-center">
-                {/* Debugging: Log userData.photoURL */}
-                {console.log('Full userData:', userData)}
-                {/* Checking if photoURL is valid, otherwise show default image */}
                 <img
                   src={userData.photoURL && userData.photoURL.includes('http')
                     ? userData.photoURL
