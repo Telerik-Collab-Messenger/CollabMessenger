@@ -2,7 +2,7 @@ export default function Participant({ participantHandle }) {
   const drawerId = `drawer-${participantHandle}`;
 
   return (
-    <div className="relative bg-base-300 rounded-lg p-6 max-w-md h-[340px] overflow-hidden">
+    <div className="relative bg-base-300 rounded-lg p-4 max-w-[280px] h-[238px] overflow-hidden">
       {/* Container to hold the drawer */}
       <div className="drawer h-full">
         {/* Drawer Toggle */}
@@ -14,29 +14,29 @@ export default function Participant({ participantHandle }) {
           <div className="flex items-start">
             {/* Avatar */}
             <div className="avatar flex-shrink-0">
-              <div className="ring-primary ring-offset-base-100 w-48 h-48 rounded-full ring ring-offset-2">
+              <div className="ring-primary ring-offset-base-100 w-32 h-32 rounded-full ring ring-offset-2">
                 <img
                   src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                   alt="Profile"
                 />
               </div>
             </div>
-            <div className="ml-4 mt-4">
-              <div className="text-lg font-semibold">Chat with {participantHandle}</div>
+            <div className="ml-3 mt-3">
+              <div className="text-base font-semibold">Chat with {participantHandle}</div>
             </div>
           </div>
 
           {/* Buttons Section at the Bottom Right */}
-          <div className="flex flex-col items-end space-y-2 mb-2">
+          <div className="flex flex-col items-end space-y-1.5 mb-1.5">
             <label
               htmlFor={drawerId}
-              className="btn btn-primary drawer-button w-24 h-8 text-sm"
+              className="btn btn-primary drawer-button w-16 h-6 text-xs"
             >
               Open Drawer
             </label>
             <label
               htmlFor={drawerId}
-              className="btn btn-secondary drawer-button w-24 h-8 text-sm"
+              className="btn btn-secondary drawer-button w-16 h-6 text-xs"
             >
               Leave Chat
             </label>
@@ -50,7 +50,7 @@ export default function Participant({ participantHandle }) {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu bg-base-200 text-base-content w-80 p-4">
+          <ul className="menu bg-base-200 text-base-content w-56 p-2">
             {/* Sidebar content here */}
             <li>
               <a>Sidebar Item 1</a>
@@ -61,7 +61,7 @@ export default function Participant({ participantHandle }) {
             <li>
               <label
                 htmlFor={drawerId}
-                className="btn btn-primary drawer-button w-full mt-4"
+                className="btn btn-primary drawer-button w-full mt-2"
               >
                 Close Drawer
               </label>

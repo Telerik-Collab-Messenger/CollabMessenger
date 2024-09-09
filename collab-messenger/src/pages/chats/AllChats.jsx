@@ -82,8 +82,8 @@ export default function AllChats({ onSelectChat }) {
 
       console.log (`updated chats of userData; All user chats IDs: ${Object.values (userData.chats)}`);
       
-      // Navigate to the new chat
-      navigate(`/chat/${newChatId}`);//TODO to fix since this has different implementation 
+      onSelectChat(newChatId);// navigate to new chat
+
     } catch (error) {
       console.error('Failed to create a new chat:', error);
       setError('Failed to create a new chat.');
@@ -116,51 +116,29 @@ export default function AllChats({ onSelectChat }) {
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">All Chats</h2>
-      <button onClick={handleNewChatClick} className="btn btn-primary mb-4">
+    <div className="p-2 h-full overflow-y-auto">
+      <h2 className="text-xl font-bold mb-2">All Chats</h2>
+      <button onClick={handleNewChatClick} className="btn btn-primary mb-2 w-full">
         Start New Chat
       </button>
-      {chats.length === 0 ? (
-        <div className="alert alert-info shadow-lg">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current flex-shrink-0 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13 16h-1v-4h1m0 4h-1m0-4h.01M12 6h.01"
-              />
-            </svg>
-            <span>No chats available.</span>
-          </div>
-        </div>
-      ) : (
-        <ul className="list-group space-y-2">
-          {chats.map((chat) => (
-            <li
-              key={chat.id}
-              className="list-group-item border rounded-lg shadow hover:bg-gray-100 cursor-pointer"
-              onClick={() => onSelectChat(chat.id)}
-            >
-              <div className="flex justify-between">
-                <span>
-                  {chat.author} - {new Date(chat.createdOn).toLocaleString()}
-                </span>
-              </div>
-                {chat.unreadCount > 0 && (
-                <span className="badge badge-primary">{chat.unreadCount}</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul className="space-y-2">
+        {chats.map((chat) => (
+          <li
+            key={chat.id}
+            className="p-2 rounded-lg border shadow-sm hover:bg-gray-100 cursor-pointer text-sm"
+            onClick={() => onSelectChat(chat.id)}
+          >
+            <div className="flex justify-between">
+              <span>{chat.author}</span>
+              <span className="text-xs">{new Date(chat.createdOn).toLocaleString()}</span>
+            </div>
+            {chat.unreadCount > 0 && (
+              <span className="badge badge-primary">{chat.unreadCount}</span>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
-  ) 
+  );
 }
 
