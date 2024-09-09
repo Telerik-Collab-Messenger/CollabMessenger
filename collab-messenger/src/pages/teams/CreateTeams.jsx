@@ -4,7 +4,7 @@ import { AppContext } from '../../state/app.context';
 import { Team } from './Team';
 
 const CreateTeam = () => {
-    const { user, userData, setAppState } = useContext(AppContext);
+    const { user, userData } = useContext(AppContext);
     const [teamName, setTeamName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);

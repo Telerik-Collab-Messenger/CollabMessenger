@@ -28,24 +28,6 @@ export const createTeam = async (teamName, author) => {
   return teamId;
 };
 
-// export const createTeam = async (teamName, author) => {
-//   const team = { 
-//     teamName, 
-//     author: author.uid,
-//     members: [{
-//       id: author.uid,        
-//       email: author.email
-//     }],
-//     createdOn: new Date().toString()
-//   };
-//   const result = await push(ref(db, 'teams'), team);
-//   const id = result.key;
-//   await update(ref(db), {
-//     [`teams/${id}/id`]: id,
-//   });
-//   return id;
-// };
-
 export const getTeamByID = async (id) => {
   const snapshot = await get(ref(db, `teams/${id}`));
   if (!snapshot.exists()) {
@@ -62,25 +44,6 @@ export const getTeamByID = async (id) => {
     members: membersArray,
   };
 };
-
-// export const getTeamByID = async (id) => {
-//   const snapshot = await get(ref(db, `teams/${id}`));
-//   if (!snapshot.exists()) {
-//     throw new Error('Team not found!');
-//   }
-//   const teamData = snapshot.val();
-//   const membersArray = Array.isArray(teamData.members)
-//     ? teamData.members
-//     : Object.entries(teamData.members || {}).map(([key, member]) => ({
-//         id: member.id || key,
-//         ...member
-//       }));
-
-//   return {
-//     ...teamData,
-//     members: membersArray,
-//   };
-// };
 
 export const addTeamMember = async (teamId, userIdentifier) => {
   try {
@@ -154,3 +117,40 @@ export const fetchTeamsOwnedByUser = async (userHandle) => {
     ...value,
   }));
 };
+
+// export const createTeam = async (teamName, author) => {
+//   const team = { 
+//     teamName, 
+//     author: author.uid,
+//     members: [{
+//       id: author.uid,        
+//       email: author.email
+//     }],
+//     createdOn: new Date().toString()
+//   };
+//   const result = await push(ref(db, 'teams'), team);
+//   const id = result.key;
+//   await update(ref(db), {
+//     [`teams/${id}/id`]: id,
+//   });
+//   return id;
+// };
+
+// export const getTeamByID = async (id) => {
+//   const snapshot = await get(ref(db, `teams/${id}`));
+//   if (!snapshot.exists()) {
+//     throw new Error('Team not found!');
+//   }
+//   const teamData = snapshot.val();
+//   const membersArray = Array.isArray(teamData.members)
+//     ? teamData.members
+//     : Object.entries(teamData.members || {}).map(([key, member]) => ({
+//         id: member.id || key,
+//         ...member
+//       }));
+
+//   return {
+//     ...teamData,
+//     members: membersArray,
+//   };
+// };
