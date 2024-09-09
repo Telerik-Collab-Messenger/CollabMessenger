@@ -25,9 +25,11 @@ export const createTeam = async (teamName, author) => {
     [`teams/${teamId}/id`]: teamId,
   });
 
-  const userTeamsRef = ref(db, `users/${author.uid}/teams`);
+  const userTeamsRef = ref(db, `users/${author.uid}/teams/${teamId}`);
   await update(userTeamsRef, {
-    [teamId]: true,
+    teamName: teamName,
+    isMember: false,
+    isOwner: true,
   });
 
   return teamId;
@@ -40,22 +42,41 @@ export const getTeamByID = async (id) => {
     throw new Error('Team not found!');
   }
   const teamData = snapshot.val();
-  const membersArray = Object.entries(teamData.members || {}).map(([key, member]) => ({
-    id: member.id || key,
-    ...member,
-  }));
-
+  const membersArray = teamData.members 
+    ? Object.entries(teamData.members).map(([key, member]) => ({
+        id: member.id || key,
+        ...member,
+      }))
+    : [];
+    
   return {
     ...teamData,
     members: membersArray,
   };
 };
 
+// export const getTeamByID = async (id) => {
+//   const snapshot = await get(ref(db, `teams/${id}`));
+//   if (!snapshot.exists()) {
+//     throw new Error('Team not found!');
+//   }
+//   const teamData = snapshot.val();
+//   const membersArray = Object.entries(teamData.members || {}).map(([key, member]) => ({
+//     id: member.id || key,
+//     ...member,
+//   }));
+
+//   return {
+//     ...teamData,
+//     members: membersArray,
+//   };
+// };
+
 export const addTeamMember = async (teamId, userIdentifier) => {
   try {
     const currentTeam = await getTeamByID(teamId);
     currentTeam.members = currentTeam.members || {};
-    
+
     let user;
     if (userIdentifier.includes('@')) {
       user = await getUserByEmail(userIdentifier);
@@ -63,7 +84,7 @@ export const addTeamMember = async (teamId, userIdentifier) => {
       user = await getUserByHandle(userIdentifier);
     }
 
-    if (!user || !user.uid || !user.handle) {
+    if (!user || !user.uid || !user.email) {
       throw new Error('User data is incomplete or not found.');
     }
 
@@ -72,16 +93,18 @@ export const addTeamMember = async (teamId, userIdentifier) => {
       const newMember = {
         id: user.uid,
         email: user.email,
-        joinedOn: new Date().toString(),
+        joinedOn: new Date().toISOString(),
       };
+
       await update(ref(db, `teams/${teamId}/members/${newMemberKey}`), newMember);
+        const userTeamsRef = ref(db, `users/${user.uid}/teams/${teamId}`);
+        await update(userTeamsRef, {
+            teamName: currentTeam.teamName,
+            isMember: true,
+            isOwner: false,
+        });
 
-      const userTeamsRef = ref(db, `users/${user.uid}/teams`);
-      await update(userTeamsRef, {
-        [teamId]: true,
-      });
-
-      return currentTeam.members;
+      return { ...currentTeam.members, [newMemberKey]: newMember };
     } else {
       console.log('User is already a member.');
       return currentTeam.members;
@@ -92,6 +115,92 @@ export const addTeamMember = async (teamId, userIdentifier) => {
   }
 };
 
+// export const addTeamMember = async (teamId, userIdentifier, teamName) => {
+//   try {
+//     const currentTeam = await getTeamByID(teamId);
+//     currentTeam.members = currentTeam.members || {};
+    
+//     let user;
+//     if (userIdentifier.includes('@')) {
+//       user = await getUserByEmail(userIdentifier);
+//     } else {
+//       user = await getUserByHandle(userIdentifier);
+//     }
+
+//     if (!user || !user.uid || !user.handle) {
+//       throw new Error('User data is incomplete or not found.');
+//     }
+
+//     if (!Object.values(currentTeam.members).some(member => member.id === user.uid)) {
+//       const newMemberKey = push(ref(db, `teams/${teamId}/members`)).key;
+//       const newMember = {
+//         id: user.uid,
+//         email: user.email,
+//         joinedOn: new Date().toString(),
+//       };
+//       await update(ref(db, `teams/${teamId}/members/${newMemberKey}`), newMember);
+
+//       const userTeamsRef = ref(db, `users/${user.uid}/teams/${teamId}`);
+//       await update(userTeamsRef, {
+//         teamName: teamName,
+//         isMember: true,
+//         isOwner: false,
+//       });
+
+//       return currentTeam.members;
+//     } else {
+//       console.log('User is already a member.');
+//       return currentTeam.members;
+//     }
+//   } catch (error) {
+//     console.error("Failed to add member:", error);
+//     throw error;
+//   }
+// };
+
+// export const removeTeamMember = async (teamId, userEmail) => {
+//   try {
+//     const teamSnapshot = await get(ref(db, `teams/${teamId}`));
+//     if (!teamSnapshot.exists()) {
+//       console.log('Team not found.');
+//       return;
+//     }
+    
+//     const teamData = teamSnapshot.val();
+//     const members = teamData.members || {};
+//     const memberKey = Object.keys(members).find(key => members[key].email === userEmail);
+
+//     if (memberKey) {
+//       await remove(ref(db, `teams/${teamId}/members/${memberKey}`));
+//       const userSnapshot = await get(ref(db, `users/${memberKey}`));
+//       if (!userSnapshot.exists()) {
+//         console.log('User not found.');
+//         return;
+//       }
+
+//       const userData = userSnapshot.val();
+//       const userTeams = userData.teams || {};
+
+//       if (userTeams[teamId]) {
+//         await remove(ref(db, `users/${memberKey}/teams/${teamId}`));
+//         console.log('Member removed from the team and user reference.');
+//       } else {
+//         console.log('Team reference not found in user data.');
+//       }
+
+//       const updatedTeamSnapshot = await get(ref(db, `teams/${teamId}`));
+//       return updatedTeamSnapshot.val().members || {};
+      
+//     } else {
+//       console.log('User is not a member of the team.');
+//       return;
+//     }
+//   } catch (error) {
+//     console.error("Failed to remove member:", error);
+//     throw error;
+//   }
+// };
+
 export const removeTeamMember = async (teamId, userEmail) => {
   try {
     const currentTeam = await getTeamByID(teamId);
@@ -99,9 +208,7 @@ export const removeTeamMember = async (teamId, userEmail) => {
       console.log('Team or team members not found.');
       return;
     }
-
     const memberToRemove = Object.values(currentTeam.members).find(member => member.email === userEmail);
-
     if (memberToRemove) {
       await remove(ref(db, `teams/${teamId}/members/${memberToRemove.id}`));
       const userTeamsRef = ref(db, `users/${memberToRemove.id}/teams/${teamId}`);
@@ -120,7 +227,6 @@ export const removeTeamMember = async (teamId, userEmail) => {
     throw error;
   }
 };
-
 
 export const fetchTeamsOwnedByUser = async (userHandle) => {
   const teamsRef = ref(db, 'teams');

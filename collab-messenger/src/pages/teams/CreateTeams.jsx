@@ -4,7 +4,7 @@ import { AppContext } from '../../state/app.context';
 import { Team } from './Team';
 
 const CreateTeam = () => {
-    const { user, userData } = useContext(AppContext);
+    const { user, userData } = useContext(AppContext) || {};
     const [teamName, setTeamName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -15,22 +15,25 @@ const CreateTeam = () => {
 
     useEffect(() => {
         const fetchTeams = async () => {
-            if (user) {
+            if (user && userData && userData.handle) { // Check if userData and handle are available
                 try {
                     const teams = await fetchTeamsOwnedByUser(userData.handle);
                     setOwnedTeams(teams);
                 } catch (error) {
                     console.error("Failed to fetch teams:", error);
+                    setError('Failed to fetch teams. Please try again.');
                 }
+            } else {
+                console.log("User data or handle is not available.");
             }
         };
-
+    
         fetchTeams();
-    }, [userData]);
+    }, [user, userData]);
 
     useEffect(() => {
         const fetchMemberTeams = async () => {
-            if (user) {
+            if (user && userData && userData.handle) {
                 try {
                     const teams = await fetchUserTeams(userData.handle);
                     setMemberTeams(teams);  
@@ -125,6 +128,7 @@ const CreateTeam = () => {
                     {loading ? 'Creating...' : 'Create Team'}
                 </button>
             </form>
+              <h3 className="text-xl font-semibold mb-4">Teams You Own</h3>
             <ul>
                 {ownedTeams.length > 0 ? (
                     ownedTeams.map(team => (
@@ -139,6 +143,21 @@ const CreateTeam = () => {
                     ))
                 ) : (
                     <li className="text-gray-500">No teams found.</li>
+                )}
+            </ul>
+
+            {/* Display Teams Where User is a Member */}
+            <h3 className="text-xl font-semibold mb-4 mt-6">Teams You are a Member Of</h3>
+            <ul>
+                {memberTeams.length > 0 ? (
+                    memberTeams.map(team => (
+                        <Team 
+                            key={team.id}
+                            team={team}
+                        />
+                    ))
+                ) : (
+                    <li className="text-gray-500">You are not a member of any teams.</li>
                 )}
             </ul>
         </div>
