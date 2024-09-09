@@ -100,17 +100,17 @@ export const removeTeamMember = async (teamId, userEmail) => {
   }
 };
 
-export const fetchTeamsOwnedByUser = async (userId) => {
+export const fetchTeamsOwnedByUser = async (userHandle) => {
   const teamsRef = ref(db, 'teams');
-  const userTeamsQuery = query(teamsRef, orderByChild('author'), equalTo(userId));
+  const userTeamsQuery = query(teamsRef, orderByChild('author'), equalTo(userHandle));
   const snapshot = await get(userTeamsQuery);
 
   if (!snapshot.exists()) {
-      return [];
+    return [];
   }
 
   return Object.entries(snapshot.val()).map(([key, value]) => ({
-      id: key,
-      ...value,
+    id: key,
+    ...value,
   }));
 };
