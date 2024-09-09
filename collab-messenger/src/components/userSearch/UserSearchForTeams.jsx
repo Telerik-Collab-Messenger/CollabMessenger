@@ -5,7 +5,7 @@ import { addTeamMember, removeTeamMember, getTeamByID } from "../../services/tea
 
 export default function UserSearchForTeams({ teamId }) {
     const [users, setUsers] = useState([]);
-    const [search, setSearch] = useState("");  // Local state for search input
+    const [search, setSearch] = useState("");  
     const [teamMembers, setTeamMembers] = useState([]);
 
     useEffect(() => {
@@ -22,7 +22,6 @@ export default function UserSearchForTeams({ teamId }) {
         if (teamId) {
             getTeamByID(teamId)
                 .then((team) => {
-                    // Ensure team.members is set properly
                     setTeamMembers(team.members || []);
                 })
                 .catch((error) => {
@@ -36,15 +35,13 @@ export default function UserSearchForTeams({ teamId }) {
         try {
             const isMember = teamMembers.some(member => member.email === user.email);
             if (isMember) {
-                // Remove from team
                 await removeTeamMember(teamId, user.email);
                 setTeamMembers(prevMembers => prevMembers.filter(member => member.email !== user.email));
             } else {
-                // Add to team
                 await addTeamMember(teamId, user.handle);
                 setTeamMembers(prevMembers => [...prevMembers, user]);
             }
-            setUsers(prevUsers => prevUsers.filter(u => u.email !== user.email)); // Optionally remove user from search results
+            setUsers(prevUsers => prevUsers.filter(u => u.email !== user.email));
         } catch (error) {
             console.error("Failed to update team member:", error);
             alert("Failed to update team member. Please try again.");
@@ -52,7 +49,7 @@ export default function UserSearchForTeams({ teamId }) {
     };
 
     UserSearchForTeams.propTypes = {
-        teamId: PropTypes.string.isRequired, // Ensure teamId is passed as a prop
+        teamId: PropTypes.string.isRequired, 
     };
 
     return (
