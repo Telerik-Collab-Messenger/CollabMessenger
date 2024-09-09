@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
-import { fetchTeamsOwnedByUser, createTeam, removeTeamMember, addTeamMember } from '../../services/team.services';
+import { fetchTeamsOwnedByUser, createTeam, removeTeamMember, addTeamMember, fetchUserTeams } from '../../services/team.services';
 import { AppContext } from '../../state/app.context';
 import { Team } from './Team';
 
@@ -11,6 +11,7 @@ const CreateTeam = () => {
     const [success, setSuccess] = useState(null);
     const [ownedTeams, setOwnedTeams] = useState([]);
     const [newMember, setNewMember] = useState('');
+    const [memberTeams, setMemberTeams] = useState([]);
 
     useEffect(() => {
         const fetchTeams = async () => {
@@ -26,6 +27,21 @@ const CreateTeam = () => {
 
         fetchTeams();
     }, [userData]);
+
+    useEffect(() => {
+        const fetchMemberTeams = async () => {
+            if (user) {
+                try {
+                    const teams = await fetchUserTeams(userData.handle);
+                    setMemberTeams(teams);  
+                } catch (error) {
+                    console.error("Failed to fetch member teams:", error);
+                }
+            }
+        };
+
+        fetchMemberTeams();
+    }, [user, userData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -98,6 +114,7 @@ const CreateTeam = () => {
                         onChange={handleSetTeamName}
                         required
                         className="w-full p-2 border border-gray-300 rounded-lg"
+                        placeholder="Enter your Team's Name here ..."
                     />
                 </div>
                 <button 

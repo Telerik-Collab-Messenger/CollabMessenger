@@ -137,6 +137,23 @@ export const fetchTeamsOwnedByUser = async (userHandle) => {
   }));
 };
 
+export const fetchUserTeams = async (userId) => {
+  try {
+    const userTeamsRef = ref(db, `users/${userId}/teams`);
+    const snapshot = await get(userTeamsRef);
+    if (snapshot.exists()) {
+      const teams = snapshot.val();
+      return teams ? Object.keys(teams) : [];
+    } else {
+      console.log('No teams found for this user.');
+      return [];
+    }
+  } catch (error) {
+    console.error('Failed to fetch user teams:', error);
+    throw error;
+  }
+};
+
 //latest before mod
 
 
