@@ -13,7 +13,7 @@ export const getAllChats = async () => {
     }));
   };
 export const createChat = async (author) => {
-    const chat = {author, participants: false, createdOn: new Date().toString(), lastSeen: {[author]: new Date().toString()}};
+    const chat = {author, messages: false, participants: false, messages: false, createdOn: new Date().toString(), lastSeen: {[author]: new Date().toString()}};
     //participants above should be an object, declaring it as false to bypass the firebase (not {}) probably not the best idea
     const result = await push(ref(db, 'chats'), chat);
     const id = result.key;
@@ -47,6 +47,12 @@ export const getChatByID = async (id) => {
   };
 }
 
+export const calculateUnreadMessages = async (chatId, userHandle) => {
+  const chat = await getChatByID(chatId);
+  if (!chat.messages) return 0;
+  return chat.messages.filter(message => !message.seenBy?.[userHandle]).length;
+};
+
 export const addChatParticipant = async (chatId, userHandle) => {
   try {
     const currentChat = await getChatByID(chatId);
@@ -60,7 +66,7 @@ export const addChatParticipant = async (chatId, userHandle) => {
       //   participants: currentChat.participants,
       // });
       //await push(ref(db, `chats/${chatId}/participants`), userHandle);
-      await update(ref(db, `chats/${chatId}/participants`),{ [userHandle]: {'lastSeenMessageID': false, 'timeStamps': false} } );
+      await update(ref(db, `chats/${chatId}/participants`),{ [userHandle]: {'lastSeenMessageId': false, 'timeStamps': false} } );
 
       await addChatToUser(userHandle, chatId);
 
@@ -84,10 +90,6 @@ export const createChatMessage = async (chatId, author, content, date = new Date
           });
     return id; 
 };
-
-export const messsageLastSeen = async (messageId, participantHandle) => {
-  
-}
 
 export const createChatForTeam = async (author, participants) => {
   const chat = { 

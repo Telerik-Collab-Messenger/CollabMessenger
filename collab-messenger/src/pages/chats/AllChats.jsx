@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { createChat, getChatByID } from '../../services/chat.services';
+import { calculateUnreadMessages, createChat, getChatByID } from '../../services/chat.services';
 import { addChatToUser } from '../../services/user.services';  // Import the function
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../state/app.context'; 
@@ -27,7 +27,16 @@ export default function AllChats({ onSelectChat }) {
           return;
         }
 
-        const chatPromises = chatIds.map(chatId => getChatByID(chatId));
+        //const chatPromises = chatIds.map(chatId => getChatByID(chatId));
+        const chatPromises = chatIds.map(async chatId => {
+          const chat = await getChatByID(chatId);
+          const unreadCount = await calculateUnreadMessages(chatId, userData.handle); // Await the unread count calculation
+          return {
+            ...chat,
+            unreadCount
+          };
+        });
+
         const userChats = await Promise.all(chatPromises);
         //console.log (`user chats ${userChats}`)
         setChats(userChats);
@@ -74,7 +83,7 @@ export default function AllChats({ onSelectChat }) {
       console.log (`updated chats of userData; All user chats IDs: ${Object.values (userData.chats)}`);
       
       // Navigate to the new chat
-      navigate(`/chat/${newChatId}`);//TODO to fix since this has different implementation
+      navigate(`/chat/${newChatId}`);//TODO to fix since this has different implementation 
     } catch (error) {
       console.error('Failed to create a new chat:', error);
       setError('Failed to create a new chat.');
@@ -143,8 +152,10 @@ export default function AllChats({ onSelectChat }) {
                 <span>
                   {chat.author} - {new Date(chat.createdOn).toLocaleString()}
                 </span>
-                <span className="badge badge-primary">Active</span>
               </div>
+                {chat.unreadCount > 0 && (
+                <span className="badge badge-primary">{chat.unreadCount}</span>
+              )}
             </li>
           ))}
         </ul>
@@ -152,3 +163,4 @@ export default function AllChats({ onSelectChat }) {
     </div>
   ) 
 }
+
