@@ -203,7 +203,7 @@ export default function AllChats({ onSelectChat, setHasScrolledToLastSeen }) {
             ? chat.teamName 
             : isGroupChat
             ? 'Group Chat' 
-            : chat.author; 
+            : "1-on-1"; 
           
           return (
             <li
