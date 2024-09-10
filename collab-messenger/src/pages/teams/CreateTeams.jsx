@@ -13,7 +13,7 @@ const CreateTeam = () => {
     const [ownedTeams, setOwnedTeams] = useState([]);
     const [newMember, setNewMember] = useState('');
     const [memberTeams, setMemberTeams] = useState([]);
-    
+
 
     useEffect(() => {
         const fetchTeams = async () => {
@@ -31,7 +31,7 @@ const CreateTeam = () => {
                 console.log("User data or handle is not available.");
             }
         };
-    
+
         fetchTeams();
     }, [user, userData]);
 
@@ -39,18 +39,18 @@ const CreateTeam = () => {
         e.preventDefault();
         setError(null);
         setSuccess(null);
-    
+
         if (!teamName.trim()) {
             setError('Team name is required');
             return;
         }
-    
+
         setLoading(true);
-    
+
         try {
             await createTeam(teamName, {
-                uid: userData.handle,          
-                email: user.email,       
+                uid: userData.handle,
+                email: user.email,
             });
             const teams = await fetchTeamsOwnedByUser(userData.handle);
             setOwnedTeams(teams);
@@ -91,13 +91,13 @@ const CreateTeam = () => {
     }, [setTeamName])
 
     return (
-        <div className="p-6 bg-white rounded-lg shadow-md">
+        <div className="p-6 bg-black text-white rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold mb-4">Create New Team</h2>
-            {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
-            {success && <div className="bg-green-100 text-green-700 p-2 rounded mb-4">{success}</div>}
+            {error && <div className="bg-red-700 text-red-100 p-2 rounded mb-4">{error}</div>}
+            {success && <div className="bg-green-700 text-green-100 p-2 rounded mb-4">{success}</div>}
             <form onSubmit={handleSubmit} className="mb-6">
                 <div className="mb-4">
-                    <label htmlFor="teamName" className="block text-gray-700 text-sm font-medium mb-2">Team Name:</label>
+                    <label htmlFor="teamName" className="block text-gray-300 text-sm font-medium mb-2">Team Name:</label>
                     <input
                         type="text"
                         id="teamName"
@@ -105,14 +105,14 @@ const CreateTeam = () => {
                         value={teamName}
                         onChange={handleSetTeamName}
                         required
-                        className="w-full p-2 border border-gray-300 rounded-lg"
+                        className="w-full p-2 border border-gray-600 rounded-lg bg-gray-800"
                         placeholder="Enter your Team's Name here ..."
                     />
                 </div>
-                <button 
-                    type="submit" 
+                <button
+                    type="submit"
                     disabled={loading}
-                    className={`w-full py-2 px-4 text-white font-semibold rounded-lg ${loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
+                    className={`w-full py-2 px-4 text-white font-semibold rounded-lg ${loading ? 'bg-gray-600' : 'bg-green-500 hover:bg-green-600'}`}
                 >
                     {loading ? 'Creating...' : 'Create Team'}
                 </button>
@@ -121,7 +121,7 @@ const CreateTeam = () => {
             <ul>
                 {ownedTeams.length > 0 ? (
                     ownedTeams.map(team => (
-                        <TeamOwner 
+                        <TeamOwner
                             key={team.id}
                             team={team}
                             newMember={newMember}
@@ -131,22 +131,22 @@ const CreateTeam = () => {
                         />
                     ))
                 ) : (
-                    <li className="text-gray-500">No teams found.</li>
+                    <li className="text-gray-400">No teams found.</li>
                 )}
             </ul>
             <h3 className="text-xl font-semibold mb-4">Teams you are a Member Of</h3>
             <ul>
                 {memberTeams.length > 0 ? (
                     memberTeams.map(team => (
-                        <TeamMember 
+                        <TeamMember
                             key={team.id}
                             team={team}
-                            currentUser={userData} 
-                            handleLeaveTeam={handleRemoveMember}  
+                            currentUser={userData}
+                            handleLeaveTeam={handleRemoveMember}
                         />
                     ))
                 ) : (
-                    <li className="text-gray-500">No teams found.</li>
+                    <li className="text-gray-400">No teams found.</li>
                 )}
             </ul>
         </div>
@@ -154,49 +154,3 @@ const CreateTeam = () => {
 };
 
 export default CreateTeam;
-
-
-
-  // const handleAddMemberr = useCallback(async (teamId) => {
-    //     try {
-    //         await addTeamMember(teamId, newMember);
-    //         const teams = await fetchTeamsOwnedByUser(user.uid);
-    //         setOwnedTeams(teams);
-    //         setNewMember('');
-    //     } catch (error) {
-    //         console.error('Failed to add member:', error);
-    //         setError('Failed to add member. Please try again.');
-    //     }
-    // }, [user, newMember])
-
-    // <h3 className="text-xl font-semibold mb-4 mt-6">Teams You are a Member Of</h3>
-    //         <ul>
-    //             {memberTeams.length > 0 ? (
-    //                 memberTeams.map(team => (
-    //                     <Team 
-    //                         key={team.id}
-    //                         team={team}
-    //                     />
-    //                 ))
-    //             ) : (
-    //                 <li className="text-gray-500">You are not a member of any teams.</li>
-    //             )}
-    //         </ul>
-
-    // const [memberTeams, setMemberTeams] = useState([]);
-
-
-    // useEffect(() => {
-    //     const fetchMemberTeams = async () => {
-    //         if (user && userData && userData.handle) {
-    //             try {
-    //                 const teams = await fetchUserTeams(userData.handle);
-    //                 setMemberTeams(teams);  
-    //             } catch (error) {
-    //                 console.error("Failed to fetch member teams:", error);
-    //             }
-    //         }
-    //     };
-
-    //     fetchMemberTeams();
-    // }, [user, userData]);
