@@ -75,6 +75,108 @@ export default function SingleChat({ chatId }) {
     });
   }, [chat, seenMessages, userData.handle]);
 
+
+  //mark Message as seen
+  // const markMessageAsSeen = (messageId, createdOn) => {
+  //   const updates = {};
+  //   //const userChatRef = ref(db, `chats/${chatId}/participants/${userData.handle}`);
+  //   updates[`chats/${chatId}/messages/${messageId}/seenBy/${userData.handle}`] = true;
+  //   updates[`chats/${chatId}/participants/${userData.handle}/lastSeenMessageId`] = messageId;
+  //   //updates[`chats/${chatId}/participants/${userData.handle}/lastSeenMessageDate`] = createdOn;
+
+  //   update(ref(db), updates)
+  //     .then(() => {
+  //       setSeenMessages((prevSeen) => new Set(prevSeen).add(messageId)); // Add to seen messages
+  //     })
+  //     .catch((error) => console.error("Failed to mark message as seen:", error));
+  // };
+
+  // const markMessageAsSeen = (messageId, createdOn) => {
+  //   const userChatRef = ref(db, `chats/${chatId}/participants/${userData.handle}`);
+  //   update(userChatRef, {
+  //     lastSeenMessageId: messageId
+  //   });
+
+  //   const messageSeenRef = ref(db, `chats/${chatId}/messages/${messageId}/seenBy/${userData.handle}`);
+  //   update(messageSeenRef, true);
+  //   //await update(ref(db, `chats/${chatId}/participants`),{ [userHandle]: {'lastSeenMessageId': false, 'timeStamps': false} } );
+  //   //await update(ref(db), {[`chats/${id}/id`]: id,});
+
+  //   setSeenMessages((prevSeen) => new Set(prevSeen).add(messageId));
+  // };
+
+
+  // this should be the best one
+  const markMessageAsSeen = async (messageId, createdOn) => {
+    if (!messageId) return;
+    
+    try {
+      // Prepare the batch of updates
+      const updates = {};
+      const userChatRef = `chats/${chatId}/participants/${userData.handle}`;
+      const messageSeenRef = `chats/${chatId}/messages/${messageId}/seenBy/${userData.handle}`;
+    
+      // Add the updates for the seen message and last seen message info
+      updates[`${messageSeenRef}`] = true;
+      updates[`${userChatRef}/lastSeenMessageId`] = messageId;
+      //updates[`${userChatRef}/lastSeenMessageDate`] = createdOn;
+    
+      // Perform the update in Firebase
+      await update(ref(db), updates);
+  
+      // After the update is successful, mark the message as seen locally
+      setSeenMessages((prevSeen) => new Set(prevSeen).add(messageId));
+    } catch (error) {
+      console.error("Failed to mark message as seen:", error);
+    }
+  };
+
+
+  // debounce for observer below on order not to send all of the updates to db at once
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  };
+  
+  const markMessageAsSeenDebounced = debounce(markMessageAsSeen, 10);
+
+  // Use IntersectionObserver to detect when a message comes into view
+  useEffect(() => {
+    if (!chat || !userData.handle) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const messageId = entry.target.getAttribute("data-message-id");
+          //const createdOn = entry.target.getAttribute("data-created-on");
+
+          // Check if the message has already been seen by the user
+          if (!seenMessages.has(messageId)) {
+            //markMessageAsSeen(messageId, createdOn);
+            markMessageAsSeenDebounced(messageId);
+          }
+        }
+      });
+    });
+
+    // Observe all message elements
+    chat.messages.forEach((msg) => {
+      const messageElement = document.getElementById(msg.id);
+      if (messageElement) {
+        observer.observe(messageElement);
+      }
+    });
+
+    // Clean up the observer
+    return () => {
+      observer.disconnect();
+    };
+  }, [chat, seenMessages, userData.handle]);
+
+
   // Handle sending a new message
   const handleSendMessage = async () => {
     if (!messageContent.trim()) return;
@@ -88,15 +190,15 @@ export default function SingleChat({ chatId }) {
   };
 
   // Mark message as seen
-  const markMessageAsSeen = (messageId) => {
-    const userChatRef = ref(
-      db,
-      `chats/${chatId}/participants/${userData.handle}`
-    );
-    update(userChatRef, {
-      lastSeenMessageId: messageId,
-    });
-  };
+  // const markMessageAsSeen = (messageId) => {
+  //   const userChatRef = ref(
+  //     db,
+  //     `chats/${chatId}/participants/${userData.handle}`
+  //   );
+  //   update(userChatRef, {
+  //     lastSeenMessageId: messageId,
+  //   });
+  // };
 
   // Handle adding a participant
   const handleAddParticipant = async (user) => {
