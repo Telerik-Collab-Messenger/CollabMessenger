@@ -197,23 +197,30 @@ export default function AllChats({ onSelectChat, setHasScrolledToLastSeen }) {
         Start New Chat
       </button>
       <ul className="space-y-2">
-        {chats.map((chat) => (
-          <li
-            key={chat.id}
-            className="p-2 rounded-lg border shadow-sm hover:bg-gray-100 cursor-pointer text-sm"
-            onClick={() => handleSelectChat(chat.id)}
-          >
-            <div className="flex justify-between">
-              <span>{chat.author}</span>
-              <span className="text-xs">
-                {new Date(chat.createdOn).toLocaleString()}
-              </span>
-            </div>
-            {chat.unreadCount > 0 && (
-              <span className="badge badge-primary">{chat.unreadCount}</span>
-            )}
-          </li>
-        ))}
+        {chats.map((chat) => {
+          const isGroupChat = chat.participants && Object.keys(chat.participants).length > 2;
+          const chatLabel = chat.isTeamChat
+            ? chat.teamName 
+            : isGroupChat
+            ? 'Group Chat' 
+            : chat.author; 
+          
+          return (
+            <li
+              key={chat.id}
+              className="p-2 rounded-lg border shadow-sm hover:bg-gray-100 cursor-pointer text-sm"
+              onClick={() => onSelectChat(chat.id)}
+            >
+              <div className="flex justify-between">
+                <span>{chatLabel}</span>
+                <span className="text-xs">{new Date(chat.createdOn).toLocaleString()}</span>
+              </div>
+              {chat.unreadCount > 0 && (
+                <span className="badge badge-primary">{chat.unreadCount}</span>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

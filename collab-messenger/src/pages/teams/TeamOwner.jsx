@@ -11,7 +11,7 @@ export const TeamOwner = ({ team, newMember, setNewMember, handleAddMember, hand
         try {
             const author = members.find(member => member.id === team.author);
             const participants = members.filter(member => member.id !== team.author);
-            await createChatForTeam(author, participants);
+            await createChatForTeam(author, participants, team.teamName);
             alert('Group chat created successfully!');
         } catch (error) {
             console.error("Failed to create group chat:", error);
