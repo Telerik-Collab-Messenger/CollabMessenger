@@ -20,13 +20,13 @@ export const TeamOwner = ({ team, newMember, setNewMember, handleAddMember, hand
     };
 
     return (
-        <li key={team.id} className="p-4 mb-4 border border-gray-300 rounded-lg shadow-sm bg-white">
-            <h2 className="text-xl font-semibold mb-2">Team: {team.teamName}</h2>
-            <p className="text-gray-700 mb-4">
+        <li key={team.id} className="p-4 mb-4 border border-gray-600 rounded-lg shadow-sm bg-gray-900">
+            <h2 className="text-xl font-semibold mb-2 text-white">Team: {team.teamName}</h2>
+            <p className="text-gray-400 mb-4">
                 Members: 
                 <button 
                     onClick={handleCreateChat} 
-                    className="ml-2 text-blue-500 hover:text-blue-600 underline"
+                    className="ml-2 text-green-500 hover:text-green-600 underline"
                 >
                     Create Group Chat
                 </button>
@@ -34,8 +34,8 @@ export const TeamOwner = ({ team, newMember, setNewMember, handleAddMember, hand
             <ul className="mb-4">
                 {members.length ? (
                     members.map(member => (
-                        <li key={member.id} className="flex items-center justify-between py-2 border-b border-gray-200">
-                            <span className="text-gray-700">
+                        <li key={member.id} className="flex items-center justify-between py-2 border-b border-gray-700">
+                            <span className="text-gray-300">
                                 {member.id === team.author 
                                     ? `Owner ID: ${member.id} email: ${member.email}` 
                                     : `Member ID: ${member.id} email: ${member.email}`
@@ -61,11 +61,11 @@ export const TeamOwner = ({ team, newMember, setNewMember, handleAddMember, hand
                     value={newMember}
                     onChange={(e) => setNewMember(e.target.value)}
                     placeholder="Add member (email or handle)"
-                    className="flex-grow p-2 border border-gray-300 rounded-lg mr-2"
+                    className="flex-grow p-2 border border-gray-600 rounded-lg mr-2 bg-gray-800 text-white"
                 />
                 <button 
                     onClick={() => handleAddMember(team.id)}
-                    className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
+                    className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600"
                 >
                     Add Member
                 </button>

@@ -19,25 +19,23 @@ export const TeamMember = ({ team, currentUser, handleLeaveTeam }) => {
     };
 
     return (
-        <li key={team.id} className="p-4 mb-4 border border-gray-300 rounded-lg shadow-sm bg-white">
-            <h2 className="text-xl font-semibold mb-2">Team: {team.teamName}</h2>
-            <p className="text-gray-700 mb-4">
-                Members:
-            </p>
+        <li key={team.id} className="p-4 mb-4 border border-gray-600 rounded-lg shadow-sm bg-gray-900">
+            <h2 className="text-xl font-semibold mb-2 text-white">Team: {team.teamName}</h2>
+            <p className="text-gray-400 mb-4">Members:</p>
             <ul className="mb-4">
                 {members.length ? (
                     members.map(member => (
-                        <li key={member.id} className="flex items-center justify-between py-2 border-b border-gray-200">
-                            <span className="text-gray-700">
-                                {member.id === team.author 
-                                    ? `Owner ID: ${member.id} email: ${member.email}` 
+                        <li key={member.id} className="flex items-center justify-between py-2 border-b border-gray-700">
+                            <span className="text-gray-300">
+                                {member.id === team.author
+                                    ? `Owner ID: ${member.id} email: ${member.email}`
                                     : `Member ID: ${member.id} email: ${member.email}`
                                 }
                             </span>
                             {member.email === currentUser.email && (
-                                <button 
-                                    onClick={handleLeave} 
-                                    className="text-red-500 hover:text-red-600 underline"
+                                <button
+                                    onClick={handleLeave}
+                                    className="text-green-500 hover:text-green-600 underline"
                                 >
                                     Leave Team
                                 </button>
