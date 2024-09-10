@@ -13,7 +13,7 @@ export const getAllChats = async () => {
     }));
   };
 export const createChat = async (author) => {
-    const chat = {author, messages: false, participants: false, messages: false, createdOn: new Date().toString(), lastSeen: {[author]: new Date().toString()}};
+    const chat = {author, messages: false, participants: false, createdOn: new Date().toString(), lastSeen: {[author]: new Date().toString()}};
     //participants above should be an object, declaring it as false to bypass the firebase (not {}) probably not the best idea
     const result = await push(ref(db, 'chats'), chat);
     const id = result.key;
@@ -37,21 +37,55 @@ export const getChatByID = async (id) => {
         author: message.author,
         content: message.content,
         createdOn: message.createdOn,
+        seenBy: message.seenBy
+      }))
+    : [];
+
+    const participantArray = chatData.participants
+    ? Object.values(chatData.participants).map((userHandle) => ({
+        lastSeenMessageId: userHandle.lastSeenMessageId,
+        timeStamps: userHandle.timeStamps
       }))
     : [];
 
   return {
     ...chatData,
     //likedBy: Object.keys(chatData.likedBy ?? {}),
-    messages: [...messagesArray], //not sure if it is passed correctly [...messagesArray] ?
+    messages: [...messagesArray], participants: [...participantArray] //not sure if it is passed correctly [...messagesArray] ?
   };
 }
 
+// export const calculateUnreadMessages = async (chatId, userHandle) => {
+//   const chat = await getChatByID(chatId);
+  
+//   if (!chat.messages) return 0;
+//   return chat.messages.filter(message => !message.seenBy?.[userHandle]).length;
+// };
+
 export const calculateUnreadMessages = async (chatId, userHandle) => {
-  const chat = await getChatByID(chatId);
-  if (!chat.messages) return 0;
-  return chat.messages.filter(message => !message.seenBy?.[userHandle]).length;
+  try {
+    const chat = await getChatByID(chatId);
+
+    if (!chat.messages || chat.messages.length === 0) {
+      console.log('No messages in chat');
+      return 0; // No messages, return 0
+    }
+
+    // Filter for unread messages
+    const unreadMessages = chat.messages.filter(message => {
+      const isSeenByUser = message.seenBy && message.seenBy[userHandle];
+      console.log(`Message ID: ${message.id}, Seen By User (${userHandle}): ${isSeenByUser}`); // Log each message's seen status
+      return !isSeenByUser; // Return true if the message hasn't been seen by the user
+    });
+
+    console.log('Unread Messages:', unreadMessages); // Log the unread messages array
+    return unreadMessages.length; // Return the number of unread messages
+  } catch (error) {
+    console.error('Error calculating unread messages:', error);
+    return 0; // Handle errors by returning 0 unread messages
+  }
 };
+
 
 export const addChatParticipant = async (chatId, userHandle) => {
   try {
@@ -87,6 +121,7 @@ export const createChatMessage = async (chatId, author, content, date = new Date
         const id = result.key;
         await update(ref(db), {
             [`chats/${chatId}/messages/${id}/id`]: id,
+            [`chats/${chatId}/participants/${author}/lastSeenMessageId`]: id,
           });
     return id; 
 };
