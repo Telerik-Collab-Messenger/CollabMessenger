@@ -85,24 +85,25 @@ export default function Participant({ chatId, participantHandle }) {
           <ul className="menu bg-base-200 text-base-content w-56 p-2">
             {participant && (
               <>
-                <li>
-                  <span className="font-semibold">First Name:</span> {participant.firstName || 'N/A'}
-                </li>
-                <li>
-                  <span className="font-semibold">Last Name:</span> {participant.lastName || 'N/A'}
-                </li>
-                <li>
-                  <span className="font-semibold">Phone Number:</span> {participant.phoneNumber || 'N/A'}
-                </li>
-                <li>
-                  <label
-                    htmlFor={drawerId}
-                    className="btn btn-primary drawer-button w-full mt-2"
-                  >
-                    Close Drawer
-                  </label>
-                </li>
-              </>
+              <div className="flex items-center mb-2">
+                <span className="font-semibold mr-2">First Name:</span>
+                <span>{participant.firstName || 'N/A'}</span>
+              </div>
+              <div className="flex items-center mb-2">
+                <span className="font-semibold mr-2">Last Name:</span>
+                <span>{participant.lastName || 'N/A'}</span>
+              </div>
+              <div className="flex items-center mb-2">
+                <span className="font-semibold mr-2">Phone Number:</span>
+                <span>{participant.phoneNumber || 'N/A'}</span>
+              </div>
+              <label
+                htmlFor={drawerId}
+                className="btn btn-primary drawer-button w-full mt-2"
+              >
+                Close Drawer
+              </label>
+            </>
             )}
           </ul>
         </div>
