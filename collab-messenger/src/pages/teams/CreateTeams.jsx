@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
-import { fetchTeamsOwnedByUser, createTeam, removeTeamMember, addTeamMember, fetchUserTeams } from '../../services/team.services';
+import { fetchTeamsOwnedByUser, createTeam, removeTeamMember, addTeamMember } from '../../services/team.services';
 import { AppContext } from '../../state/app.context';
-import { Team } from './Team';
+import { TeamOwner } from './Team';
 
 const CreateTeam = () => {
     const { user, userData } = useContext(AppContext) || {};
@@ -11,11 +11,11 @@ const CreateTeam = () => {
     const [success, setSuccess] = useState(null);
     const [ownedTeams, setOwnedTeams] = useState([]);
     const [newMember, setNewMember] = useState('');
-    const [memberTeams, setMemberTeams] = useState([]);
+    
 
     useEffect(() => {
         const fetchTeams = async () => {
-            if (user && userData && userData.handle) { // Check if userData and handle are available
+            if (user && userData && userData.handle) {
                 try {
                     const teams = await fetchTeamsOwnedByUser(userData.handle);
                     setOwnedTeams(teams);
@@ -29,21 +29,6 @@ const CreateTeam = () => {
         };
     
         fetchTeams();
-    }, [user, userData]);
-
-    useEffect(() => {
-        const fetchMemberTeams = async () => {
-            if (user && userData && userData.handle) {
-                try {
-                    const teams = await fetchUserTeams(userData.handle);
-                    setMemberTeams(teams);  
-                } catch (error) {
-                    console.error("Failed to fetch member teams:", error);
-                }
-            }
-        };
-
-        fetchMemberTeams();
     }, [user, userData]);
 
     const handleSubmit = async (e) => {
@@ -132,7 +117,7 @@ const CreateTeam = () => {
             <ul>
                 {ownedTeams.length > 0 ? (
                     ownedTeams.map(team => (
-                        <Team 
+                        <TeamOwner 
                             key={team.id}
                             team={team}
                             newMember={newMember}
@@ -143,21 +128,6 @@ const CreateTeam = () => {
                     ))
                 ) : (
                     <li className="text-gray-500">No teams found.</li>
-                )}
-            </ul>
-
-            {/* Display Teams Where User is a Member */}
-            <h3 className="text-xl font-semibold mb-4 mt-6">Teams You are a Member Of</h3>
-            <ul>
-                {memberTeams.length > 0 ? (
-                    memberTeams.map(team => (
-                        <Team 
-                            key={team.id}
-                            team={team}
-                        />
-                    ))
-                ) : (
-                    <li className="text-gray-500">You are not a member of any teams.</li>
                 )}
             </ul>
         </div>
@@ -179,3 +149,35 @@ export default CreateTeam;
     //         setError('Failed to add member. Please try again.');
     //     }
     // }, [user, newMember])
+
+    // <h3 className="text-xl font-semibold mb-4 mt-6">Teams You are a Member Of</h3>
+    //         <ul>
+    //             {memberTeams.length > 0 ? (
+    //                 memberTeams.map(team => (
+    //                     <Team 
+    //                         key={team.id}
+    //                         team={team}
+    //                     />
+    //                 ))
+    //             ) : (
+    //                 <li className="text-gray-500">You are not a member of any teams.</li>
+    //             )}
+    //         </ul>
+
+    // const [memberTeams, setMemberTeams] = useState([]);
+
+
+    // useEffect(() => {
+    //     const fetchMemberTeams = async () => {
+    //         if (user && userData && userData.handle) {
+    //             try {
+    //                 const teams = await fetchUserTeams(userData.handle);
+    //                 setMemberTeams(teams);  
+    //             } catch (error) {
+    //                 console.error("Failed to fetch member teams:", error);
+    //             }
+    //         }
+    //     };
+
+    //     fetchMemberTeams();
+    // }, [user, userData]);

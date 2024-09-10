@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import PropTypes from 'prop-types';
 import { createChatForTeam } from "../../services/chat.services";
 
-export const Team = ({ team, newMember, setNewMember, handleAddMember, handleRemoveMember }) => {
+export const TeamOwner = ({ team, newMember, setNewMember, handleAddMember, handleRemoveMember }) => {
     const members = useMemo(() => {
         return Object.values(team?.members || {});
     }, [team?.members]);
@@ -74,7 +74,7 @@ export const Team = ({ team, newMember, setNewMember, handleAddMember, handleRem
     );
 };
 
-Team.propTypes = {
+TeamOwner.propTypes = {
     team: PropTypes.shape({
         id: PropTypes.string.isRequired,
         teamName: PropTypes.string.isRequired,
