@@ -128,7 +128,7 @@ export default function AllChats({ onSelectChat }) {
             ? chat.teamName 
             : isGroupChat
             ? 'Group Chat' 
-            : chat.author; 
+            : "1-on-1"; 
           
           return (
             <li
