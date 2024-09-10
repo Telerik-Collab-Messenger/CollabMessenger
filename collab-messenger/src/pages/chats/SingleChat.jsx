@@ -209,7 +209,7 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
       await createChatMessage(chatId, userData.handle, messageContent);
       setMessageContent(""); // Clear the input field after sending
       setHasScrolledToLastSeen(false);
-    } catch (error) {
+    } catch (error) {  
       console.error("Failed to send message:", error);
     }
   };
@@ -286,7 +286,6 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
                 <Participant
                   key={participantHandle}
                   chatId={chatId}
-                  userHandle={userData.handle} /////
                   participantHandle={participantHandle}
                 />
               ))}

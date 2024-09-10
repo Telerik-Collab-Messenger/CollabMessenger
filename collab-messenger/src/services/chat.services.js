@@ -44,11 +44,14 @@ export const getChatByID = async (id) => {
     : [];
 
     const participantArray = chatData.participants
-    ? Object.values(chatData.participants).map((userHandle) => ({
-        lastSeenMessageId: userHandle.lastSeenMessageId,
-        timeStamps: userHandle.timeStamps
-      }))
-    : [];
+    ? Object.entries(chatData.participants).map(([participantHandle, attribute]) => ({
+      participantHandle: participantHandle, 
+      lastSeenMessageId: attribute.lastSeenMessageId,
+      timeStamps: attribute.timeStamps,
+
+    }))
+  : [];
+    
 
   return {
     ...chatData,
@@ -118,28 +121,83 @@ export const addChatParticipant = async (chatId, userHandle) => {
 };
 
 
+// export const leaveChat = async (chatId, participantHandle) => {
+//   try {
+//     const currentChat = await getChatByID(chatId);
+
+//     console.log (`participant handle ${participantHandle} if condition1 ${currentChat.participants} if condition 2 ${currentChat.participants[participantHandle]}`);
+//     if (currentChat.participants && currentChat.participants[participantHandle]) {
+//       // const updatedParticipants = { ...currentChat.participants };
+//       // updatedParticipants[participantHandle] = null;
+
+//       await update(ref(db), {[`chats/${chatId}/participants/${participantHandle}`]: null});
+//       await update(ref(db), {[`users/${participantHandle}/chats/${chatId}`]: null});
+
+//       console.log(`User ${participantHandle} removed from chat ${chatId}.`);
+//       //return { success: true, participants: updatedParticipants };
+//     } else {
+//       console.log('User is not a participant.');
+//       return { success: false, participants: currentChat.participants };
+//     }
+//   } catch (error) {
+//     console.error("Failed to remove participant:", error);
+//     throw error;
+//   }
+// };
+
 export const leaveChat = async (chatId, participantHandle) => {
   try {
+ 
     const currentChat = await getChatByID(chatId);
+    console.log(currentChat.participants)
 
-    if (currentChat.participants && currentChat.participants[participantHandle]) {
-      const updatedParticipants = { ...currentChat.participants };
-      updatedParticipants[participantHandle] = null;
+    //console.log(currentChat.participants);
+    const participantIndex = currentChat.participants.findIndex(
+      (p) => p.participantHandle === participantHandle
+    );
 
-      await update(ref(db), {[`chats/${chatId}/participants/${participantHandle}`]: null});
-      await update(ref(db), {[`users/${participantHandle}/chats/${chatId}`]: null});
+    if (participantIndex !== -1) {
+      // Remove participant from the participants array
+      const updatedParticipants = [...currentChat.participants];
+      updatedParticipants.splice(participantIndex, 1); // Remove the participant
 
-      console.log(`User ${participantHandle} removed from chat ${chatId}.`);
-      return { success: true, participants: updatedParticipants };
+
+      if (currentChat.participants.length === 0) {
+        await update(ref(db), { [`chats/${chatId}`]: null})
+        return { success: true, chatDeleted: true };
+      }
+      await update(ref(db), {
+        [`chats/${chatId}/participants/${participantHandle}`]: null,
+      });
+
+      // Update the user's chat reference in Firebase (removing chat from their chats list)
+      await update(ref(db), {
+        [`users/${participantHandle}/chats/${chatId}`]: null,
+      });
+
+      // Update the local chat object
+      const updatedChat = {
+        ...currentChat,
+        participants: updatedParticipants, // Update participants locally
+      };
+
+      console.log(
+        `User ${participantHandle} removed from chat ${chatId}. Updated chat: `,
+        updatedChat
+      );
+
+      // Return the updated chat
+      return updatedChat;
     } else {
-      console.log('User is not a participant.');
-      return { success: false, participants: currentChat.participants };
+      console.log("User is not a participant.");
+      return { success: false, chat: currentChat };
     }
   } catch (error) {
     console.error("Failed to remove participant:", error);
     throw error;
   }
 };
+
 
 export const createChatMessage = async (chatId, author, content, date = new Date().toString()) => {
     const message = {author: author, content: content, createdOn: date, seenBy: {[author]: true}};

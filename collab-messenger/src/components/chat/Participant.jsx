@@ -10,8 +10,10 @@ export default function Participant({ chatId, participantHandle }) {
     try {
       const result = await leaveChat(chatId, participantHandle);
       if (result.success) {
+        // Navigate to ChatsMainView if the chat was deleted or updated successfully
         navigate('/chatsmainview');
-      }
+      } 
+
     } catch (error) {
       console.error("Failed to leave chat:", error);
     }
@@ -20,7 +22,7 @@ export default function Participant({ chatId, participantHandle }) {
   return (
     <div className="relative bg-base-300 rounded-lg p-4 max-w-[280px] h-[238px] overflow-hidden">
       {/* Container to hold the drawer */}
-      <div className="drawer h-full">
+      <div className="drawer h-full"> 
         {/* Drawer Toggle */}
         <input id={drawerId} type="checkbox" className="drawer-toggle" />
 
@@ -50,12 +52,13 @@ export default function Participant({ chatId, participantHandle }) {
             >
               Open Drawer
             </label>
-            <label
-              htmlFor={drawerId}
-              className="btn btn-secondary drawer-button w-16 h-6 text-xs"
-              onClick={handleLeaveChat}
-            >
-              Leave Chat
+            <label>
+            <button
+            className="btn btn-secondary w-16 h-6 text-xs"
+            onClick={handleLeaveChat}
+          >
+            Leave Chat
+          </button>
             </label>
           </div>
         </div>
