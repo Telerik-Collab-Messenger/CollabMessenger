@@ -1,10 +1,29 @@
 import { leaveChat } from "../../services/chat.services";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { getUserByHandle } from "../../services/user.services";
 
-export default function Participant({ chatId, participantHandle }) {
+export default function Participant({ chatId, participantHandle}) {
+  const [participantPhotoURL, setParticipantPhotoURL] = useState(null);
   const drawerId = `drawer-${participantHandle}`;
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = await getUserByHandle(participantHandle);
+        if (user) {
+          setParticipantPhotoURL(user.photoURL); // Assuming the photo URL is in `photoURL` field
+        } else {
+          console.error('User not found');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, [participantHandle]);
 
   const handleLeaveChat = async () => {
     try {
@@ -33,9 +52,13 @@ export default function Participant({ chatId, participantHandle }) {
             {/* Avatar */}
             <div className="avatar flex-shrink-0">
               <div className="ring-primary ring-offset-base-100 w-32 h-32 rounded-full ring ring-offset-2">
-                <img
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+              <img
+                  src={participantPhotoURL || '/img/newDefaultUserIMG.jpeg'}
                   alt="Profile"
+                  onError={(e) => {
+                    console.log('Error loading image:', e);
+                    e.target.src = '/img/newDefaultUserIMG.jpeg';
+                  }}
                 />
               </div>
             </div>
