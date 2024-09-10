@@ -6,6 +6,12 @@ import ExtraInfo from "./ExtraInfo";
 export default function ChatsMainView() {
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [hasScrolledToLastSeen, setHasScrolledToLastSeen] = useState(false);
+  const [chatTopic, setChatTopic] = useState("Casual"); // State to manage chat topic
+
+  // Callback to handle chat topic changes from SingleChat
+  const handleChatTopicChange = (newTopic) => {
+    setChatTopic(newTopic);
+  };
 
   return (
     <div className="flex h-screen">
@@ -17,7 +23,12 @@ export default function ChatsMainView() {
       {/* Middle with Single Chat - fixed at 600px width */}
       <div className="w-[1250px] p-4 overflow-y-auto">
         {selectedChatId ? (
-          <SingleChat chatId={selectedChatId} hasScrolledToLastSeen={hasScrolledToLastSeen} setHasScrolledToLastSeen={setHasScrolledToLastSeen}/>
+          <SingleChat chatId={selectedChatId} 
+          hasScrolledToLastSeen={hasScrolledToLastSeen} 
+          setHasScrolledToLastSeen={setHasScrolledToLastSeen}
+          chatTopic={chatTopic}
+          onChatTopicChange={handleChatTopicChange}
+          />
         ) : (
           <p>Select a chat to view the messages</p>
         )}

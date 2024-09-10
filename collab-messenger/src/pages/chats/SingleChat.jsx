@@ -9,11 +9,12 @@ import {
   addChatParticipant,
 } from "../../services/chat.services";
 
-export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScrolledToLastSeen }) {
+export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScrolledToLastSeen, chatTopic, onChatTopicChange }) {
   const { userData } = useContext(AppContext);
   const [chat, setChat] = useState(null); // Use chat state to hold all chat data
   const [messageContent, setMessageContent] = useState("");
   const [seenMessages, setSeenMessages] = useState(new Set()); // Track seen messages
+  const [currentTopic, setCurrentTopic] = useState(chatTopic);; 
   const lastSeenRef = useRef(null);
   //const [hasScrolledToLastSeen, setHasScrolledToLastSeen] = useState(false);
 
@@ -34,6 +35,8 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
         ...updatedChat,
         messages: messagesArray,
       });
+      setCurrentTopic(updatedChat.topic || "Casual"); // Set the chat topic from Firebase
+      if (onChatTopicChange) onChatTopicChange(updatedChat.topic || "Casual"); // Notify parent component
     });
   }, [chatId]);
  
@@ -154,6 +157,39 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
     }
   };
 
+  // const handleTopicChange = async (event) => {
+  //   const newTopic = event.target.value;
+  //   setChatTopic(newTopic);
+    
+  //   try {
+  //     await update(ref(db, `chats/${chatId}`), { topic: newTopic });
+  //     if (onChatTopicChange) onChatTopicChange(newTopic); // Notify parent component
+  //   } catch (error) {
+  //     console.error("Failed to update chat topic:", error);
+  //   }
+  // };
+
+  const handleTopicChange = async (event) => {
+    const newTopic = event.target.value;
+    setCurrentTopic(newTopic);// Update local state
+
+    try {
+      // Update the chat topic in Firebase
+      await update(ref(db, `chats/${chatId}`), { topic: newTopic });
+
+      // Notify the parent component about the new topic
+      if (onChatTopicChange) onChatTopicChange(newTopic);
+    } catch (error) {
+      console.error("Failed to update chat topic:", error);
+    }
+  };
+
+  // const handleTopicChange = (e) => {
+  //   const newTopic = e.target.value;
+  //   setCurrentTopic(newTopic);
+  //   onChatTopicChange(newTopic); // Update the parent with the new topic
+  // };
+
   return (
     <div className="flex h-full w-full">
       {chat ? (
@@ -162,6 +198,16 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
           <div className="w-3/4 flex flex-col p-4">
             <UserSearch onAddParticipant={handleAddParticipant} />
             <h2 className="text-2xl font-bold mb-4">Chat</h2>
+                      {/* Chat Topic Input */}
+          <div className="w-full p-4 border-b border-gray-200">
+            <input
+              type="text"
+              value={chatTopic}
+              onChange={handleTopicChange}
+              className="input input-bordered w-full"
+              placeholder="Enter chat topic"
+            />
+          </div>
 
             <ul className="list-none p-0 flex-grow overflow-y-auto">
               {chat.messages.map((msg) => (

@@ -10,7 +10,7 @@ import { AppContext } from "../../state/app.context";
 import { onValue, ref } from "firebase/database";
 import { db } from "../../config/firebase-config";
 
-export default function AllChats({ onSelectChat, setHasScrolledToLastSeen }) {
+export default function AllChats({ onSelectChat, setHasScrolledToLastSeen, chatTopic  }) {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -211,13 +211,17 @@ export default function AllChats({ onSelectChat, setHasScrolledToLastSeen }) {
               className="p-2 rounded-lg border shadow-sm hover:bg-gray-100 cursor-pointer text-sm"
               onClick={() => onSelectChat(chat.id)}
             >
+              <div className="flex justify-between items-center">
+              <span className="text-lg font-semibold">{chat.topic || "Casual"}</span>
+              {chat.unreadCount > 0 && (
+                <span className="badge badge-primary">unread: {chat.unreadCount}</span>
+              )} 
+            </div>
               <div className="flex justify-between">
                 <span>{chatLabel}</span>
                 <span className="text-xs">{new Date(chat.createdOn).toLocaleString()}</span>
               </div>
-              {chat.unreadCount > 0 && (
-                <span className="badge badge-primary">{chat.unreadCount}</span>
-              )}
+             
             </li>
           );
         })}
