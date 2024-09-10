@@ -9,12 +9,13 @@ import {
   addChatParticipant,
 } from "../../services/chat.services";
 
-export default function SingleChat({ chatId }) {
+export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScrolledToLastSeen }) {
   const { userData } = useContext(AppContext);
   const [chat, setChat] = useState(null); // Use chat state to hold all chat data
   const [messageContent, setMessageContent] = useState("");
   const [seenMessages, setSeenMessages] = useState(new Set()); // Track seen messages
   const lastSeenRef = useRef(null);
+  //const [hasScrolledToLastSeen, setHasScrolledToLastSeen] = useState(false);
 
   // Effect: Fetch and update chat data including messages
   useEffect(() => {
@@ -37,43 +38,54 @@ export default function SingleChat({ chatId }) {
   }, [chatId]);
 
   // Effect: Update scroll position and handle seen messages
+  // useEffect(() => {
+  //   if (!chat || !userData.handle) return;
+
+  //   const userParticipant = chat.participants?.[userData.handle];
+  //   const lastSeenMessageId = userParticipant
+  //     ? userParticipant.lastSeenMessageId
+  //     : null;
+
+
+  //     console.log (`scroll use effect lastSeemMessageId ${lastSeenMessageId}`)
+
+  //   if (lastSeenMessageId) {
+  //     const lastSeenMessage = document.getElementById(lastSeenMessageId);
+  //     if (lastSeenMessage) {
+  //       lastSeenMessage.scrollIntoView({ behavior: "smooth" });
+  //     } else {
+  //       // If no last seen message, scroll to the bottom (newest message)
+  //       const lastMessage = chat.messages[chat.messages.length - 1];
+  //       if (lastMessage) {
+  //         document.getElementById(lastMessage.id)?.scrollIntoView({ behavior: "smooth" });
+  //       }
+  //     }
+  //   }
+  // },  [chat, userData.handle]);
+
   useEffect(() => {
-    if (!chat || !userData.handle) return;
-
+    if (!chat || !userData.handle || hasScrolledToLastSeen) return;
+  
     const userParticipant = chat.participants?.[userData.handle];
-    const lastSeenMessageId = userParticipant
-      ? userParticipant.lastSeenMessageId
-      : null;
-
+    const lastSeenMessageId = userParticipant ? userParticipant.lastSeenMessageId : null;
+  
     if (lastSeenMessageId) {
+      // Scroll to the last seen message
       const lastSeenMessage = document.getElementById(lastSeenMessageId);
       if (lastSeenMessage) {
         lastSeenMessage.scrollIntoView({ behavior: "smooth" });
-      } else {
-        // Scroll to the first unread message if available
-        const firstUnreadMessage = chat.messages.find(
-          (msg) => !msg.seenBy?.[userData.handle]
-        );
-        if (firstUnreadMessage) {
-          document
-            .getElementById(firstUnreadMessage.id)
-            ?.scrollIntoView({ behavior: "smooth" });
-        }
+        setHasScrolledToLastSeen(true); // Prevent further scrolling once it's done
+      }
+    } else {
+      // If no last seen message, scroll to the bottom (newest message)
+      const lastMessage = chat.messages[chat.messages.length - 1];
+      if (lastMessage) {
+        document.getElementById(lastMessage.id)?.scrollIntoView({ behavior: "smooth" });
+        setHasScrolledToLastSeen(true);
       }
     }
-  }, [chat, userData.handle]);
+  }, [chat, userData.handle, hasScrolledToLastSeen]);
 
-  // Effect: Mark messages as seen
-  useEffect(() => {
-    if (!chat || !userData.handle) return;
-
-    chat.messages.forEach((msg) => {
-      if (!msg.seenBy?.[userData.handle] && !seenMessages.has(msg.id)) {
-        markMessageAsSeen(msg.id);
-        setSeenMessages((prevSeen) => new Set(prevSeen).add(msg.id)); // Add to seen messages
-      }
-    });
-  }, [chat, seenMessages, userData.handle]);
 
 
   //mark Message as seen
@@ -109,7 +121,7 @@ export default function SingleChat({ chatId }) {
   // this should be the best one
   const markMessageAsSeen = async (messageId, createdOn) => {
     if (!messageId) return;
-    
+
     try {
       // Prepare the batch of updates
       const updates = {};
@@ -132,6 +144,18 @@ export default function SingleChat({ chatId }) {
   };
 
 
+  // // Effect: Mark messages as seen
+  // useEffect(() => {
+  //   if (!chat || !userData.handle) return;
+
+  //   chat.messages.forEach((msg) => {
+  //     if (!msg.seenBy?.[userData.handle] && !seenMessages.has(msg.id)) {
+  //       markMessageAsSeen(msg.id);
+  //       setSeenMessages((prevSeen) => new Set(prevSeen).add(msg.id)); // Add to seen messages
+  //     }
+  //   });
+  // }, [chat, seenMessages, userData.handle]);
+
   // debounce for observer below on order not to send all of the updates to db at once
   const debounce = (func, delay) => {
     let timeoutId;
@@ -139,9 +163,9 @@ export default function SingleChat({ chatId }) {
       if (timeoutId) clearTimeout(timeoutId);
       timeoutId = setTimeout(() => func(...args), delay);
     };
-  };
+  }; 
   
-  const markMessageAsSeenDebounced = debounce(markMessageAsSeen, 10);
+  //const markMessageAsSeenDebounced = debounce(markMessageAsSeen, 100);
 
   // Use IntersectionObserver to detect when a message comes into view
   useEffect(() => {
@@ -150,13 +174,13 @@ export default function SingleChat({ chatId }) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const messageId = entry.target.getAttribute("data-message-id");
+          const messageId = entry.target.getAttribute("id");
           //const createdOn = entry.target.getAttribute("data-created-on");
 
           // Check if the message has already been seen by the user
           if (!seenMessages.has(messageId)) {
-            //markMessageAsSeen(messageId, createdOn);
-            markMessageAsSeenDebounced(messageId);
+            markMessageAsSeen(messageId);
+            //markMessageAsSeenDebounced(messageId);
           }
         }
       });
@@ -184,6 +208,7 @@ export default function SingleChat({ chatId }) {
     try {
       await createChatMessage(chatId, userData.handle, messageContent);
       setMessageContent(""); // Clear the input field after sending
+      setHasScrolledToLastSeen(false);
     } catch (error) {
       console.error("Failed to send message:", error);
     }
