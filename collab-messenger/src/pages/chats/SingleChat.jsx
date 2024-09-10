@@ -36,32 +36,7 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
       });
     });
   }, [chatId]);
-
-  // Effect: Update scroll position and handle seen messages
-  // useEffect(() => {
-  //   if (!chat || !userData.handle) return;
-
-  //   const userParticipant = chat.participants?.[userData.handle];
-  //   const lastSeenMessageId = userParticipant
-  //     ? userParticipant.lastSeenMessageId
-  //     : null;
-
-
-  //     console.log (`scroll use effect lastSeemMessageId ${lastSeenMessageId}`)
-
-  //   if (lastSeenMessageId) {
-  //     const lastSeenMessage = document.getElementById(lastSeenMessageId);
-  //     if (lastSeenMessage) {
-  //       lastSeenMessage.scrollIntoView({ behavior: "smooth" });
-  //     } else {
-  //       // If no last seen message, scroll to the bottom (newest message)
-  //       const lastMessage = chat.messages[chat.messages.length - 1];
-  //       if (lastMessage) {
-  //         document.getElementById(lastMessage.id)?.scrollIntoView({ behavior: "smooth" });
-  //       }
-  //     }
-  //   }
-  // },  [chat, userData.handle]);
+ 
 
   useEffect(() => {
     if (!chat || !userData.handle || hasScrolledToLastSeen) return;
@@ -85,37 +60,6 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
       }
     }
   }, [chat, userData.handle, hasScrolledToLastSeen]);
-
-
-
-  //mark Message as seen
-  // const markMessageAsSeen = (messageId, createdOn) => {
-  //   const updates = {};
-  //   //const userChatRef = ref(db, `chats/${chatId}/participants/${userData.handle}`);
-  //   updates[`chats/${chatId}/messages/${messageId}/seenBy/${userData.handle}`] = true;
-  //   updates[`chats/${chatId}/participants/${userData.handle}/lastSeenMessageId`] = messageId;
-  //   //updates[`chats/${chatId}/participants/${userData.handle}/lastSeenMessageDate`] = createdOn;
-
-  //   update(ref(db), updates)
-  //     .then(() => {
-  //       setSeenMessages((prevSeen) => new Set(prevSeen).add(messageId)); // Add to seen messages
-  //     })
-  //     .catch((error) => console.error("Failed to mark message as seen:", error));
-  // };
-
-  // const markMessageAsSeen = (messageId, createdOn) => {
-  //   const userChatRef = ref(db, `chats/${chatId}/participants/${userData.handle}`);
-  //   update(userChatRef, {
-  //     lastSeenMessageId: messageId
-  //   });
-
-  //   const messageSeenRef = ref(db, `chats/${chatId}/messages/${messageId}/seenBy/${userData.handle}`);
-  //   update(messageSeenRef, true);
-  //   //await update(ref(db, `chats/${chatId}/participants`),{ [userHandle]: {'lastSeenMessageId': false, 'timeStamps': false} } );
-  //   //await update(ref(db), {[`chats/${id}/id`]: id,});
-
-  //   setSeenMessages((prevSeen) => new Set(prevSeen).add(messageId));
-  // };
 
 
   // this should be the best one
@@ -143,27 +87,14 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
     }
   };
 
-
-  // // Effect: Mark messages as seen
-  // useEffect(() => {
-  //   if (!chat || !userData.handle) return;
-
-  //   chat.messages.forEach((msg) => {
-  //     if (!msg.seenBy?.[userData.handle] && !seenMessages.has(msg.id)) {
-  //       markMessageAsSeen(msg.id);
-  //       setSeenMessages((prevSeen) => new Set(prevSeen).add(msg.id)); // Add to seen messages
-  //     }
-  //   });
-  // }, [chat, seenMessages, userData.handle]);
-
   // debounce for observer below on order not to send all of the updates to db at once
-  const debounce = (func, delay) => {
-    let timeoutId;
-    return (...args) => {
-      if (timeoutId) clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func(...args), delay);
-    };
-  }; 
+  // const debounce = (func, delay) => {
+  //   let timeoutId;
+  //   return (...args) => {
+  //     if (timeoutId) clearTimeout(timeoutId);
+  //     timeoutId = setTimeout(() => func(...args), delay);
+  //   };
+  // }; 
   
   //const markMessageAsSeenDebounced = debounce(markMessageAsSeen, 100);
 
@@ -214,17 +145,6 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
     }
   };
 
-  // Mark message as seen
-  // const markMessageAsSeen = (messageId) => {
-  //   const userChatRef = ref(
-  //     db,
-  //     `chats/${chatId}/participants/${userData.handle}`
-  //   );
-  //   update(userChatRef, {
-  //     lastSeenMessageId: messageId,
-  //   });
-  // };
-
   // Handle adding a participant
   const handleAddParticipant = async (user) => {
     try {
@@ -251,9 +171,19 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
                   ref={msg.seenBy?.[userData.handle] ? null : lastSeenRef}
                   className={`mb-2 p-4 rounded-lg shadow-md ${
                     msg.seenBy?.[userData.handle] ? "bg-gray-100" : "bg-white"
+                  } ${
+                    msg.author === userData.handle ? "text-right" : "text-left"
                   }`}
                 >
-                  <strong>{msg.author}:</strong> {msg.content} <br />
+                  {msg.author === userData.handle ? (
+                    <>
+                      <strong>{msg.content}</strong> <br />
+                    </>
+                  ) : (
+                    <>
+                      <strong>{msg.author}:</strong> {msg.content} <br />
+                    </>
+                  )}
                   <small className="text-gray-500">
                     {new Date(msg.createdOn).toLocaleString()}
                   </small>
