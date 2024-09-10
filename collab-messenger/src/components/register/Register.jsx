@@ -87,7 +87,7 @@ const Register = () => {
 
             alert('User registered successfully!');
             setModalVisible(false);
-            navigate('/teams');
+            navigate('/chatsmainview');
         } catch (error) {
             console.error('Error registering user:', error);
             alert(error.message);
