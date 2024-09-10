@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 export default function UserSearch({ onAddParticipant }) {
   const [users, setUsers] = useState([]);
-  const [search, setSearch] = useState("");  // Local state for search input
+  const [search, setSearch] = useState("");  
 
   useEffect(() => {
     if (search) {
@@ -14,7 +14,6 @@ export default function UserSearch({ onAddParticipant }) {
         .then((users) => setUsers(users))
         .catch((error) => alert(error.message));
     } else {
-      // Clear users list when search is empty
       setUsers([]);
     }
   }, [search]);
