@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
-import { fetchTeamsOwnedByUser, createTeam, removeTeamMember, addTeamMember } from '../../services/team.services';
+import { fetchTeamsOwnedByUser, createTeam, removeTeamMember, addTeamMember, fetchTeamsWhereUserIsMember } from '../../services/team.services';
 import { AppContext } from '../../state/app.context';
-import { TeamOwner } from './Team';
+import { TeamOwner } from './TeamOwner';
+import { TeamMember } from './TeamMember';
 
 const CreateTeam = () => {
     const { user, userData } = useContext(AppContext) || {};
@@ -11,14 +12,17 @@ const CreateTeam = () => {
     const [success, setSuccess] = useState(null);
     const [ownedTeams, setOwnedTeams] = useState([]);
     const [newMember, setNewMember] = useState('');
+    const [memberTeams, setMemberTeams] = useState([]);
     
 
     useEffect(() => {
         const fetchTeams = async () => {
             if (user && userData && userData.handle) {
                 try {
-                    const teams = await fetchTeamsOwnedByUser(userData.handle);
-                    setOwnedTeams(teams);
+                    const ownedTeams = await fetchTeamsOwnedByUser(userData.handle);
+                    setOwnedTeams(ownedTeams);
+                    const memberTeams = await fetchTeamsWhereUserIsMember(userData.handle);
+                    setMemberTeams(memberTeams);
                 } catch (error) {
                     console.error("Failed to fetch teams:", error);
                     setError('Failed to fetch teams. Please try again.');
@@ -113,7 +117,7 @@ const CreateTeam = () => {
                     {loading ? 'Creating...' : 'Create Team'}
                 </button>
             </form>
-              <h3 className="text-xl font-semibold mb-4">Teams You Own</h3>
+            <h3 className="text-xl font-semibold mb-4">Teams You Own</h3>
             <ul>
                 {ownedTeams.length > 0 ? (
                     ownedTeams.map(team => (
@@ -124,6 +128,21 @@ const CreateTeam = () => {
                             setNewMember={setNewMember}
                             handleAddMember={handleAddMember}
                             handleRemoveMember={handleRemoveMember}
+                        />
+                    ))
+                ) : (
+                    <li className="text-gray-500">No teams found.</li>
+                )}
+            </ul>
+            <h3 className="text-xl font-semibold mb-4">Teams you are a Member Of</h3>
+            <ul>
+                {memberTeams.length > 0 ? (
+                    memberTeams.map(team => (
+                        <TeamMember 
+                            key={team.id}
+                            team={team}
+                            currentUser={userData} 
+                            handleLeaveTeam={handleRemoveMember}  
                         />
                     ))
                 ) : (

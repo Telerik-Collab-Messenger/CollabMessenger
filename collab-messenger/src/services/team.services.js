@@ -260,6 +260,16 @@ export const fetchUserTeams = async (userId) => {
   }
 };
 
+export const fetchTeamsWhereUserIsMember = async (userHandle) => {
+  const snapshot = await get(ref(db, 'teams'));
+  const teams = snapshot.val() || {};
+  
+  // Filter teams where user is a member but not the owner
+  return Object.values(teams).filter(team => 
+      team.members && Object.values(team.members).some(member => member.id === userHandle && !member.owner)
+  );
+};
+
 //latest before mod
 
 
