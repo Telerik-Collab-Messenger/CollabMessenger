@@ -12,8 +12,10 @@ export const getAllChats = async () => {
       likeCount: chat.likedBy ? Object.keys(chat.likedBy).length : 0,
     }));
   };
-export const createChat = async (author) => {
-    const chat = {author, messages: false, participants: false, createdOn: new Date().toString(), lastSeen: {[author]: new Date().toString()}};
+export const createChat = async (author, teamName = null, isTeamChat = false) => {
+    // trayans code 
+    // const chat = {author, messages: false, participants: false, createdOn: new Date().toString(), lastSeen: {[author]: new Date().toString()}};
+    const chat = {author, messages: false, participants: false, createdOn: new Date().toString(), lastSeen: {[author]: new Date().toString()}, isTeamChat, teamName};
     //participants above should be an object, declaring it as false to bypass the firebase (not {}) probably not the best idea
     const result = await push(ref(db, 'chats'), chat);
     const id = result.key;
@@ -22,7 +24,7 @@ export const createChat = async (author) => {
     await update(ref(db), {[`chats/${id}/id`]: id,});
     await addChatParticipant (id, author);
     return id; 
-}
+};
 
 export const getChatByID = async (id) => {
     const snapshot = await get(ref(db, `chats/${id}`));
@@ -150,16 +152,31 @@ export const createChatMessage = async (chatId, author, content, date = new Date
     return id; 
 };
 
-export const createChatForTeam = async (author, participants) => {
-  const chatId = await createChat(author.id);
+export const createChatForTeam = async (author, participants, teamName) => {
+  const chatId = await createChat(author.id, teamName, true);
   await addChatParticipant(chatId, author.id);
+
   for (const participant of participants) {
-    if (participant.id !== author.id) {
-      await addChatParticipant(chatId, participant.id);
-    }
+      if (participant.id !== author.id) {
+          await addChatParticipant(chatId, participant.id);
+      }
   }
-  return chatId; 
+
+  return chatId;
 };
+
+//this works 
+
+// export const createChatForTeam = async (author, participants) => {
+//   const chatId = await createChat(author.id);
+//   await addChatParticipant(chatId, author.id);
+//   for (const participant of participants) {
+//     if (participant.id !== author.id) {
+//       await addChatParticipant(chatId, participant.id);
+//     }
+//   }
+//   return chatId; 
+// };
 
 
 // export const createChatForTeam = async (author, participants) => {
