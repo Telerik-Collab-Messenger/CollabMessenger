@@ -1,7 +1,13 @@
-import { get, set, ref, query, equalTo, orderByChild, update, push } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
 import { db } from '../config/firebase-config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../config/firebase-config';
+
+export const getAllUsersLength = async () => {
+  const snapshot = await get(ref(db, 'users'));
+  if (!snapshot.exists()) return [];
+  return snapshot;
+}
 
 export const getUserByHandle = async (handle) => {
   const usersRef = ref(db, 'users');
