@@ -158,6 +158,8 @@ export default function SingleChat({ chatId }) {
               {Object.keys(chat.participants).map((participantHandle) => (
                 <Participant
                   key={participantHandle}
+                  chatId={chatId}
+                  userHandle={userData.handle} /////
                   participantHandle={participantHandle}
                 />
               ))}

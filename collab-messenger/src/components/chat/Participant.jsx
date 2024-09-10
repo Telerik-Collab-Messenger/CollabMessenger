@@ -1,5 +1,21 @@
-export default function Participant({ participantHandle }) {
+import { leaveChat } from "../../services/chat.services";
+import { useNavigate } from "react-router-dom";
+
+export default function Participant({ chatId, participantHandle }) {
   const drawerId = `drawer-${participantHandle}`;
+
+  const navigate = useNavigate();
+
+  const handleLeaveChat = async () => {
+    try {
+      const result = await leaveChat(chatId, participantHandle);
+      if (result.success) {
+        navigate('/chatsmainview');
+      }
+    } catch (error) {
+      console.error("Failed to leave chat:", error);
+    }
+  };
 
   return (
     <div className="relative bg-base-300 rounded-lg p-4 max-w-[280px] h-[238px] overflow-hidden">
@@ -37,6 +53,7 @@ export default function Participant({ participantHandle }) {
             <label
               htmlFor={drawerId}
               className="btn btn-secondary drawer-button w-16 h-6 text-xs"
+              onClick={handleLeaveChat}
             >
               Leave Chat
             </label>
