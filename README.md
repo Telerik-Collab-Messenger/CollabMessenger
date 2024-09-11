@@ -71,4 +71,4 @@ Ensure that `tailwind.config.js` includes the paths to your source files.
 ---
 
 ## Contributing
-We welcome contributions! Feel free to submit issues or make pull requests. Make sure to:
+We welcome contributions! Feel free to submit issues or make pull requests.
