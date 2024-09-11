@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useState } from "react";
-//import { useSearchParams } from "react-router-dom";
 import { getAllUsers } from "../../services/user.services";
 import PropTypes from "prop-types";
 
@@ -27,7 +26,7 @@ export default function UserSearch({ onAddParticipant }) {
       <h1 className="text-xl font-semibold mb-4 text-gray-800">Search for a user to chat:</h1>
 
       <input
-        value={search} // Controlled input, no URL params involved
+        value={search}
         onChange={(e) => setSearch(e.target.value)}
         type="text"
         name="search"

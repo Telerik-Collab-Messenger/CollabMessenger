@@ -16,7 +16,6 @@ export default function SideNav() {
 }
 
 // calls
-
   // <button className="bg-green-500 text-white mt-5 w-20 h-10 px-4 py-2 rounded flex items-center justify-center">
   //   Calls
   // </button>
