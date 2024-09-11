@@ -1,5 +1,7 @@
-Communicator 3000
+# Communicator 3000
+
 Project Description
+
 This is a team collaboration and chat application built using React, Firebase, Tailwind CSS, and other modern web technologies. The application enables users to:
 
 Create and manage teams
