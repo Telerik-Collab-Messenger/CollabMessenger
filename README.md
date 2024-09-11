@@ -13,9 +13,13 @@ The app leverages Firebase for real-time data storage and React for a dynamic us
 
 Features
 🛠 Team management: Create, add, and remove team members easily
+
 💬 Real-time chat: Instant messaging in team chats
+
 👤 Profile management: Manage user profiles with custom avatars
+
 ⚡ Real-time updates: Instantaneous updates with Firebase
+
 🎨 Responsive design: Built using Tailwind CSS for mobile-first design
 
 Setup Instructions
@@ -23,6 +27,7 @@ Setup Instructions
 1. Clone the Repository
 
 git clone <repository_url>
+
 cd <project_directory>
 
 2. Client Setup (Frontend with Vite)
@@ -58,9 +63,11 @@ npm start
 Ensure the following packages are installed:
 
 # Firebase
+
 npm install firebase
 
 # React Firebase Hooks
+
 npm install react-firebase-hooks
 
 5. Tailwind CSS Setup
@@ -68,9 +75,11 @@ npm install react-firebase-hooks
 If you haven’t set up Tailwind CSS, do so:
 
 # Install Tailwind CSS
+
 npm install -D tailwindcss
 
 # Initialize Tailwind configuration
+
 npx tailwindcss init
 
 Ensure your tailwind.config.js includes the correct paths to your source files.
