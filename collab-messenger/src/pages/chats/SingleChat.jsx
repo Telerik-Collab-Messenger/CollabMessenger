@@ -154,7 +154,8 @@ export default function SingleChat({
         <>
           <div className="w-3/4 flex flex-col p-4">
             <UserSearch onAddParticipant={handleAddParticipant} />
-            <h2 className="text-2xl font-bold mb-4">Chat</h2>
+            <h2 className="text-2xl font-bold mb-4 mt-8">Chat</h2>
+            {/* Chat Topic Input */}
             <div className="w-full p-4 border-b border-gray-200">
               <input
                 type="text"
