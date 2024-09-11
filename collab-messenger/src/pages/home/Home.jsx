@@ -18,12 +18,12 @@ export default function Home() {
         >
           <div id="home-title" className="mb-8">
             <h1 className="text-4xl font-bold text-emerald-700">
-              Welcome to Collab Messenger
+              Welcome to Communicator 3000
             </h1>
           </div>
           <div id="home-content" className="text-center">
             <p className="text-lg text-emerald-600 mb-4">
-              Collab Messenger is a simple messaging app that allows you to chat
+            This is a simple messaging app that allows you to chat
               with your friends and family.
             </p>
             <p className="text-lg text-emerald-600 mb-8">Get started</p>
