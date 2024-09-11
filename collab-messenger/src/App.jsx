@@ -16,6 +16,7 @@ import AllChats from './pages/chats/AllChats';
 import SingleChat from './pages/chats/SingleChat';
 import Teams from './pages/teams/CreateTeams';
 import ChatsMainView from './pages/chats/ChatsMainView';
+import ExtraInfo from './pages/chats/ExtraInfo';
 
 
 
@@ -64,6 +65,7 @@ function App() {
             <Route path="/chatsmainview" element={<ChatsMainView />} />
             <Route path="/teams" element={<Teams />} />
             <Route path="/chat/:id" element={<SingleChat />} />
+            <Route path='/extraInfo' element={<ExtraInfo />} />
           </Routes>
           </div>
         </div>

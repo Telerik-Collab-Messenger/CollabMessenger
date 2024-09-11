@@ -79,11 +79,11 @@ export const calculateUnreadMessages = async (chatId, userHandle) => {
     // Filter for unread messages
     const unreadMessages = chat.messages.filter(message => {
       const isSeenByUser = message.seenBy && message.seenBy[userHandle];
-      console.log(`Message ID: ${message.id}, Seen By User (${userHandle}): ${isSeenByUser}`); // Log each message's seen status
+      //console.log(`Message ID: ${message.id}, Seen By User (${userHandle}): ${isSeenByUser}`); // Log each message's seen status
       return !isSeenByUser; // Return true if the message hasn't been seen by the user
     });
 
-    console.log('Unread Messages:', unreadMessages); // Log the unread messages array
+    //console.log('Unread Messages:', unreadMessages); // Log the unread messages array
     return unreadMessages.length; // Return the number of unread messages
   } catch (error) {
     console.error('Error calculating unread messages:', error);

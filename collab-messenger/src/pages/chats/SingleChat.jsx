@@ -9,12 +9,18 @@ import {
   addChatParticipant,
 } from "../../services/chat.services";
 
-export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScrolledToLastSeen, chatTopic, onChatTopicChange }) {
+export default function SingleChat({
+  chatId,
+  hasScrolledToLastSeen,
+  setHasScrolledToLastSeen,
+  chatTopic,
+  onChatTopicChange,
+}) {
   const { userData } = useContext(AppContext);
   const [chat, setChat] = useState(null); // Use chat state to hold all chat data
   const [messageContent, setMessageContent] = useState("");
   const [seenMessages, setSeenMessages] = useState(new Set()); // Track seen messages
-  const [currentTopic, setCurrentTopic] = useState(chatTopic);; 
+  const [currentTopic, setCurrentTopic] = useState(chatTopic);
   const lastSeenRef = useRef(null);
   //const [hasScrolledToLastSeen, setHasScrolledToLastSeen] = useState(false);
 
@@ -24,7 +30,7 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
 
     return onValue(ref(db, `chats/${chatId}`), (snapshot) => {
       const updatedChat = snapshot.val();
-      console.log(updatedChat);
+      //console.log(updatedChat);
       const messagesArray = updatedChat.messages
         ? Object.entries(updatedChat.messages).map(([key, message]) => ({
             id: key,
@@ -39,14 +45,15 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
       if (onChatTopicChange) onChatTopicChange(updatedChat.topic || "Casual"); // Notify parent component
     });
   }, [chatId]);
- 
 
   useEffect(() => {
     if (!chat || !userData.handle || hasScrolledToLastSeen) return;
-  
+
     const userParticipant = chat.participants?.[userData.handle];
-    const lastSeenMessageId = userParticipant ? userParticipant.lastSeenMessageId : null;
-  
+    const lastSeenMessageId = userParticipant
+      ? userParticipant.lastSeenMessageId
+      : null;
+
     if (lastSeenMessageId) {
       // Scroll to the last seen message
       const lastSeenMessage = document.getElementById(lastSeenMessageId);
@@ -58,12 +65,13 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
       // If no last seen message, scroll to the bottom (newest message)
       const lastMessage = chat.messages[chat.messages.length - 1];
       if (lastMessage) {
-        document.getElementById(lastMessage.id)?.scrollIntoView({ behavior: "smooth" });
+        document
+          .getElementById(lastMessage.id)
+          ?.scrollIntoView({ behavior: "smooth" });
         setHasScrolledToLastSeen(true);
       }
     }
   }, [chat, userData.handle, hasScrolledToLastSeen]);
-
 
   // this should be the best one
   const markMessageAsSeen = async (messageId, createdOn) => {
@@ -74,15 +82,15 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
       const updates = {};
       const userChatRef = `chats/${chatId}/participants/${userData.handle}`;
       const messageSeenRef = `chats/${chatId}/messages/${messageId}/seenBy/${userData.handle}`;
-    
+
       // Add the updates for the seen message and last seen message info
       updates[`${messageSeenRef}`] = true;
       updates[`${userChatRef}/lastSeenMessageId`] = messageId;
       //updates[`${userChatRef}/lastSeenMessageDate`] = createdOn;
-    
+
       // Perform the update in Firebase
       await update(ref(db), updates);
-  
+
       // After the update is successful, mark the message as seen locally
       setSeenMessages((prevSeen) => new Set(prevSeen).add(messageId));
     } catch (error) {
@@ -97,8 +105,8 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
   //     if (timeoutId) clearTimeout(timeoutId);
   //     timeoutId = setTimeout(() => func(...args), delay);
   //   };
-  // }; 
-  
+  // };
+
   //const markMessageAsSeenDebounced = debounce(markMessageAsSeen, 100);
 
   // Use IntersectionObserver to detect when a message comes into view
@@ -134,7 +142,6 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
     };
   }, [chat, seenMessages, userData.handle]);
 
-
   // Handle sending a new message
   const handleSendMessage = async () => {
     if (!messageContent.trim()) return;
@@ -143,7 +150,7 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
       await createChatMessage(chatId, userData.handle, messageContent);
       setMessageContent(""); // Clear the input field after sending
       setHasScrolledToLastSeen(false);
-    } catch (error) {  
+    } catch (error) {
       console.error("Failed to send message:", error);
     }
   };
@@ -160,7 +167,7 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
   // const handleTopicChange = async (event) => {
   //   const newTopic = event.target.value;
   //   setChatTopic(newTopic);
-    
+
   //   try {
   //     await update(ref(db, `chats/${chatId}`), { topic: newTopic });
   //     if (onChatTopicChange) onChatTopicChange(newTopic); // Notify parent component
@@ -171,7 +178,7 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
 
   const handleTopicChange = async (event) => {
     const newTopic = event.target.value;
-    setCurrentTopic(newTopic);// Update local state
+    setCurrentTopic(newTopic); // Update local state
 
     try {
       // Update the chat topic in Firebase
@@ -198,16 +205,16 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
           <div className="w-3/4 flex flex-col p-4">
             <UserSearch onAddParticipant={handleAddParticipant} />
             <h2 className="text-2xl font-bold mb-4">Chat</h2>
-                      {/* Chat Topic Input */}
-          <div className="w-full p-4 border-b border-gray-200">
-            <input
-              type="text"
-              value={chatTopic}
-              onChange={handleTopicChange}
-              className="input input-bordered w-full"
-              placeholder="Enter chat topic"
-            />
-          </div>
+            {/* Chat Topic Input */}
+            <div className="w-full p-4 border-b border-gray-200">
+              <input
+                type="text"
+                value={chatTopic}
+                onChange={handleTopicChange}
+                className="input input-bordered w-full"
+                placeholder="Enter chat topic"
+              />
+            </div>
 
             <ul className="list-none p-0 flex-grow overflow-y-auto">
               {chat.messages.map((msg) => (
@@ -233,6 +240,27 @@ export default function SingleChat({ chatId, hasScrolledToLastSeen, setHasScroll
                   <small className="text-gray-500">
                     {new Date(msg.createdOn).toLocaleString()}
                   </small>
+                  <button
+                    className="btn btn-secondary btn-sm ml-2"
+                    onClick={async () => {
+                      try {
+                        await update(
+                          ref(
+                            db,
+                            `chats/${chatId}/participants/${userData.handle}/timeStamps/${msg.id}`
+                          ),
+                          {
+                            createdOn: msg.createdOn,
+                            title: "New Timestamp",
+                          }
+                        );
+                      } catch (error) {
+                        console.error("Failed to create timestamp:", error);
+                      }
+                    }}
+                  >
+                    Add Timestamp
+                  </button>
                 </li>
               ))}
             </ul>

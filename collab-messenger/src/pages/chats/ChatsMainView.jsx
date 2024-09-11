@@ -36,7 +36,7 @@ export default function ChatsMainView() {
 
       {/* Right side with Extra Info - fixed at 300px width */}
       <div className="w-[300px] p-4 overflow-y-auto">
-        <ExtraInfo />
+        <ExtraInfo chatId={selectedChatId} />
       </div>
     </div>
   );
