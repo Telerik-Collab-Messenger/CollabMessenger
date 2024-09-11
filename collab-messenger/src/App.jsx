@@ -25,13 +25,6 @@ function App() {
     user: null,
     userData: null,
   });
-  //const [user] = useAuthState(auth);
-
-  // useEffect(() => {
-  //   if (appState.user !== user) {
-  //     setAppState({...appState, user });
-  //   }
-  // }, [appState.user, user])
 
   const [user, loading, error] = useAuthState(auth);
 

@@ -13,14 +13,9 @@ export const getAllChats = async () => {
     }));
   };
 export const createChat = async (author, teamName = null, isTeamChat = false) => {
-    // trayans code 
-    // const chat = {author, messages: false, participants: false, createdOn: new Date().toString(), lastSeen: {[author]: new Date().toString()}};
     const chat = {author, messages: false, participants: false, createdOn: new Date().toString(), lastSeen: {[author]: new Date().toString()}, isTeamChat, teamName};
-    //participants above should be an object, declaring it as false to bypass the firebase (not {}) probably not the best idea
     const result = await push(ref(db, 'chats'), chat);
     const id = result.key;
-    //await push(ref(db, `chats/${id}/participants`), author);
-    //await update(ref(db), {[`chats/${id}/participants`]: {[author]: true}});
     await update(ref(db), {[`chats/${id}/id`]: id,});
     await addChatParticipant (id, author);
     return id; 
@@ -55,17 +50,9 @@ export const getChatByID = async (id) => {
 
   return {
     ...chatData,
-    //likedBy: Object.keys(chatData.likedBy ?? {}),
-    messages: [...messagesArray], participants: [...participantArray] //not sure if it is passed correctly [...messagesArray] ?
+    messages: [...messagesArray], participants: [...participantArray] 
   };
 }
-
-// export const calculateUnreadMessages = async (chatId, userHandle) => {
-//   const chat = await getChatByID(chatId);
-  
-//   if (!chat.messages) return 0;
-//   return chat.messages.filter(message => !message.seenBy?.[userHandle]).length;
-// };
 
 export const calculateUnreadMessages = async (chatId, userHandle) => {
   try {
@@ -73,21 +60,18 @@ export const calculateUnreadMessages = async (chatId, userHandle) => {
 
     if (!chat.messages || chat.messages.length === 0) {
       console.log('No messages in chat');
-      return 0; // No messages, return 0
+      return 0; 
     }
 
-    // Filter for unread messages
     const unreadMessages = chat.messages.filter(message => {
       const isSeenByUser = message.seenBy && message.seenBy[userHandle];
-      //console.log(`Message ID: ${message.id}, Seen By User (${userHandle}): ${isSeenByUser}`); // Log each message's seen status
-      return !isSeenByUser; // Return true if the message hasn't been seen by the user
+      return !isSeenByUser; 
     });
 
-    //console.log('Unread Messages:', unreadMessages); // Log the unread messages array
-    return unreadMessages.length; // Return the number of unread messages
+    return unreadMessages.length;
   } catch (error) {
     console.error('Error calculating unread messages:', error);
-    return 0; // Handle errors by returning 0 unread messages
+    return 0;
   }
 };
 
@@ -96,20 +80,13 @@ export const addChatParticipant = async (chatId, userHandle) => {
   try {
     const currentChat = await getChatByID(chatId);
 
-    // Check if the user is already a participant
     if (!Object.values(currentChat.participants).includes(userHandle)) {
-      //currentChat.participants.push(userHandle);
 
-      // Update the participants array in the database NOT REALLY 
-      // await update(ref(db, `chats/${chatId}`), {
-      //   participants: currentChat.participants,
-      // });
-      //await push(ref(db, `chats/${chatId}/participants`), userHandle);
       await update(ref(db, `chats/${chatId}/participants`),{ [userHandle]: {'lastSeenMessageId': false, 'timeStamps': false} } );
-
       await addChatToUser(userHandle, chatId);
 
       return currentChat.participants;
+
     } else {
       console.log('User is already a participant.');
       return currentChat.participants;
@@ -120,46 +97,19 @@ export const addChatParticipant = async (chatId, userHandle) => {
   }
 };
 
-
-// export const leaveChat = async (chatId, participantHandle) => {
-//   try {
-//     const currentChat = await getChatByID(chatId);
-
-//     console.log (`participant handle ${participantHandle} if condition1 ${currentChat.participants} if condition 2 ${currentChat.participants[participantHandle]}`);
-//     if (currentChat.participants && currentChat.participants[participantHandle]) {
-//       // const updatedParticipants = { ...currentChat.participants };
-//       // updatedParticipants[participantHandle] = null;
-
-//       await update(ref(db), {[`chats/${chatId}/participants/${participantHandle}`]: null});
-//       await update(ref(db), {[`users/${participantHandle}/chats/${chatId}`]: null});
-
-//       console.log(`User ${participantHandle} removed from chat ${chatId}.`);
-//       //return { success: true, participants: updatedParticipants };
-//     } else {
-//       console.log('User is not a participant.');
-//       return { success: false, participants: currentChat.participants };
-//     }
-//   } catch (error) {
-//     console.error("Failed to remove participant:", error);
-//     throw error;
-//   }
-// };
-
 export const leaveChat = async (chatId, participantHandle) => {
   try {
  
     const currentChat = await getChatByID(chatId);
     console.log(currentChat.participants)
 
-    //console.log(currentChat.participants);
     const participantIndex = currentChat.participants.findIndex(
       (p) => p.participantHandle === participantHandle
     );
 
     if (participantIndex !== -1) {
-      // Remove participant from the participants array
       const updatedParticipants = [...currentChat.participants];
-      updatedParticipants.splice(participantIndex, 1); // Remove the participant
+      updatedParticipants.splice(participantIndex, 1);
 
 
       if (currentChat.participants.length === 0) {
@@ -170,23 +120,20 @@ export const leaveChat = async (chatId, participantHandle) => {
         [`chats/${chatId}/participants/${participantHandle}`]: null,
       });
 
-      // Update the user's chat reference in Firebase (removing chat from their chats list)
       await update(ref(db), {
         [`users/${participantHandle}/chats/${chatId}`]: null,
       });
 
-      // Update the local chat object
       const updatedChat = {
         ...currentChat,
-        participants: updatedParticipants, // Update participants locally
+        participants: updatedParticipants, 
       };
 
       console.log(
         `User ${participantHandle} removed from chat ${chatId}. Updated chat: `,
         updatedChat
       );
-
-      // Return the updated chat
+      
       return updatedChat;
     } else {
       console.log("User is not a participant.");
@@ -222,18 +169,5 @@ export const createChatForTeam = async (author, participants, teamName) => {
 
   return chatId;
 };
-
-//this works 
-
-// export const createChatForTeam = async (author, participants) => {
-//   const chatId = await createChat(author.id);
-//   await addChatParticipant(chatId, author.id);
-//   for (const participant of participants) {
-//     if (participant.id !== author.id) {
-//       await addChatParticipant(chatId, participant.id);
-//     }
-//   }
-//   return chatId; 
-// };
 
 

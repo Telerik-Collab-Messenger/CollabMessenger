@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { update, ref, remove } from "firebase/database";
 import { db } from "../../config/firebase-config";
 import { AppContext } from "../../state/app.context";
+import PropTypes from 'prop-types'; 
 
 export default function TimeStamp({ chatId, messageId, messageDate, title: initialTitle, onDelete }) {
   const [title, setTitle] = useState("");
@@ -12,7 +13,6 @@ export default function TimeStamp({ chatId, messageId, messageDate, title: initi
     setTitle(initialTitle);  
   }, [initialTitle]);
 
-  // Handle "Go" button click (scroll to the message)
   const handleGoClick = () => {
     const messageElement = document.getElementById(messageId);
     if (messageElement) {
@@ -20,12 +20,10 @@ export default function TimeStamp({ chatId, messageId, messageDate, title: initi
     }
   };
 
-  // Handle "Delete" button click (remove timestamp)
   const handleDeleteClick = async () => {
     try {
-      // Remove timestamp from Firebase
       await remove(ref(db, `chats/${chatId}/participants/${userData.handle}/timeStamps/${messageId}`));
-      if (onDelete) onDelete(messageId); // Notify parent to remove from UI
+      if (onDelete) onDelete(messageId); 
     } catch (error) {
       console.error("Failed to delete timestamp:", error);
     }
@@ -56,4 +54,12 @@ export default function TimeStamp({ chatId, messageId, messageDate, title: initi
       </div>
     </div>
   );
+}
+
+TimeStamp.propTypes = {
+  chatId: PropTypes.string.isRequired,
+  messageId: PropTypes.string.isRequired,
+  messageDate: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.instanceOf(Date)]).isRequired,
+  title: PropTypes.string.isRequired,
+  onDelete: PropTypes.func,
 }

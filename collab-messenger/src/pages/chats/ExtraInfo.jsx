@@ -3,34 +3,29 @@ import { ref, onValue } from "firebase/database";
 import { db } from "../../config/firebase-config";
 import TimeStamp from "../../components/chat/TimeStamp";
 import { AppContext } from "../../state/app.context";
+import PropTypes from "prop-types";
 
 export default function ExtraInfo({ chatId }) {
   const { userData } = useContext(AppContext);
   const [timeStamps, setTimeStamps] = useState({});
 
-  //console.log (chatId);
   useEffect(() => {
     if (!chatId || !userData?.handle) return;
-  
-    // Reference to the timestamps in Firebase
+
     const timeStampRef = ref(db, `chats/${chatId}/participants/${userData.handle}/timeStamps`);
-    //console.log (`chats/${chatId}/participants/${userData.handle}/timestamps`);
-  
+
     const unsubscribe = onValue(timeStampRef, (snapshot) => {
       const newData = snapshot.val() || {};
       console.log (newData);
       
-      // Check if the new data is different before updating state
       setTimeStamps((prevState) => {
         if (JSON.stringify(prevState) !== JSON.stringify(newData)) {
-          //console.log('newData is returned');
           return newData;
         }
-        return prevState;  // No change in state
+        return prevState;  
       });
     });
-  
-    // Cleanup the listener when the component unmounts or dependencies change
+
     return () => unsubscribe();
   }, [chatId, userData?.handle]);
   
@@ -60,8 +55,6 @@ export default function ExtraInfo({ chatId }) {
   );
 }
 
-
-  //chats/chatId/lastSeen/userData.handle
-  //chats/chatId/participants/userData.handle/lastSeenMessageId
-  //chats/chatId/messages/messageId/seenBy/userData.handle
-  //chats/{chatId}/messages/{messageId}/createdOn
+ExtraInfo.propTypes = {
+  chatId: PropTypes.string.isRequired,  
+};
