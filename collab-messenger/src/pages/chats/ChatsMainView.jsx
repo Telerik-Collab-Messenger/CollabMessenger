@@ -16,12 +16,12 @@ export default function ChatsMainView() {
   return (
     <div className="flex h-screen">
       {/* Left side with All Chats - fixed at 300px width */}
-      <div className="w-[300px] p-4 overflow-y-auto">
+      <div className="w-[300px] p-4 overflow-y-auto border-r border-gray-300">
         <AllChats onSelectChat={setSelectedChatId} setHasScrolledToLastSeen={setHasScrolledToLastSeen} />
       </div>
 
       {/* Middle with Single Chat - fixed at 600px width */}
-      <div className="w-[1250px] p-4 overflow-y-auto">
+      <div className="w-[1250px] p-4 overflow-y-auto border-r border-gray-300">
         {selectedChatId ? (
           <SingleChat chatId={selectedChatId} 
           hasScrolledToLastSeen={hasScrolledToLastSeen} 
@@ -35,7 +35,7 @@ export default function ChatsMainView() {
       </div>
 
       {/* Right side with Extra Info - fixed at 300px width */}
-      <div className="w-[300px] p-4 overflow-y-auto">
+      <div className="w-[300px] p-4 overflow-y-auto border-r border-gray-300">
         <ExtraInfo chatId={selectedChatId} />
       </div>
     </div>
